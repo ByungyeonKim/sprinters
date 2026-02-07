@@ -12,7 +12,8 @@ const listQuery = `
   til_tags (
     tags (id, name)
   ),
-  til_likes (count)
+  til_likes (count),
+  til_comments (count)
 `;
 
 const detailQuery = `
@@ -78,6 +79,7 @@ function formatPost(post) {
     content: post.content ?? post.content_preview,
     tags: post.til_tags.map((t) => t.tags.name),
     likes: post.til_likes[0]?.count || 0,
+    comments: post.til_comments?.[0]?.count || 0,
   };
 }
 

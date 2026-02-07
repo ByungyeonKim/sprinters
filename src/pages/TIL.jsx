@@ -61,7 +61,7 @@ function TIL() {
               </div>
               <div className='flex items-center gap-4 text-gray-500'>
                 <LikeCount count={post.likes} />
-                <CommentCount count={0} />
+                <CommentCount count={post.comments} />
               </div>
             </div>
           </article>
