@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @layer components {
   .badge-glow {
@@ -71,5 +72,9 @@
       'Segoe UI Emoji',
       'Segoe UI Symbol',
       sans-serif;
+  }
+
+  button {
+    cursor: pointer;
   }
 }

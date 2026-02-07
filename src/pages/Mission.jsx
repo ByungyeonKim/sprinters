@@ -6,7 +6,7 @@ function Mission() {
   const { students } = useLoaderData();
 
   return (
-    <div>
+    <section>
       <header className='mb-10 border-b border-gray-200 py-10'>
         <h1 className='mb-3 text-4xl font-bold'>스프린트 미션</h1>
         <p className='text-gray-600'>
@@ -110,7 +110,7 @@ function Mission() {
           );
         })}
       </ul>
-    </div>
+    </section>
   );
 }
 

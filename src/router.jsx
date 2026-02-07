@@ -3,7 +3,11 @@ import { App } from './App';
 import { Home } from './pages/Home';
 import { Mission } from './pages/Mission';
 import { missionLoader } from './loaders/mission';
+import { homeLoader } from './loaders/home';
 import { TIL } from './pages/TIL';
+import { TILNew } from './pages/TILNew';
+import { TILDetail } from './pages/TILDetail';
+import { tilLoader, tilDetailLoader } from './loaders/til';
 
 export const router = createBrowserRouter([
   {
@@ -13,14 +17,14 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
-        loader: missionLoader,
+        loader: homeLoader,
         HydrateFallback: () => (
           <div>
-            <section className='border-b border-gray-200 pt-10 pb-16'>
-              <h1 className='mb-8 text-[80px] leading-none font-bold'>
-                코드잇 FE
+            <section className='border-b border-gray-200 pt-10 pb-10'>
+              <h1 className='mb-8 text-[62px] leading-none font-bold'>
+                Always Moving
                 <br />
-                스프린터 저장소
+                Forward.
               </h1>
               <p className='mb-8 max-w-lg text-xl text-gray-600'>
                 혼자 고민하던 호기심부터
@@ -39,11 +43,13 @@ export const router = createBrowserRouter([
               </div>
             </section>
 
-            <section className='py-12'>
+            <section className='pt-12'>
               <div className='grid grid-cols-2 gap-16'>
                 <div>
                   <div className='mb-6 flex items-center justify-between'>
-                    <h2 className='text-lg font-bold'>스프린트 미션 순위</h2>
+                    <h2 className='text-lg font-bold'>
+                      FE 22기 스프린트 미션 순위
+                    </h2>
                     <span className='text-sm text-gray-500'>전체보기</span>
                   </div>
                   <div className='grid grid-cols-2 gap-3'>
@@ -70,9 +76,12 @@ export const router = createBrowserRouter([
                         <span className='text-2xl font-bold text-gray-200'>
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <div>
-                          <div className='mb-1 h-4 w-12 animate-pulse rounded bg-gray-200' />
-                          <div className='h-6 w-52 animate-pulse rounded bg-gray-200' />
+                        <div className='grow'>
+                          <div className='mb-1 h-4 w-18 animate-pulse rounded bg-gray-200' />
+                          <div className='flex justify-between'>
+                            <div className='h-6 w-60 animate-pulse rounded bg-gray-200' />
+                            <div className='h-6 w-15.5 animate-pulse rounded bg-gray-200' />
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -116,6 +125,81 @@ export const router = createBrowserRouter([
       {
         path: 'til',
         element: <TIL />,
+        loader: tilLoader,
+        HydrateFallback: () => (
+          <div className='mx-auto max-w-170'>
+            <header className='mb-10 flex items-end justify-between border-b border-gray-200 py-10'>
+              <div>
+                <h1 className='mb-3 text-4xl font-bold'>Today I Learned</h1>
+                <p className='text-gray-600'>
+                  오늘 배운 내용을 기록하고 공유하는 공간입니다.
+                </p>
+              </div>
+            </header>
+            <div className='space-y-10'>
+              {[...Array(3)].map((_, i) => (
+                <article key={i}>
+                  <div className='mb-4 flex items-center gap-3'>
+                    <div className='h-10 w-10 animate-pulse rounded-full bg-gray-200' />
+                    <div>
+                      <div className='mb-1 h-4.5 w-16 animate-pulse rounded bg-gray-200' />
+                      <div className='h-4.5 w-12 animate-pulse rounded bg-gray-200' />
+                    </div>
+                  </div>
+                  <div className='mb-3 h-8 w-64 animate-pulse rounded bg-gray-200' />
+                  <div className='mb-4 space-y-3'>
+                    <div className='h-5 w-full animate-pulse rounded bg-gray-200' />
+                    <div className='h-5 w-3/4 animate-pulse rounded bg-gray-200' />
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex gap-2'>
+                      <div className='h-6 w-14 animate-pulse rounded-full bg-gray-200' />
+                      <div className='h-6 w-14 animate-pulse rounded-full bg-gray-200' />
+                    </div>
+                    <div className='h-5 w-10 animate-pulse rounded bg-gray-200' />
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        path: 'til/new',
+        element: <TILNew />,
+      },
+      {
+        path: 'til/:username/:postNumber',
+        element: <TILDetail />,
+        loader: tilDetailLoader,
+        HydrateFallback: () => (
+          <div className='mx-auto max-w-170'>
+            <header className='mb-10 border-b border-gray-200 py-10'>
+              <div className='mb-6 h-4 w-20 animate-pulse rounded bg-gray-200' />
+              <div className='mb-4 h-10 w-96 animate-pulse rounded bg-gray-200' />
+              <div className='flex items-center gap-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='h-10 w-10 animate-pulse rounded-full bg-gray-200' />
+                  <div>
+                    <div className='mb-1 h-4 w-16 animate-pulse rounded bg-gray-200' />
+                    <div className='h-4 w-12 animate-pulse rounded bg-gray-200' />
+                  </div>
+                </div>
+                <div className='flex gap-2'>
+                  <div className='h-6 w-14 animate-pulse rounded-full bg-gray-200' />
+                  <div className='h-6 w-14 animate-pulse rounded-full bg-gray-200' />
+                </div>
+              </div>
+            </header>
+            <div className='space-y-4'>
+              <div className='h-5 w-full animate-pulse rounded bg-gray-200' />
+              <div className='h-5 w-full animate-pulse rounded bg-gray-200' />
+              <div className='h-5 w-3/4 animate-pulse rounded bg-gray-200' />
+              <div className='h-5 w-full animate-pulse rounded bg-gray-200' />
+              <div className='h-5 w-5/6 animate-pulse rounded bg-gray-200' />
+            </div>
+          </div>
+        ),
       },
     ],
   },
