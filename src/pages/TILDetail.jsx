@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useLoaderData, useNavigate, useRevalidator } from 'react-router';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import {
   addTilLike,
@@ -9,7 +9,7 @@ import {
   deleteTilPost,
   hasUserLikedTil,
   removeTilLike,
-} from '../services/tilService';
+} from '../services/til-service';
 import { HeartIcon, RefreshIcon, ChevronLeftIcon } from '../components/icons';
 import {
   generateSprinterNickname,
@@ -20,7 +20,7 @@ import {
   addOwnedCommentId,
   getOwnedCommentIds,
   removeOwnedCommentId,
-} from '../utils/commentOwnership';
+} from '../utils/comment';
 
 function TILDetail() {
   const { post } = useLoaderData();

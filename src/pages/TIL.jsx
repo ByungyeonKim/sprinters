@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from 'react-router';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/use-auth';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
 

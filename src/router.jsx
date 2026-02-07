@@ -12,7 +12,7 @@ import {
   loadTILRoute,
   loadTILNewRoute,
   loadTILDetailRoute,
-} from './routes/lazyRoutes';
+} from './routes/lazy-routes';
 
 export const router = createBrowserRouter([
   {

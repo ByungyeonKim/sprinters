@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router';
-import { useAuth } from './hooks/useAuth';
+import { useAuth } from './hooks/use-auth';
 
 function App() {
   const { user, signInWithGitHub, signOut } = useAuth();

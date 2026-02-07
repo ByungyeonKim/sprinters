@@ -1,5 +1,5 @@
-import { fetchMissionRankStudents } from '../services/studentService';
-import { fetchPopularTilPosts } from '../services/tilService';
+import { fetchMissionRankStudents } from '../services/student-service';
+import { fetchPopularTilPosts } from '../services/til-service';
 
 export async function homeLoader() {
   const [students, popularPosts] = await Promise.all([

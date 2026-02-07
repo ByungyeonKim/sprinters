@@ -1,4 +1,4 @@
-import { fetchTilDetail, fetchTilPosts } from '../services/tilService';
+import { fetchTilDetail, fetchTilPosts } from '../services/til-service';
 
 export async function tilLoader() {
   const posts = await fetchTilPosts();

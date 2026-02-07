@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
-import { createTilPost } from '../services/tilService';
+import { createTilPost } from '../services/til-service';
 
 function TILNew() {
   const navigate = useNavigate();
