@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLoaderData, useNavigate, useRevalidator } from 'react-router';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import {
+  addTilLike,
+  createTilComment,
+  deleteTilComment,
+  deleteTilPost,
+  hasUserLikedTil,
+  removeTilLike,
+} from '../services/tilService';
 import {
   HeartIcon,
   RefreshIcon,
@@ -67,17 +74,28 @@ function TILDetail() {
   const isAuthor = user?.user_metadata?.user_name === post.githubUsername;
 
   useEffect(() => {
-    if (!user) return;
+    let isMounted = true;
 
-    supabase
-      .from('til_likes')
-      .select('id')
-      .eq('til_id', post.id)
-      .eq('user_id', user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        setHasLiked(!!data);
+    if (!user) {
+      setHasLiked(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    hasUserLikedTil({ tilId: post.id, userId: user.id })
+      .then((liked) => {
+        if (isMounted) {
+          setHasLiked(liked);
+        }
+      })
+      .catch((error) => {
+        console.error('좋아요 상태 확인 실패:', error);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [user, post.id]);
 
   const nickname = generateSprinterNickname(nicknameSeed);
@@ -90,27 +108,19 @@ function TILDetail() {
   const handleToggleLike = async () => {
     if (!user) return;
 
-    if (hasLiked) {
-      const { error } = await supabase
-        .from('til_likes')
-        .delete()
-        .eq('til_id', post.id)
-        .eq('user_id', user.id);
-
-      if (!error) {
+    try {
+      if (hasLiked) {
+        await removeTilLike({ tilId: post.id, userId: user.id });
         setHasLiked(false);
-        setLikesCount((prev) => prev - 1);
-      }
-    } else {
-      const { error } = await supabase.from('til_likes').insert({
-        til_id: post.id,
-        user_id: user.id,
-      });
-
-      if (!error) {
+        setLikesCount((prev) => Math.max(0, prev - 1));
+      } else {
+        await addTilLike({ tilId: post.id, userId: user.id });
         setHasLiked(true);
         setLikesCount((prev) => prev + 1);
       }
+    } catch (error) {
+      console.error('좋아요 처리 실패:', error);
+      alert('좋아요 처리에 실패했습니다.');
     }
   };
 
@@ -134,15 +144,13 @@ function TILDetail() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('til_comments').insert({
-        til_id: post.id,
-        author_name: nickname,
-        avatar: avatar,
+      await createTilComment({
+        tilId: post.id,
+        authorName: nickname,
+        avatar,
         content: comment.trim(),
-        delete_token: getCommentDeleteToken(),
+        deleteToken: getCommentDeleteToken(),
       });
-
-      if (error) throw error;
 
       setComment('');
       refreshNickname();
@@ -161,14 +169,10 @@ function TILDetail() {
     }
 
     try {
-      const { error } = await supabase
-        .from('til_comments')
-        .delete()
-        .eq('id', commentId)
-        .eq('delete_token', getCommentDeleteToken());
-
-      if (error) throw error;
-
+      await deleteTilComment({
+        commentId,
+        deleteToken: getCommentDeleteToken(),
+      });
       revalidator.revalidate();
     } catch (error) {
       console.error('댓글 삭제 실패:', error);
@@ -184,13 +188,7 @@ function TILDetail() {
     setIsDeleting(true);
 
     try {
-      const { error } = await supabase
-        .from('til_posts')
-        .delete()
-        .eq('id', post.id);
-
-      if (error) throw error;
-
+      await deleteTilPost({ postId: post.id });
       navigate('/til');
     } catch (error) {
       console.error('게시글 삭제 실패:', error);
@@ -208,15 +206,7 @@ function TILDetail() {
           to='/til'
           className='mb-6 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900'
         >
-          <svg className='h-4 w-4' viewBox='0 0 24 24' fill='none'>
-            <path
-              d='M15 18l-6-6 6-6'
-              stroke='currentColor'
-              strokeWidth='1.5'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            />
-          </svg>
+          <ChevronLeftIcon />
           목록으로
         </Link>
         <h1 className='mb-4 text-4xl font-bold'>{post.title}</h1>
@@ -272,19 +262,7 @@ function TILDetail() {
             }`}
             title={user ? undefined : '로그인이 필요합니다'}
           >
-            <svg
-              className='h-5 w-5'
-              viewBox='0 0 24 24'
-              fill={hasLiked ? 'currentColor' : 'none'}
-            >
-              <path
-                d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
-                stroke='currentColor'
-                strokeWidth='1.5'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
+            <HeartIcon filled={hasLiked} />
             <span className='text-sm'>{likesCount}</span>
           </button>
 
@@ -309,15 +287,7 @@ function TILDetail() {
               className='text-gray-400 transition-colors hover:text-gray-600'
               title='닉네임 새로고침'
             >
-              <svg className='h-5 w-5' viewBox='0 0 24 24' fill='none'>
-                <path
-                  d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
+              <RefreshIcon />
             </button>
           </div>
           <textarea

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { createTilPost } from '../services/tilService';
 
 function TILNew() {
   const navigate = useNavigate();
@@ -65,50 +65,14 @@ function TILNew() {
     const githubUsername = user.user_metadata?.user_name;
 
     try {
-      // 1. TIL 포스트 저장
-      const { data: post, error: postError } = await supabase
-        .from('til_posts')
-        .insert({
-          user_id: user.id,
-          title: title.trim(),
-          content: content.trim(),
-        })
-        .select('id, post_number')
-        .single();
+      const { postNumber } = await createTilPost({
+        userId: user.id,
+        title,
+        content,
+        rawTags: tags,
+      });
 
-      if (postError) throw postError;
-
-      // 2. 태그 처리
-      const tagNames = tags
-        .split(',')
-        .map((t) => t.trim())
-        .filter((t) => t.length > 0);
-
-      if (tagNames.length > 0) {
-        // 태그 upsert
-        const { data: tagData, error: tagError } = await supabase
-          .from('tags')
-          .upsert(
-            tagNames.map((name) => ({ name })),
-            { onConflict: 'name' },
-          )
-          .select();
-
-        if (tagError) throw tagError;
-
-        // til_tags 관계 저장
-        const { error: tilTagError } = await supabase.from('til_tags').insert(
-          tagData.map((tag) => ({
-            til_id: post.id,
-            tag_id: tag.id,
-          })),
-        );
-
-        if (tilTagError) throw tilTagError;
-      }
-
-      // 3. 작성된 글 상세 페이지로 이동
-      navigate(`/til/@${githubUsername}/${post.post_number}`);
+      navigate(`/til/@${githubUsername}/${postNumber}`);
     } catch (error) {
       console.error('TIL 저장 실패:', error);
       alert('저장에 실패했습니다. 다시 시도해주세요.');
