@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useLoaderData, useNavigate, useRevalidator } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
@@ -16,6 +16,11 @@ import {
   generateSprinterAvatar,
   generateRandomSeed,
 } from '../utils/sprinter';
+import {
+  addOwnedCommentId,
+  getOwnedCommentIds,
+  removeOwnedCommentId,
+} from '../utils/commentOwnership';
 
 function TILDetail() {
   const { post } = useLoaderData();
@@ -28,8 +33,13 @@ function TILDetail() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes);
+  const [ownedCommentIds, setOwnedCommentIds] = useState(getOwnedCommentIds);
 
   const isAuthor = user?.user_metadata?.user_name === post.githubUsername;
+  const ownedCommentIdSet = useMemo(
+    () => new Set(ownedCommentIds),
+    [ownedCommentIds],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -102,13 +112,14 @@ function TILDetail() {
     setIsSubmitting(true);
 
     try {
-      await createTilComment({
+      const createdCommentId = await createTilComment({
         tilId: post.id,
         authorName: nickname,
         avatar,
         content: comment.trim(),
         deleteToken: getCommentDeleteToken(),
       });
+      setOwnedCommentIds(addOwnedCommentId(createdCommentId));
 
       setComment('');
       refreshNickname();
@@ -131,6 +142,7 @@ function TILDetail() {
         commentId,
         deleteToken: getCommentDeleteToken(),
       });
+      setOwnedCommentIds(removeOwnedCommentId(commentId));
       revalidator.revalidate();
     } catch (error) {
       console.error('댓글 삭제 실패:', error);
@@ -154,8 +166,6 @@ function TILDetail() {
       setIsDeleting(false);
     }
   };
-
-  const myDeleteToken = getCommentDeleteToken();
 
   return (
     <section className='mx-auto max-w-170'>
@@ -279,7 +289,7 @@ function TILDetail() {
                   <div className='mb-1 flex items-center gap-2'>
                     <span className='text-sm font-medium'>{c.author}</span>
                     <span className='text-sm text-gray-500'>{c.date}</span>
-                    {c.deleteToken === myDeleteToken && (
+                    {ownedCommentIdSet.has(String(c.id)) && (
                       <button
                         onClick={() => handleDeleteComment(c.id)}
                         className='text-sm text-gray-400 transition-colors hover:text-red-500'

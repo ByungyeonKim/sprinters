@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { getRelativeTime } from '../utils/date';
 
 // TIL 목록/상세 조회, 인기글 계산, 좋아요/댓글/글 작성·삭제 로직
 
@@ -32,7 +33,6 @@ const detailQuery = `
     author_name,
     avatar,
     content,
-    delete_token,
     created_at
   )
 `;
@@ -46,26 +46,6 @@ const popularQuery = `
   til_likes (count),
   til_comments (count)
 `;
-
-function getRelativeTime(date) {
-  const now = new Date();
-  const diff = now - new Date(date);
-
-  const minutes = Math.floor(diff / (1000 * 60));
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const weeks = Math.floor(days / 7);
-  const months = Math.floor(days / 30);
-  const years = Math.floor(days / 365);
-
-  if (minutes < 1) return '방금 전';
-  if (hours < 1) return `${minutes}분 전`;
-  if (days < 1) return `${hours}시간 전`;
-  if (weeks < 2) return `${days}일 전`;
-  if (months < 1) return `${weeks}주 전`;
-  if (years < 1) return `${months}개월 전`;
-  return `${years}년 전`;
-}
 
 function formatPost(post) {
   return {
@@ -124,7 +104,6 @@ export async function fetchTilDetail({ username, postNumber }) {
       author: comment.author_name,
       avatar: comment.avatar,
       content: comment.content,
-      deleteToken: comment.delete_token,
       date: getRelativeTime(comment.created_at),
     }));
 
@@ -206,17 +185,23 @@ export async function createTilComment({
   content,
   deleteToken,
 }) {
-  const { error } = await supabase.from('til_comments').insert({
-    til_id: tilId,
-    author_name: authorName,
-    avatar,
-    content,
-    delete_token: deleteToken,
-  });
+  const { data, error } = await supabase
+    .from('til_comments')
+    .insert({
+      til_id: tilId,
+      author_name: authorName,
+      avatar,
+      content,
+      delete_token: deleteToken,
+    })
+    .select('id')
+    .single();
 
   if (error) {
     throw new Error('댓글 작성에 실패했습니다.');
   }
+
+  return data.id;
 }
 
 export async function deleteTilComment({ commentId, deleteToken }) {
