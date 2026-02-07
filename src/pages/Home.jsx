@@ -1,5 +1,6 @@
 import { Link, useLoaderData } from 'react-router';
-import { HeartIcon, CommentIcon } from '../components/icons';
+import { LikeCount } from '../components/LikeCount';
+import { CommentCount } from '../components/CommentCount';
 
 function Home() {
   const { students, popularPosts } = useLoaderData();
@@ -101,15 +102,9 @@ function Home() {
                       <h3 className='font-semibold group-hover:underline'>
                         {post.title}
                       </h3>
-                      <div className='flex items-center gap-3 text-xs text-gray-400'>
-                        <span className='flex items-center gap-1'>
-                          <HeartIcon className='h-3.5 w-3.5' />
-                          {post.likes}
-                        </span>
-                        <span className='flex items-center gap-1'>
-                          <CommentIcon className='h-3.5 w-3.5' />
-                          {post.comments}
-                        </span>
+                      <div className='flex items-center gap-3 text-gray-400'>
+                        <LikeCount count={post.likes} size='sm' />
+                        <CommentCount count={post.comments} size='sm' />
                       </div>
                     </div>
                   </div>

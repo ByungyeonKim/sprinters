@@ -1,6 +1,7 @@
 import { Link, useLoaderData } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
-import { HeartIcon, CommentIcon } from '../components/icons';
+import { LikeCount } from '../components/LikeCount';
+import { CommentCount } from '../components/CommentCount';
 
 function TIL() {
   const { posts } = useLoaderData();
@@ -59,14 +60,8 @@ function TIL() {
                 ))}
               </div>
               <div className='flex items-center gap-4 text-gray-500'>
-                <span className='flex items-center gap-1'>
-                  <HeartIcon />
-                  <span className='text-sm'>{post.likes}</span>
-                </span>
-                <span className='flex items-center gap-1'>
-                  <CommentIcon />
-                  <span className='text-sm'>0</span>
-                </span>
+                <LikeCount count={post.likes} />
+                <CommentCount count={0} />
               </div>
             </div>
           </article>
