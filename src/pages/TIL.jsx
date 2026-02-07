@@ -1,5 +1,6 @@
 import { Link, useLoaderData } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
+import { HeartIcon, CommentIcon } from '../components/icons';
 
 function TIL() {
   const { posts } = useLoaderData();
@@ -57,31 +58,15 @@ function TIL() {
                   </span>
                 ))}
               </div>
-              <div className='flex items-center gap-4'>
-                <button className='flex items-center gap-1 text-gray-500 transition-colors hover:text-red-500'>
-                  <svg className='h-5 w-5' viewBox='0 0 24 24' fill='none'>
-                    <path
-                      d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
-                      stroke='currentColor'
-                      strokeWidth='1.5'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
+              <div className='flex items-center gap-4 text-gray-500'>
+                <span className='flex items-center gap-1'>
+                  <HeartIcon />
                   <span className='text-sm'>{post.likes}</span>
-                </button>
-                <button className='flex items-center gap-1 text-gray-500 transition-colors hover:text-gray-900'>
-                  <svg className='h-5 w-5' viewBox='0 0 24 24' fill='none'>
-                    <path
-                      d='M8.5 14.5L4 17.5V4.5C4 3.67 4.67 3 5.5 3H18.5C19.33 3 20 3.67 20 4.5V13.5C20 14.33 19.33 15 18.5 15H10L8.5 14.5Z'
-                      stroke='currentColor'
-                      strokeWidth='1.5'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
+                </span>
+                <span className='flex items-center gap-1'>
+                  <CommentIcon />
                   <span className='text-sm'>0</span>
-                </button>
+                </span>
               </div>
             </div>
           </article>

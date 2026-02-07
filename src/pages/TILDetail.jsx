@@ -3,6 +3,11 @@ import { Link, useLoaderData, useNavigate, useRevalidator } from 'react-router';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import {
+  HeartIcon,
+  RefreshIcon,
+  ChevronLeftIcon,
+} from '../components/icons';
 
 const sprinterDescriptors = [
   '열심히뛰는',
