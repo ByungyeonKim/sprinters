@@ -98,7 +98,7 @@ export async function fetchTilDetail({ username, postNumber }) {
   }
 
   const comments = (post.til_comments || [])
-    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .map((comment) => ({
       id: comment.id,
       author: comment.author_name,
@@ -205,14 +205,21 @@ export async function createTilComment({
 }
 
 export async function deleteTilComment({ commentId, deleteToken }) {
-  const { error } = await supabase
-    .from('til_comments')
-    .delete()
-    .eq('id', commentId)
-    .eq('delete_token', deleteToken);
+  const response = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-comment`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ commentId, deleteToken }),
+    },
+  );
 
-  if (error) {
-    throw new Error('댓글 삭제에 실패했습니다.');
+  if (!response.ok) {
+    const { error } = await response.json();
+    throw new Error(error || '댓글 삭제에 실패했습니다.');
   }
 }
 
