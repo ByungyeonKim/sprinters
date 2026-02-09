@@ -27,7 +27,7 @@ function HomeHydrateFallback() {
       </section>
 
       <section className='pt-12'>
-        <div className='grid grid-cols-2 gap-16'>
+        <div className='grid gap-16 md:grid-cols-2'>
           <div>
             <div className='mb-6 flex items-center justify-between'>
               <h2 className='text-lg font-bold'>FE 22기 스프린트 미션 순위</h2>
