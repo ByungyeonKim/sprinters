@@ -26,7 +26,7 @@ export function useAuth() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: window.location.href,
       },
     });
     if (error) console.error('로그인 에러:', error);
