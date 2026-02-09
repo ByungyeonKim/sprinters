@@ -2,6 +2,7 @@ import { Link, useLoaderData } from 'react-router';
 import { useAuth } from '../hooks/use-auth';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
+import { stripMarkdown } from '../utils/markdown';
 
 function TIL() {
   const { posts } = useLoaderData();
@@ -46,7 +47,7 @@ function TIL() {
               </h2>
             </Link>
             <p className='mb-4 line-clamp-2 leading-relaxed text-gray-600'>
-              {post.content}
+              {stripMarkdown(post.content)}
             </p>
             <div className='flex items-center justify-between'>
               <div className='flex gap-2'>
