@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { createTilComment } from '../services/til-service';
-import { addOwnedCommentId } from '../utils/comment';
 import { RefreshIcon } from './icons';
 import {
   generateSprinterNickname,
@@ -47,11 +46,10 @@ function CommentForm({ tilId, onCommentCreated }) {
         content: comment.trim(),
         deleteToken: getCommentDeleteToken(),
       });
-      addOwnedCommentId(createdCommentId);
 
       setComment('');
       refreshNickname();
-      onCommentCreated?.();
+      onCommentCreated?.(createdCommentId);
     } catch (error) {
       console.error('댓글 작성 실패:', error);
       alert('댓글 작성에 실패했습니다.');

@@ -1,9 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { deleteTilComment } from '../services/til-service';
-import {
-  getOwnedCommentIds,
-  removeOwnedCommentId,
-} from '../utils/comment';
 
 function getCommentDeleteToken() {
   const key = 'sprintersCommentDeleteToken';
@@ -15,13 +11,7 @@ function getCommentDeleteToken() {
   return token;
 }
 
-function CommentList({ comments, onCommentDeleted }) {
-  const [ownedCommentIds, setOwnedCommentIds] = useState(getOwnedCommentIds);
-
-  useEffect(() => {
-    setOwnedCommentIds(getOwnedCommentIds());
-  }, [comments]);
-
+function CommentList({ comments, ownedCommentIds, onCommentDeleted }) {
   const ownedCommentIdSet = useMemo(
     () => new Set(ownedCommentIds),
     [ownedCommentIds],
@@ -37,8 +27,7 @@ function CommentList({ comments, onCommentDeleted }) {
         commentId,
         deleteToken: getCommentDeleteToken(),
       });
-      setOwnedCommentIds(removeOwnedCommentId(commentId));
-      onCommentDeleted?.();
+      onCommentDeleted?.(commentId);
     } catch (error) {
       console.error('댓글 삭제 실패:', error);
       alert('댓글 삭제에 실패했습니다.');
@@ -66,7 +55,7 @@ function CommentList({ comments, onCommentDeleted }) {
             <div className='mb-1 flex items-center gap-2'>
               <span className='text-sm font-medium'>{c.author}</span>
               <span className='text-sm text-gray-500'>{c.date}</span>
-              {ownedCommentIdSet.has(String(c.id)) && (
+              {ownedCommentIdSet.has(c.id) && (
                 <button
                   onClick={() => handleDeleteComment(c.id)}
                   className='text-sm text-gray-400 transition-colors hover:text-red-500'

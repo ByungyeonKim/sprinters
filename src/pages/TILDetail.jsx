@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLoaderData, useNavigate, useRevalidator } from 'react-router';
 import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
@@ -7,12 +8,18 @@ import { CommentList } from '../components/CommentList';
 import { DeleteButton } from '../components/DeleteButton';
 import { deleteTilPost } from '../services/til-service';
 import { ChevronLeftIcon } from '../components/icons';
+import {
+  getOwnedCommentIds,
+  addOwnedCommentId,
+  removeOwnedCommentId,
+} from '../utils/comment';
 
 function TILDetail() {
   const { post } = useLoaderData();
   const revalidator = useRevalidator();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [ownedCommentIds, setOwnedCommentIds] = useState(getOwnedCommentIds);
 
   const isAuthor = user?.user_metadata?.user_name === post.githubUsername;
 
@@ -21,7 +28,15 @@ function TILDetail() {
     navigate('/til');
   };
 
-  const handleCommentChange = () => {
+  const handleCommentCreated = (commentId) => {
+    addOwnedCommentId(commentId);
+    setOwnedCommentIds((prev) => [...prev, commentId]);
+    revalidator.revalidate();
+  };
+
+  const handleCommentDeleted = (commentId) => {
+    removeOwnedCommentId(commentId);
+    setOwnedCommentIds((prev) => prev.filter((id) => id !== commentId));
     revalidator.revalidate();
   };
 
@@ -81,10 +96,11 @@ function TILDetail() {
           </h2>
         </div>
 
-        <CommentForm tilId={post.id} onCommentCreated={handleCommentChange} />
+        <CommentForm tilId={post.id} onCommentCreated={handleCommentCreated} />
         <CommentList
           comments={post.comments}
-          onCommentDeleted={handleCommentChange}
+          ownedCommentIds={ownedCommentIds}
+          onCommentDeleted={handleCommentDeleted}
         />
       </section>
     </section>
