@@ -6,7 +6,7 @@ import { stripMarkdown } from '../utils/markdown';
 
 function TIL() {
   const { posts } = useLoaderData();
-  const { user } = useAuth();
+  const { user, signInWithGitHub } = useAuth();
 
   return (
     <section className='mx-auto max-w-170'>
@@ -26,6 +26,20 @@ function TIL() {
           </Link>
         )}
       </header>
+
+      {!user && (
+        <div className='mb-10 rounded-lg bg-gray-50 p-6 text-center'>
+          <p className='mb-3 text-gray-600'>
+            로그인을 하면 TIL을 작성할 수 있어요.
+          </p>
+          <button
+            onClick={signInWithGitHub}
+            className='rounded-full bg-gray-900 px-5 py-2 text-sm text-white'
+          >
+            GitHub로 로그인
+          </button>
+        </div>
+      )}
 
       <div className='space-y-10'>
         {posts.map((post, index) => (
