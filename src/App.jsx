@@ -49,7 +49,7 @@ function App() {
             )}
 
             <a
-              href='https://github.com'
+              href='https://github.com/ByungyeonKim/sprinters'
               target='_blank'
               rel='noopener noreferrer'
               className='text-gray-500 transition-colors hover:text-gray-900'
