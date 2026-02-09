@@ -82,7 +82,7 @@ function CommentForm({ tilId, onCommentCreated }) {
         rows={3}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder='댓글을 작성해주세요'
+        placeholder='로그인 없이 누구나 작성할 수 있어요. 부적절한 내용은 별도 동의나 사전 안내 없이 삭제될 수 있어요.'
         className='w-full resize-none rounded-lg border border-gray-200 px-4 py-3 focus:border-gray-500 focus:outline-none'
       />
       <div className='mt-3 flex justify-end'>
