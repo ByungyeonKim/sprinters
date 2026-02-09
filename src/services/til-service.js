@@ -14,7 +14,7 @@ const listQuery = `
     tags (id, name)
   ),
   til_likes (count),
-  til_comments (count)
+  til_comments (id)
 `;
 
 const detailQuery = `
@@ -44,7 +44,7 @@ const popularQuery = `
   created_at,
   users (id, name, github, avatar),
   til_likes (count),
-  til_comments (count)
+  til_comments (id)
 `;
 
 function formatPost(post) {
@@ -59,7 +59,7 @@ function formatPost(post) {
     content: post.content ?? post.content_preview,
     tags: post.til_tags.map((t) => t.tags.name),
     likes: post.til_likes[0]?.count || 0,
-    comments: post.til_comments?.[0]?.count || 0,
+    comments: post.til_comments?.length || 0,
   };
 }
 
@@ -128,7 +128,7 @@ export async function fetchPopularTilPosts(limit = 5) {
       author: post.users.name || post.users.github,
       githubUsername: post.users.github,
       likes: post.til_likes[0]?.count || 0,
-      comments: post.til_comments[0]?.count || 0,
+      comments: post.til_comments?.length || 0,
       createdAt: post.created_at,
     }))
     .sort((a, b) => {
