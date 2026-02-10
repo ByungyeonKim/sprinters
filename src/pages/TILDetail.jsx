@@ -1,43 +1,21 @@
-import { useState } from 'react';
-import { Link, useLoaderData, useNavigate, useRevalidator } from 'react-router';
+import { Link, useLoaderData, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
-import { LikeButton } from '../components/LikeButton';
-import { CommentForm } from '../components/CommentForm';
-import { CommentList } from '../components/CommentList';
+import { CommentSection } from '../components/CommentSection';
 import { DeleteButton } from '../components/DeleteButton';
 import { deleteTilPost } from '../services/til-service';
 import { ChevronLeftIcon } from '../components/icons';
-import {
-  getOwnedCommentIds,
-  addOwnedCommentId,
-  removeOwnedCommentId,
-} from '../utils/comment';
 
 function TILDetail() {
   const { post } = useLoaderData();
-  const revalidator = useRevalidator();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [ownedCommentIds, setOwnedCommentIds] = useState(getOwnedCommentIds);
 
   const isAuthor = user?.user_metadata?.user_name === post.githubUsername;
 
   const handleDeletePost = async () => {
     await deleteTilPost({ postId: post.id });
     navigate('/til', { state: { deleted: true } });
-  };
-
-  const handleCommentCreated = (commentId) => {
-    addOwnedCommentId(commentId);
-    setOwnedCommentIds((prev) => [...prev, commentId]);
-    revalidator.revalidate();
-  };
-
-  const handleCommentDeleted = (commentId) => {
-    removeOwnedCommentId(commentId);
-    setOwnedCommentIds((prev) => prev.filter((id) => id !== commentId));
-    revalidator.revalidate();
   };
 
   return (
@@ -89,21 +67,7 @@ function TILDetail() {
         <MarkdownRenderer content={post.content} />
       </article>
 
-      <section className='mt-10 border-t border-gray-200 pt-10'>
-        <div className='mb-6 flex items-center justify-between'>
-          <LikeButton tilId={post.id} initialCount={post.likes} />
-          <h2 className='text-lg font-bold'>
-            댓글({post.comments?.length || 0})
-          </h2>
-        </div>
-
-        <CommentForm tilId={post.id} onCommentCreated={handleCommentCreated} />
-        <CommentList
-          comments={post.comments}
-          ownedCommentIds={ownedCommentIds}
-          onCommentDeleted={handleCommentDeleted}
-        />
-      </section>
+      <CommentSection tilId={post.id} comments={post.comments} likes={post.likes} />
     </section>
   );
 }
