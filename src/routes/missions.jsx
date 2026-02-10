@@ -2,6 +2,8 @@ import { useLoaderData } from 'react-router';
 import { fetchMissionRankStudents } from '../services/student-service';
 import { Mission } from '../components/Mission';
 import { MissionsHeader } from '../components/MissionsHeader';
+import { MissionHydrateFallback } from '../components/fallbacks';
+
 const RANK_BADGES = [
   { emoji: '🥇', className: 'bg-yellow-100 text-yellow-700 border-yellow-300' },
   { emoji: '🥈', className: 'bg-gray-100 text-gray-500 border-gray-300' },
@@ -15,10 +17,12 @@ export function meta() {
   ];
 }
 
-export async function loader() {
+export async function clientLoader() {
   const students = await fetchMissionRankStudents();
   return { students };
 }
+
+export { MissionHydrateFallback as HydrateFallback };
 
 export default function Missions() {
   const { students } = useLoaderData();

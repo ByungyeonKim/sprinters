@@ -6,6 +6,8 @@ import { useAuth } from '../hooks/use-auth';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
 import { stripMarkdown } from '../utils/markdown';
+import { TILHydrateFallback } from '../components/fallbacks';
+
 export function meta() {
   return [
     { title: 'Today I Learned | Sprinters' },
@@ -13,10 +15,12 @@ export function meta() {
   ];
 }
 
-export async function loader() {
+export async function clientLoader() {
   const posts = await fetchTilPosts();
   return { posts };
 }
+
+export { TILHydrateFallback as HydrateFallback };
 
 export default function TIL() {
   const { posts } = useLoaderData();

@@ -3,6 +3,8 @@ import { fetchMissionRankStudents } from '../services/student-service';
 import { fetchPopularTilPosts } from '../services/til-service';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
+import { HomeHydrateFallback } from '../components/fallbacks';
+
 const MISSION_RANK_COUNT = 10;
 
 export function meta() {
@@ -12,7 +14,7 @@ export function meta() {
   ];
 }
 
-export async function loader() {
+export async function clientLoader() {
   const [students, popularPosts] = await Promise.all([
     fetchMissionRankStudents(),
     fetchPopularTilPosts(5),
@@ -20,6 +22,8 @@ export async function loader() {
 
   return { students, popularPosts };
 }
+
+export { HomeHydrateFallback as HydrateFallback };
 
 export default function Home() {
   const { students, popularPosts } = useLoaderData();

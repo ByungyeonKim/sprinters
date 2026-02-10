@@ -5,4 +5,7 @@ export default {
   appDirectory: "src",
   ssr: true,
   presets: [vercelPreset()],
+  async prerender() {
+    return ["/", "/mission", "/til", "/til/new"];
+  },
 } satisfies Config;
