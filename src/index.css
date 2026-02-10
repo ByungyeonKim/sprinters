@@ -5,21 +5,17 @@
 @plugin '@tailwindcss/typography';
 
 @layer components {
-  .badge-glow {
+  .badge-glow-basic,
+  .badge-glow-react,
+  .badge-glow-next {
     position: relative;
     z-index: 0;
   }
 
-  .badge-glow::before {
+  .badge-glow-basic::before,
+  .badge-glow-react::before,
+  .badge-glow-next::before {
     content: '';
-    background: linear-gradient(
-      45deg,
-      #7008e7,
-      #90a1b9,
-      #155dfc,
-      #314158,
-      #a684ff
-    );
     position: absolute;
     top: -2px;
     left: -2px;
@@ -28,11 +24,12 @@
     filter: blur(3px);
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    animation: glowing 15s linear infinite;
     border-radius: 4px;
   }
 
-  .badge-glow::after {
+  .badge-glow-basic::after,
+  .badge-glow-react::after,
+  .badge-glow-next::after {
     content: '';
     position: absolute;
     width: 100%;
@@ -42,6 +39,26 @@
     top: 0;
     border-radius: 4px;
     z-index: -1;
+  }
+
+  /* Basic: 차분한 초록 계열 */
+  .badge-glow-basic::before {
+    background: linear-gradient(45deg, #22c55e, #a3e635, #16a34a, #4ade80);
+    animation: glowing 20s linear infinite;
+  }
+
+  /* React: 시안/블루 계열, 더 빠르게 */
+  .badge-glow-react::before {
+    background: linear-gradient(45deg, #06b6d4, #3b82f6, #61dafb, #2563eb, #22d3ee);
+    animation: glowing 12s linear infinite;
+    filter: blur(4px);
+  }
+
+  /* Next: 블랙/그레이 계열 */
+  .badge-glow-next::before {
+    background: linear-gradient(45deg, #000000, #555555, #1a1a1a, #888888, #000000);
+    animation: glowing 10s linear infinite;
+    filter: blur(4px);
   }
 
   @keyframes glowing {
