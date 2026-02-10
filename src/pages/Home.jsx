@@ -2,6 +2,8 @@ import { Link, useLoaderData } from 'react-router';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
 
+const MISSION_RANK_COUNT = 10;
+
 function Home() {
   const { students, popularPosts } = useLoaderData();
   return (
@@ -52,7 +54,7 @@ function Home() {
               </Link>
             </div>
             <div className='grid grid-cols-2 gap-3'>
-              {students.slice(0, 10).map((student, index) => (
+              {students.slice(0, MISSION_RANK_COUNT).map((student, index) => (
                 <a
                   key={student.id}
                   href={`https://github.com/${student.github}`}

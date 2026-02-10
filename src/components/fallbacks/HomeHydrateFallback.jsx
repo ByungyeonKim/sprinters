@@ -1,5 +1,8 @@
 import { SkeletonCircle, SkeletonLine } from './SkeletonPrimitives';
 
+const MISSION_RANK_SKELETON_COUNT = 10;
+const POPULAR_TIL_SKELETON_COUNT = 5;
+
 function HomeHydrateFallback() {
   return (
     <div>
@@ -34,7 +37,7 @@ function HomeHydrateFallback() {
               <span className='text-sm text-gray-500'>전체보기</span>
             </div>
             <div className='grid grid-cols-2 gap-3'>
-              {[...Array(10)].map((_, i) => (
+              {[...Array(MISSION_RANK_SKELETON_COUNT)].map((_, i) => (
                 <div key={i} className='flex items-center gap-3'>
                   <span className='basis-9 text-2xl font-bold text-gray-200'>
                     {String(i + 1).padStart(2, '0')}
@@ -52,7 +55,7 @@ function HomeHydrateFallback() {
               <span className='text-sm text-gray-500'>전체보기</span>
             </div>
             <div className='space-y-6'>
-              {[...Array(5)].map((_, i) => (
+              {[...Array(POPULAR_TIL_SKELETON_COUNT)].map((_, i) => (
                 <div key={i} className='flex items-start gap-4'>
                   <span className='text-2xl font-bold text-gray-200'>
                     {String(i + 1).padStart(2, '0')}

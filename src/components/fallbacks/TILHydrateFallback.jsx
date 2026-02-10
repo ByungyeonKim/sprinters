@@ -4,6 +4,8 @@ import {
   SkeletonPill,
 } from './SkeletonPrimitives';
 
+const SKELETON_COUNT = 3;
+
 function TILHydrateFallback() {
   return (
     <div className='mx-auto max-w-170'>
@@ -16,7 +18,7 @@ function TILHydrateFallback() {
         </div>
       </header>
       <div className='space-y-10'>
-        {[...Array(3)].map((_, i) => (
+        {[...Array(SKELETON_COUNT)].map((_, i) => (
           <article key={i}>
             <SkeletonAvatarMeta
               className='mb-4'
