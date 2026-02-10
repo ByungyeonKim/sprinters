@@ -11,13 +11,13 @@ async function loadHomeRoute() {
 }
 
 async function loadMissionRoute() {
-  const [{ Mission }, { missionLoader }] = await Promise.all([
-    import('../pages/Mission'),
+  const [{ Missions }, { missionLoader }] = await Promise.all([
+    import('../pages/Missions'),
     import('../loaders/mission'),
   ]);
 
   return {
-    Component: Mission,
+    Component: Missions,
     loader: missionLoader,
   };
 }
