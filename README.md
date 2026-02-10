@@ -1,16 +1,30 @@
-# React + Vite
+# Sprinters
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+스프린트 미션에 더 적극적으로 참여할 수 있도록,
+게임적인 요소와 함께 미션 진행 상황을 한눈에 볼 수 있는 경험을 만들고자 시작한 프로젝트입니다.
 
-Currently, two official plugins are available:
+또한 TIL(Today I Learned)을 통해
+그날그날의 생각과 배운 내용을 부담 없이 남기고,
+혼자가 아닌 함께 [공개적으로 학습](https://velog.io/@kwanwooi/%EA%B3%B5%EA%B0%9C%EC%A0%81%EC%9C%BC%EB%A1%9C-%ED%95%99%EC%8A%B5%ED%95%98%EB%9D%BC)하는 것이 얼마나 좋은 경험이 될 수 있는지를 전하고 싶었습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 스프린트 미션
 
-## React Compiler
+스프린트 미션 진행 상황을 한눈에 파악하고,
+순위 경쟁을 해보세요.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 스프린터별 미션 완료 현황 및 순위 확인
+- Basic, React, Next 각 과정의 마지막 미션 달성 시 특별 뱃지 부여
+- 상위 3명은 순위 뱃지(금·은·동) 표시
 
-## Expanding the ESLint configuration
+## TIL (Today I Learned)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+잘 정리된 글이 아니어도 괜찮습니다.
+작은 생각의 조각이라도 기록하고, 공유하고, 인사이트를 나눠보세요.
+
+- 마크다운 기반 TIL 작성 및 조회
+- 좋아요 및 댓글
+- 인기 TIL 목록
+
+댓글은 누구나 작성이 가능하며,
+제공되는 랜덤 프로필로 댓글을 남겨보세요.
+브라우저별 제한적인 댓글 삭제가 가능합니다.
