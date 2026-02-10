@@ -1,4 +1,6 @@
-import { Link, useLoaderData } from 'react-router';
+import { useEffect } from 'react';
+import { Link, useLoaderData, useLocation, useNavigate } from 'react-router';
+import { toast } from 'sonner';
 import { useAuth } from '../hooks/use-auth';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
@@ -7,6 +9,15 @@ import { stripMarkdown } from '../utils/markdown';
 function TIL() {
   const { posts } = useLoaderData();
   const { user, signInWithGitHub } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.deleted) {
+      toast.success('게시글이 삭제되었습니다.');
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state?.deleted]);
 
   return (
     <section className='mx-auto max-w-170'>

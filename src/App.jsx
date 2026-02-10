@@ -1,4 +1,5 @@
 import { Outlet, NavLink } from 'react-router';
+import { Toaster } from 'sonner';
 import { useAuth } from './hooks/use-auth';
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
       <main className='mx-auto max-w-300 px-6 py-10'>
         <Outlet />
       </main>
+      <Toaster />
     </div>
   );
 }

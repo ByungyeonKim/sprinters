@@ -25,7 +25,7 @@ function TILDetail() {
 
   const handleDeletePost = async () => {
     await deleteTilPost({ postId: post.id });
-    navigate('/til');
+    navigate('/til', { state: { deleted: true } });
   };
 
   const handleCommentCreated = (commentId) => {
