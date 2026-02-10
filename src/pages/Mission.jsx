@@ -2,6 +2,13 @@ import { useLoaderData } from 'react-router';
 
 const TOTAL_MISSIONS = 13;
 
+const RANK_BADGES = [
+  { emoji: '🥇', bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-300' },
+  { emoji: '🥈', bg: 'bg-gray-100', text: 'text-gray-500', border: 'border-gray-300' },
+  { emoji: '🥉', bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-300' },
+];
+
+
 function Mission() {
   const { students } = useLoaderData();
 
@@ -15,10 +22,11 @@ function Mission() {
         </p>
       </header>
 
-      <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
-        {students.map((student) => {
+      <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4'>
+        {students.map((student, index) => {
           const completedCount = student.mission;
           const incompleteCount = TOTAL_MISSIONS - completedCount;
+          const badge = index < 3 ? RANK_BADGES[index] : null;
 
           return (
             <li key={student.id}>
@@ -28,6 +36,11 @@ function Mission() {
                 rel='noopener noreferrer'
                 className='group relative flex rounded-lg border border-gray-200 p-4 transition-all hover:border-gray-800'
               >
+                {badge && (
+                  <span className={`absolute top-2 left-2 rounded-full border px-1.5 py-0.5 text-xs font-semibold ${badge.bg} ${badge.text} ${badge.border}`}>
+                    {badge.emoji} {index + 1}
+                  </span>
+                )}
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   viewBox='0 0 24 24'
