@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { deleteTilComment } from '../services/til-service';
+import { AlertDialogDestructive } from './AlertDialogDestructive';
 
 function getCommentDeleteToken() {
   const key = 'sprintersCommentDeleteToken';
@@ -18,10 +19,6 @@ function CommentList({ comments, ownedCommentIds, onCommentDeleted }) {
   );
 
   const handleDeleteComment = async (commentId) => {
-    if (!confirm('댓글을 삭제하시겠어요?')) {
-      return;
-    }
-
     try {
       await deleteTilComment({
         commentId,
@@ -56,12 +53,17 @@ function CommentList({ comments, ownedCommentIds, onCommentDeleted }) {
               <span className='text-sm font-medium'>{c.author}</span>
               <span className='text-sm text-gray-500'>{c.date}</span>
               {ownedCommentIdSet.has(c.id) && (
-                <button
-                  onClick={() => handleDeleteComment(c.id)}
-                  className='text-sm text-gray-400 transition-colors hover:text-red-500'
+                <AlertDialogDestructive
+                  onConfirm={() => handleDeleteComment(c.id)}
+                  title='댓글을 삭제하시겠어요?'
+                  description='삭제된 댓글은 복구할 수 없습니다.'
                 >
-                  삭제
-                </button>
+                  <button
+                    className='text-sm text-gray-400 transition-colors hover:text-red-500'
+                  >
+                    삭제
+                  </button>
+                </AlertDialogDestructive>
               )}
             </div>
             <p className='text-gray-600'>{c.content}</p>

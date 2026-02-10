@@ -78,7 +78,8 @@ function TILDetail() {
           {isAuthor && (
             <DeleteButton
               onDelete={handleDeletePost}
-              confirmMessage='게시글을 삭제하시겠어요? 이 작업은 되돌릴 수 없습니다.'
+              title='게시글을 삭제하시겠어요?'
+              description='삭제된 게시글은 복구할 수 없습니다.'
             />
           )}
         </div>
