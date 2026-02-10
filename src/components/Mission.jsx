@@ -21,7 +21,7 @@ function Mission({ student, badge, rank }) {
       >
         {badge && (
           <span
-            className={`absolute top-2 left-2 rounded-full border px-1.5 py-0.5 text-xs font-semibold ${badge.bg} ${badge.text} ${badge.border}`}
+            className={`absolute top-2 left-2 rounded-full border px-1.5 py-0.5 text-xs font-semibold ${badge.className}`}
           >
             {badge.emoji} {rank}
           </span>
