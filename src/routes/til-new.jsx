@@ -4,7 +4,14 @@ import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { createTilPost } from '../services/til-service';
 
-function TILNew() {
+export function meta() {
+  return [
+    { title: '새 글 작성 | Sprinters' },
+    { name: 'description', content: '오늘 배운 내용을 기록해보세요.' },
+  ];
+}
+
+export default function TILNew() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
@@ -189,5 +196,3 @@ function TILNew() {
     </section>
   );
 }
-
-export { TILNew };

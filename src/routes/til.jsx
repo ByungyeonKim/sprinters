@@ -1,12 +1,24 @@
 import { useEffect } from 'react';
 import { Link, useLoaderData, useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import { fetchTilPosts } from '../services/til-service';
 import { useAuth } from '../hooks/use-auth';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
 import { stripMarkdown } from '../utils/markdown';
+export function meta() {
+  return [
+    { title: 'Today I Learned | Sprinters' },
+    { name: 'description', content: '오늘 배운 내용을 기록하고 공유하는 공간입니다.' },
+  ];
+}
 
-function TIL() {
+export async function loader() {
+  const posts = await fetchTilPosts();
+  return { posts };
+}
+
+export default function TIL() {
   const { posts } = useLoaderData();
   const { user, signInWithGitHub } = useAuth();
   const location = useLocation();
@@ -96,5 +108,3 @@ function TIL() {
     </section>
   );
 }
-
-export { TIL };

@@ -10,7 +10,7 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from './ui/alert-dialog';
 import { Trash2Icon } from 'lucide-react';
 
 export function AlertDialogDestructive({ onConfirm, title, description, children }) {

@@ -1,10 +1,27 @@
 import { Link, useLoaderData } from 'react-router';
+import { fetchMissionRankStudents } from '../services/student-service';
+import { fetchPopularTilPosts } from '../services/til-service';
 import { LikeCount } from '../components/LikeCount';
 import { CommentCount } from '../components/CommentCount';
-
 const MISSION_RANK_COUNT = 10;
 
-function Home() {
+export function meta() {
+  return [
+    { title: 'Sprinters' },
+    { name: 'description', content: 'Always Moving Forward. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.' },
+  ];
+}
+
+export async function loader() {
+  const [students, popularPosts] = await Promise.all([
+    fetchMissionRankStudents(),
+    fetchPopularTilPosts(5),
+  ]);
+
+  return { students, popularPosts };
+}
+
+export default function Home() {
   const { students, popularPosts } = useLoaderData();
   return (
     <div>
@@ -119,5 +136,3 @@ function Home() {
     </div>
   );
 }
-
-export { Home };

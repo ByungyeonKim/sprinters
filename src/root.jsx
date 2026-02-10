@@ -1,8 +1,48 @@
-import { Outlet, NavLink } from 'react-router';
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  NavLink,
+} from 'react-router';
 import { Toaster } from 'sonner';
 import { useAuth } from './hooks/use-auth';
+import './index.css';
 
-function App() {
+export function Layout({ children }) {
+  return (
+    <html lang='ko'>
+      <head>
+        <meta charSet='UTF-8' />
+        <link rel='icon' type='image/svg+xml' href='/logo.ico' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <link
+          rel='stylesheet'
+          as='style'
+          crossOrigin='anonymous'
+          href='https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css'
+        />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+export function meta() {
+  return [
+    { title: 'Sprinters' },
+    { name: 'description', content: 'Always Moving Forward. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.' },
+  ];
+}
+
+export default function App() {
   const { user, signInWithGitHub, signOut } = useAuth();
   return (
     <div className='min-h-screen bg-white'>
@@ -69,5 +109,3 @@ function App() {
     </div>
   );
 }
-
-export { App };

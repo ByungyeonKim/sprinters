@@ -1,12 +1,30 @@
 import { Link, useLoaderData, useNavigate } from 'react-router';
+import { fetchTilDetail } from '../services/til-service';
 import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { CommentSection } from '../components/CommentSection';
 import { DeleteButton } from '../components/DeleteButton';
 import { deleteTilPost } from '../services/til-service';
 import { ChevronLeftIcon } from '../components/icons';
+export function meta({ data }) {
+  if (!data?.post) {
+    return [{ title: 'Sprinters' }];
+  }
+  return [
+    { title: `${data.post.title} | Sprinters` },
+    { name: 'description', content: data.post.title },
+  ];
+}
 
-function TILDetail() {
+export async function loader({ params }) {
+  const post = await fetchTilDetail({
+    username: params.username,
+    postNumber: params.postNumber,
+  });
+  return { post };
+}
+
+export default function TILDetail() {
   const { post } = useLoaderData();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -71,5 +89,3 @@ function TILDetail() {
     </section>
   );
 }
-
-export { TILDetail };
