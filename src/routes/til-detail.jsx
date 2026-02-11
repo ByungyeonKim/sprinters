@@ -1,14 +1,20 @@
-import { Link, useLoaderData, useNavigate } from 'react-router';
-import { fetchTilDetail } from '../services/til-service';
+import { Link, useLoaderData, useNavigate, data as routerData } from 'react-router';
+import { fetchTilDetail, hasUserLikedTil } from '../services/til-service';
 import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { CommentSection } from '../components/CommentSection';
 import { DeleteButton } from '../components/DeleteButton';
 import { deleteTilPost } from '../services/til-service';
 import { ChevronLeftIcon } from '../components/icons';
+import { createSupabaseServerClient } from '../lib/supabase.server';
+import { supabase } from '../lib/supabase';
 
-export function headers({ parentHeaders }) {
-  return parentHeaders;
+export function headers({ loaderHeaders, parentHeaders }) {
+  const headers = new Headers(parentHeaders);
+  loaderHeaders.getSetCookie().forEach((cookie) => {
+    headers.append('Set-Cookie', cookie);
+  });
+  return headers;
 }
 
 export function meta({ data }) {
@@ -21,12 +27,27 @@ export function meta({ data }) {
   ];
 }
 
-export async function loader({ params }) {
+export async function loader({ request, params }) {
+  const { supabase: serverSupabase, headers } = createSupabaseServerClient(request);
+  const { data: { user } } = await serverSupabase.auth.getUser();
+
   const post = await fetchTilDetail({
     username: params.username,
     postNumber: params.postNumber,
   });
-  return { post };
+
+  let hasLiked = false;
+  if (user) {
+    const { data: likeData } = await serverSupabase
+      .from('til_likes')
+      .select('id')
+      .eq('til_id', post.id)
+      .eq('user_id', user.id)
+      .maybeSingle();
+    hasLiked = Boolean(likeData);
+  }
+
+  return routerData({ post, hasLiked }, { headers });
 }
 
 export async function clientLoader({ params }) {
@@ -34,11 +55,18 @@ export async function clientLoader({ params }) {
     username: params.username,
     postNumber: params.postNumber,
   });
-  return { post };
+
+  const { data: { user } } = await supabase.auth.getUser();
+  let hasLiked = false;
+  if (user) {
+    hasLiked = await hasUserLikedTil({ tilId: post.id, userId: user.id });
+  }
+
+  return { post, hasLiked };
 }
 
 export default function TILDetail() {
-  const { post } = useLoaderData();
+  const { post, hasLiked } = useLoaderData();
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -98,7 +126,7 @@ export default function TILDetail() {
         <MarkdownRenderer content={post.content} />
       </article>
 
-      <CommentSection tilId={post.id} comments={post.comments} likes={post.likes} />
+      <CommentSection tilId={post.id} comments={post.comments} likes={post.likes} hasLiked={hasLiked} />
     </section>
   );
 }

@@ -1,5 +1,5 @@
-import { useMatches, useNavigate } from 'react-router';
-import { useState, useEffect } from 'react';
+import { useMatches, useNavigate, useRevalidator } from 'react-router';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '../lib/supabase';
 
@@ -8,30 +8,27 @@ const AUTH_REQUIRED_PATHS = ['/til/new'];
 export function useAuth() {
   const matches = useMatches();
   const navigate = useNavigate();
-  const serverUser = matches[0]?.data?.user ?? null;
-
-  const [user, setUser] = useState(serverUser);
+  const { revalidate } = useRevalidator();
+  const user = matches[0]?.data?.user ?? null;
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event !== 'INITIAL_SESSION') {
-        setUser(session?.user ?? null);
+        revalidate();
       }
       if (event === 'SIGNED_OUT' && AUTH_REQUIRED_PATHS.includes(window.location.pathname)) {
         navigate('/til', { replace: true });
       }
     });
 
-    // OAuth 콜백 처리: getSession()은 초기화(코드 교환 포함) 완료를 기다림
-    // SIGNED_IN 이벤트가 리스너 등록 전에 발생하는 race condition 방지
+    // OAuth 콜백: 리스너 등록 전에 SIGNED_IN이 발생하는 race condition 방지
+    // 서버는 아직 쿠키가 없어 user: null로 렌더링했지만, 클라이언트에서 코드 교환 후 쿠키가 설정된 경우
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser((prev) => {
-        const newUser = session?.user ?? null;
-        if (prev?.id === newUser?.id) return prev;
-        return newUser;
-      });
+      if (session?.user && !user) {
+        revalidate();
+      }
     });
 
     // OAuth 에러 감지 (Supabase 서버 에러 등)
@@ -55,10 +52,5 @@ export function useAuth() {
     await supabase.auth.signOut();
   }
 
-  return {
-    user,
-    loading: false,
-    signInWithGitHub,
-    signOut,
-  };
+  return { user, signInWithGitHub, signOut };
 }

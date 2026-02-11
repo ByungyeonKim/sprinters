@@ -1,36 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
-import { addTilLike, hasUserLikedTil, removeTilLike } from '../services/til-service';
+import { addTilLike, removeTilLike } from '../services/til-service';
 import { HeartIcon } from './icons';
 
-function LikeButton({ tilId, initialCount }) {
+function LikeButton({ tilId, initialCount, initialHasLiked = false }) {
   const { user } = useAuth();
-  const [hasLiked, setHasLiked] = useState(false);
+  const [hasLiked, setHasLiked] = useState(initialHasLiked);
   const [likesCount, setLikesCount] = useState(initialCount);
 
-  useEffect(() => {
-    if (!user) return;
-
-    let isMounted = true;
-
-    hasUserLikedTil({ tilId, userId: user.id })
-      .then((liked) => {
-        if (isMounted) {
-          setHasLiked(liked);
-        }
-      })
-      .catch((error) => {
-        console.error('좋아요 상태 확인 실패:', error);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user, tilId]);
+  const displayHasLiked = user ? hasLiked : false;
 
   const handleToggleLike = async () => {
-    if (!user) return;
-
     try {
       if (hasLiked) {
         await removeTilLike({ tilId, userId: user.id });
@@ -52,13 +32,13 @@ function LikeButton({ tilId, initialCount }) {
       onClick={handleToggleLike}
       disabled={!user}
       className={`flex items-center gap-1 transition-colors ${
-        hasLiked
+        displayHasLiked
           ? 'text-red-500'
           : 'text-gray-500 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50'
       }`}
       title={user ? undefined : '로그인이 필요합니다'}
     >
-      <HeartIcon filled={hasLiked} />
+      <HeartIcon filled={displayHasLiked} />
       <span className='text-sm'>{likesCount}</span>
     </button>
   );
