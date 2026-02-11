@@ -9,14 +9,9 @@ function LikeButton({ tilId, initialCount }) {
   const [likesCount, setLikesCount] = useState(initialCount);
 
   useEffect(() => {
-    let isMounted = true;
+    if (!user) return;
 
-    if (!user) {
-      setHasLiked(false);
-      return () => {
-        isMounted = false;
-      };
-    }
+    let isMounted = true;
 
     hasUserLikedTil({ tilId, userId: user.id })
       .then((liked) => {
