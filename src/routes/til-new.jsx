@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, data, redirect } from 'react-router';
 import { useAuth } from '../hooks/use-auth';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { createTilPost } from '../services/til-service';
+import { createSupabaseServerClient } from '../lib/supabase.server';
 
 export function meta() {
   return [
@@ -11,9 +12,28 @@ export function meta() {
   ];
 }
 
+export async function loader({ request }) {
+  const { supabase, headers } = createSupabaseServerClient(request);
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw redirect('/til');
+  }
+
+  return data(null, { headers });
+}
+
+export function headers({ loaderHeaders, parentHeaders }) {
+  const headers = new Headers(parentHeaders);
+  loaderHeaders.getSetCookie().forEach((cookie) => {
+    headers.append('Set-Cookie', cookie);
+  });
+  return headers;
+}
+
 export default function TILNew() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -25,22 +45,12 @@ export default function TILNew() {
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate('/til');
-    }
-  }, [user, loading, navigate]);
-
-  useEffect(() => {
     if (isPreview) {
       previewRef.current?.focus();
     } else {
       textareaRef.current?.focus();
     }
   }, [isPreview]);
-
-  if (loading || !user) {
-    return null;
-  }
 
   const handleTabKeyDown = (e) => {
     if (e.ctrlKey && e.shiftKey) {

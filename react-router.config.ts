@@ -6,6 +6,6 @@ export default {
   ssr: true,
   presets: [vercelPreset()],
   async prerender() {
-    return ["/", "/mission", "/til", "/til/new"];
+    return ["/", "/mission", "/til"];
   },
 } satisfies Config;

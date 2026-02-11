@@ -6,6 +6,11 @@ import { CommentSection } from '../components/CommentSection';
 import { DeleteButton } from '../components/DeleteButton';
 import { deleteTilPost } from '../services/til-service';
 import { ChevronLeftIcon } from '../components/icons';
+
+export function headers({ parentHeaders }) {
+  return parentHeaders;
+}
+
 export function meta({ data }) {
   if (!data?.post) {
     return [{ title: 'Sprinters' }];
