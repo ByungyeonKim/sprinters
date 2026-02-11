@@ -24,6 +24,14 @@ export async function loader({ params }) {
   return { post };
 }
 
+export async function clientLoader({ params }) {
+  const post = await fetchTilDetail({
+    username: params.username,
+    postNumber: params.postNumber,
+  });
+  return { post };
+}
+
 export default function TILDetail() {
   const { post } = useLoaderData();
   const navigate = useNavigate();
