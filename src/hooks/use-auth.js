@@ -1,10 +1,13 @@
-import { useMatches } from 'react-router';
+import { useMatches, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '../lib/supabase';
 
+const AUTH_REQUIRED_PATHS = ['/til/new'];
+
 export function useAuth() {
   const matches = useMatches();
+  const navigate = useNavigate();
   const serverUser = matches[0]?.data?.user ?? null;
 
   const [user, setUser] = useState(serverUser);
@@ -20,6 +23,9 @@ export function useAuth() {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event !== 'INITIAL_SESSION') {
         setUser(session?.user ?? null);
+      }
+      if (event === 'SIGNED_OUT' && AUTH_REQUIRED_PATHS.includes(window.location.pathname)) {
+        navigate('/til', { replace: true });
       }
     });
 
