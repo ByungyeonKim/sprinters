@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",
-    "start": "react-router-serve ./build/server/index.js",
+    "start": "PORT=3000 react-router-serve $(find build/server -name 'index.js' -path '*/nodejs_*/index.js')",
     "lint": "eslint ."
   },
   "dependencies": {

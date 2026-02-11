@@ -12,11 +12,6 @@ export function useAuth() {
 
   const [user, setUser] = useState(serverUser);
 
-  // 서버 데이터 변경 시 동기화 (페이지 네비게이션)
-  useEffect(() => {
-    setUser(serverUser);
-  }, [serverUser?.id]);
-
   useEffect(() => {
     const {
       data: { subscription },
