@@ -7,7 +7,7 @@ import {
   NavLink,
   data,
 } from 'react-router';
-import { Toaster } from 'sonner';
+import { Toaster } from './components/ui/sonner';
 import { useAuth } from './hooks/use-auth';
 import { createSupabaseServerClient } from './lib/supabase.server';
 import './index.css';
@@ -16,12 +16,6 @@ export async function loader({ request }) {
   const { supabase, headers } = createSupabaseServerClient(request);
   const { data: { user } } = await supabase.auth.getUser();
   return data({ user }, { headers });
-}
-
-export async function clientLoader() {
-  const { supabase } = await import('./lib/supabase');
-  const { data: { user } } = await supabase.auth.getUser();
-  return { user };
 }
 
 export function headers({ loaderHeaders }) {

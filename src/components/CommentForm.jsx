@@ -61,13 +61,14 @@ function CommentForm({ tilId, onCommentCreated }) {
   return (
     <form onSubmit={handleSubmit} className='mb-8'>
       <div className='mb-4 flex items-center justify-between'>
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-3' suppressHydrationWarning>
           <img
             src={avatar}
             alt={nickname}
             className='h-12 w-12 rounded-full border border-gray-300 object-cover'
+            suppressHydrationWarning
           />
-          <span className='text-gray-800'>{nickname}</span>
+          <span className='text-gray-800' suppressHydrationWarning>{nickname}</span>
         </div>
         <button
           type='button'
