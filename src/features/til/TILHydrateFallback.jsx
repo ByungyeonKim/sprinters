@@ -2,7 +2,7 @@ import {
   SkeletonAvatarMeta,
   SkeletonLine,
   SkeletonPill,
-} from './SkeletonPrimitives';
+} from '../../components/SkeletonPrimitives';
 
 const SKELETON_COUNT = 3;
 

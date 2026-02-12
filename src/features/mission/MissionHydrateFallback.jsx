@@ -1,5 +1,5 @@
-import { SkeletonCircle, SkeletonLine } from './SkeletonPrimitives';
-import { MissionsHeader } from '../MissionsHeader';
+import { SkeletonCircle, SkeletonLine } from '../../components/SkeletonPrimitives';
+import { MissionsHeader } from './MissionsHeader';
 
 const SKELETON_COUNT = 16;
 

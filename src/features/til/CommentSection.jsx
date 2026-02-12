@@ -7,7 +7,7 @@ import {
   getOwnedCommentIds,
   addOwnedCommentId,
   removeOwnedCommentId,
-} from '../utils/comment';
+} from '../../utils/comment';
 
 function CommentSection({ tilId, comments, likes, hasLiked }) {
   const revalidator = useRevalidator();

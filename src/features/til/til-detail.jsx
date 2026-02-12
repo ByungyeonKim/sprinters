@@ -1,13 +1,12 @@
 import { Link, useLoaderData, useNavigate, data as routerData } from 'react-router';
-import { fetchTilDetail, hasUserLikedTil } from '../services/til-service';
-import { useAuth } from '../hooks/use-auth';
-import { MarkdownRenderer } from '../components/MarkdownRenderer';
-import { CommentSection } from '../components/CommentSection';
-import { DeleteButton } from '../components/DeleteButton';
-import { deleteTilPost } from '../services/til-service';
-import { ChevronLeftIcon } from '../components/icons';
-import { createSupabaseServerClient } from '../lib/supabase.server';
-import { supabase } from '../lib/supabase';
+import { fetchTilDetail, hasUserLikedTil, deleteTilPost } from './til-service';
+import { useAuth } from '../../hooks/use-auth';
+import { MarkdownRenderer } from './MarkdownRenderer';
+import { CommentSection } from './CommentSection';
+import { DeleteButton } from './DeleteButton';
+import { ChevronLeftIcon } from '../../components/icons';
+import { createSupabaseServerClient } from '../../lib/supabase.server';
+import { supabase } from '../../lib/supabase';
 
 export function headers({ loaderHeaders, parentHeaders }) {
   const headers = new Headers(parentHeaders);
@@ -17,7 +16,7 @@ export function headers({ loaderHeaders, parentHeaders }) {
   return headers;
 }
 
-import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
 export function meta({ data }) {
   if (!data?.post) {

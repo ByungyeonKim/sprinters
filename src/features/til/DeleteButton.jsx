@@ -1,4 +1,4 @@
-import { AlertDialogDestructive } from './AlertDialogDestructive';
+import { AlertDialogDestructive } from '../../components/AlertDialogDestructive';
 
 function DeleteButton({ onDelete, title, description }) {
   return (

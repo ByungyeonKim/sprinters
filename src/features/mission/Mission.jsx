@@ -2,7 +2,7 @@ import {
   ExternalLinkIcon,
   MissionCompleteIcon,
   MissionIncompleteIcon,
-} from './icons';
+} from '../../components/icons';
 import { MissionBadge } from './MissionBadge';
 
 const TOTAL_MISSIONS = 13;

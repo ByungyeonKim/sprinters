@@ -1,8 +1,8 @@
 import { useLoaderData } from 'react-router';
-import { fetchMissionRankStudents } from '../services/student-service';
-import { Mission } from '../components/Mission';
-import { MissionsHeader } from '../components/MissionsHeader';
-import { MissionHydrateFallback } from '../components/fallbacks';
+import { fetchMissionRankStudents } from './student-service';
+import { Mission } from './Mission';
+import { MissionsHeader } from './MissionsHeader';
+import { MissionHydrateFallback } from './MissionHydrateFallback';
 
 const RANK_BADGES = [
   { emoji: '🥇', className: 'bg-yellow-100 text-yellow-700 border-yellow-300' },
@@ -10,7 +10,7 @@ const RANK_BADGES = [
   { emoji: '🥉', className: 'bg-orange-100 text-orange-700 border-orange-300' },
 ];
 
-import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
 export function meta() {
   const title = '스프린트 미션 | Sprinters';

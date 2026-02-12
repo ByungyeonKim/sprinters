@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Link, useLoaderData, useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { fetchTilPosts } from '../services/til-service';
-import { useAuth } from '../hooks/use-auth';
-import { LikeCount } from '../components/LikeCount';
-import { CommentCount } from '../components/CommentCount';
-import { stripMarkdown } from '../utils/markdown';
-import { TILHydrateFallback } from '../components/fallbacks';
+import { fetchTilPosts } from './til-service';
+import { useAuth } from '../../hooks/use-auth';
+import { LikeCount } from '../../components/LikeCount';
+import { CommentCount } from '../../components/CommentCount';
+import { stripMarkdown } from '../../utils/markdown';
+import { TILHydrateFallback } from './TILHydrateFallback';
 
-import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
 export function meta() {
   const title = 'Today I Learned | Sprinters';

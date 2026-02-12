@@ -1,13 +1,13 @@
 import { Link, useLoaderData } from 'react-router';
-import { fetchMissionRankStudents } from '../services/student-service';
-import { fetchPopularTilPosts } from '../services/til-service';
-import { LikeCount } from '../components/LikeCount';
-import { CommentCount } from '../components/CommentCount';
-import { HomeHydrateFallback } from '../components/fallbacks';
+import { fetchMissionRankStudents } from '../mission/student-service';
+import { fetchPopularTilPosts } from '../til/til-service';
+import { LikeCount } from '../../components/LikeCount';
+import { CommentCount } from '../../components/CommentCount';
+import { HomeHydrateFallback } from './HomeHydrateFallback';
 
 const MISSION_RANK_COUNT = 10;
 
-import { SITE_URL, OG_IMAGE, SITE_NAME, DEFAULT_DESCRIPTION } from '../root';
+import { SITE_URL, OG_IMAGE, SITE_NAME, DEFAULT_DESCRIPTION } from '../../root';
 
 export function meta() {
   return [

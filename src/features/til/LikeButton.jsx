@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useAuth } from '../hooks/use-auth';
-import { addTilLike, removeTilLike } from '../services/til-service';
-import { HeartIcon } from './icons';
+import { useAuth } from '../../hooks/use-auth';
+import { addTilLike, removeTilLike } from './til-service';
+import { HeartIcon } from '../../components/icons';
 
 function LikeButton({ tilId, initialCount, initialHasLiked = false }) {
   const { user } = useAuth();

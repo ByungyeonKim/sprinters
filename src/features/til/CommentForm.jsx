@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { createTilComment } from '../services/til-service';
-import { RefreshIcon } from './icons';
+import { createTilComment } from './til-service';
+import { RefreshIcon } from '../../components/icons';
 import {
   generateSprinterNickname,
   generateSprinterAvatar,
   generateRandomSeed,
-} from '../utils/sprinter';
+} from '../../utils/sprinter';
 
 function getCommentDeleteToken() {
   const key = 'sprintersCommentDeleteToken';

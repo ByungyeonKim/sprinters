@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, data, redirect } from 'react-router';
-import { useAuth } from '../hooks/use-auth';
-import { MarkdownRenderer } from '../components/MarkdownRenderer';
-import { createTilPost } from '../services/til-service';
-import { createSupabaseServerClient } from '../lib/supabase.server';
+import { useAuth } from '../../hooks/use-auth';
+import { MarkdownRenderer } from './MarkdownRenderer';
+import { createTilPost } from './til-service';
+import { createSupabaseServerClient } from '../../lib/supabase.server';
 
-import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
 export function meta() {
   const title = '새 글 작성 | Sprinters';

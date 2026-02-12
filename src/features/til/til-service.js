@@ -1,5 +1,5 @@
-import { supabase } from '../lib/supabase';
-import { getRelativeTime } from '../utils/date';
+import { supabase } from '../../lib/supabase';
+import { getRelativeTime } from '../../utils/date';
 
 // TIL 목록/상세 조회, 인기글 계산, 좋아요/댓글/글 작성·삭제 로직
 

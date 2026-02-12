@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 // 학생 조회/정렬/현재 미션 계산 로직
 

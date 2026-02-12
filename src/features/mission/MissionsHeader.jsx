@@ -1,5 +1,5 @@
 import { MissionBadge } from './MissionBadge';
-import { InfoIcon } from './icons';
+import { InfoIcon } from '../../components/icons';
 
 function MissionsHeader() {
   return (

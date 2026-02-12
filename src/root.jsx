@@ -18,6 +18,10 @@ export async function loader({ request }) {
   return data({ user }, { headers });
 }
 
+export async function clientLoader({ serverLoader }) {
+  return serverLoader();
+}
+
 export function headers({ loaderHeaders }) {
   return loaderHeaders;
 }

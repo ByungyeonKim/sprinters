@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { deleteTilComment } from '../services/til-service';
-import { AlertDialogDestructive } from './AlertDialogDestructive';
+import { deleteTilComment } from './til-service';
+import { AlertDialogDestructive } from '../../components/AlertDialogDestructive';
 
 function getCommentDeleteToken() {
   const key = 'sprintersCommentDeleteToken';

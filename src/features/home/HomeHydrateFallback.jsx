@@ -1,4 +1,4 @@
-import { SkeletonCircle, SkeletonLine } from './SkeletonPrimitives';
+import { SkeletonCircle, SkeletonLine } from '../../components/SkeletonPrimitives';
 
 const MISSION_RANK_SKELETON_COUNT = 10;
 const POPULAR_TIL_SKELETON_COUNT = 5;
