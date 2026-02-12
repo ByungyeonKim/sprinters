@@ -17,13 +17,24 @@ export function headers({ loaderHeaders, parentHeaders }) {
   return headers;
 }
 
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+
 export function meta({ data }) {
   if (!data?.post) {
-    return [{ title: 'Sprinters' }];
+    return [{ title: SITE_NAME }];
   }
+  const { post } = data;
+  const title = `${post.title} | Sprinters`;
+  const url = `${SITE_URL}/til/@${post.githubUsername}/${post.postNumber}`;
   return [
-    { title: `${data.post.title} | Sprinters` },
-    { name: 'description', content: data.post.title },
+    { title },
+    { name: 'description', content: post.title },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: post.title },
+    { property: 'og:type', content: 'article' },
+    { property: 'og:url', content: url },
+    { property: 'og:image', content: OG_IMAGE },
+    { property: 'og:site_name', content: SITE_NAME },
   ];
 }
 

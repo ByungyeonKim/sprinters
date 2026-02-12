@@ -5,10 +5,20 @@ import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { createTilPost } from '../services/til-service';
 import { createSupabaseServerClient } from '../lib/supabase.server';
 
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+
 export function meta() {
+  const title = '새 글 작성 | Sprinters';
+  const description = '오늘 배운 내용을 기록해보세요.';
   return [
-    { title: '새 글 작성 | Sprinters' },
-    { name: 'description', content: '오늘 배운 내용을 기록해보세요.' },
+    { title },
+    { name: 'description', content: description },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: description },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: `${SITE_URL}/til/new` },
+    { property: 'og:image', content: OG_IMAGE },
+    { property: 'og:site_name', content: SITE_NAME },
   ];
 }
 

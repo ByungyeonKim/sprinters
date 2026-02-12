@@ -7,10 +7,18 @@ import { HomeHydrateFallback } from '../components/fallbacks';
 
 const MISSION_RANK_COUNT = 10;
 
+import { SITE_URL, OG_IMAGE, SITE_NAME, DEFAULT_DESCRIPTION } from '../root';
+
 export function meta() {
   return [
-    { title: 'Sprinters' },
-    { name: 'description', content: 'Always Moving Forward. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.' },
+    { title: SITE_NAME },
+    { name: 'description', content: DEFAULT_DESCRIPTION },
+    { property: 'og:title', content: SITE_NAME },
+    { property: 'og:description', content: DEFAULT_DESCRIPTION },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: SITE_URL },
+    { property: 'og:image', content: OG_IMAGE },
+    { property: 'og:site_name', content: SITE_NAME },
   ];
 }
 

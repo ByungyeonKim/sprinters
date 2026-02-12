@@ -8,10 +8,20 @@ import { CommentCount } from '../components/CommentCount';
 import { stripMarkdown } from '../utils/markdown';
 import { TILHydrateFallback } from '../components/fallbacks';
 
+import { SITE_URL, OG_IMAGE, SITE_NAME } from '../root';
+
 export function meta() {
+  const title = 'Today I Learned | Sprinters';
+  const description = '오늘 배운 내용을 기록하고 공유하는 공간입니다.';
   return [
-    { title: 'Today I Learned | Sprinters' },
-    { name: 'description', content: '오늘 배운 내용을 기록하고 공유하는 공간입니다.' },
+    { title },
+    { name: 'description', content: description },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: description },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: `${SITE_URL}/til` },
+    { property: 'og:image', content: OG_IMAGE },
+    { property: 'og:site_name', content: SITE_NAME },
   ];
 }
 
