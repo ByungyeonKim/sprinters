@@ -5,8 +5,13 @@ import {
   Scripts,
   ScrollRestoration,
   NavLink,
+  Form,
   data,
+  useSearchParams,
+  useLocation,
 } from 'react-router';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { Toaster } from './components/ui/sonner';
 import { useAuth } from './hooks/use-auth';
 import { createSupabaseServerClient } from './lib/supabase.server';
@@ -16,10 +21,6 @@ export async function loader({ request }) {
   const { supabase, headers } = createSupabaseServerClient(request);
   const { data: { user } } = await supabase.auth.getUser();
   return data({ user }, { headers });
-}
-
-export async function clientLoader({ serverLoader }) {
-  return serverLoader();
 }
 
 export function headers({ loaderHeaders }) {
@@ -72,7 +73,18 @@ export function meta() {
 }
 
 export default function App() {
-  const { user, signInWithGitHub, signOut } = useAuth();
+  const { user, signInWithGitHub } = useAuth();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.has('auth_error')) {
+      toast.error('로그인에 실패했습니다. 다시 시도해주세요.');
+      searchParams.delete('auth_error');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, []);
+
   return (
     <div className='min-h-screen bg-white'>
       <header className='border-b border-gray-200'>
@@ -102,12 +114,15 @@ export default function App() {
                   alt={user.user_metadata?.user_name}
                   className='h-8 w-8 rounded-full'
                 />
-                <button
-                  onClick={signOut}
-                  className='text-sm text-gray-500 transition-colors hover:text-gray-900'
-                >
-                  로그아웃
-                </button>
+                <Form method="post" action="/auth/signout">
+                  <input type="hidden" name="redirectTo" value={location.pathname} />
+                  <button
+                    type="submit"
+                    className='text-sm text-gray-500 transition-colors hover:text-gray-900'
+                  >
+                    로그아웃
+                  </button>
+                </Form>
               </div>
             ) : (
               <button
