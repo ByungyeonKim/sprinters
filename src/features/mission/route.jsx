@@ -1,8 +1,9 @@
-import { useLoaderData } from 'react-router';
+import { Suspense } from 'react';
+import { useLoaderData, Await } from 'react-router';
 import { fetchMissionRankStudents } from './student-service';
 import { Mission } from './Mission';
 import { MissionsHeader } from './MissionsHeader';
-import { MissionHydrateFallback } from './MissionHydrateFallback';
+import { MissionGridSkeleton } from './MissionHydrateFallback';
 
 const RANK_BADGES = [
   { emoji: '🥇', className: 'bg-yellow-100 text-yellow-700 border-yellow-300' },
@@ -27,30 +28,33 @@ export function meta() {
   ];
 }
 
-export async function clientLoader() {
-  const students = await fetchMissionRankStudents();
-  return { students };
+export function loader() {
+  return { studentsPromise: fetchMissionRankStudents() };
 }
 
-export { MissionHydrateFallback as HydrateFallback };
-
 export default function Missions() {
-  const { students } = useLoaderData();
+  const { studentsPromise } = useLoaderData();
 
   return (
     <section>
       <MissionsHeader />
 
-      <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4'>
-        {students.map((student, index) => (
-          <Mission
-            key={student.id}
-            student={student}
-            badge={index < 3 ? RANK_BADGES[index] : null}
-            rank={index + 1}
-          />
-        ))}
-      </ul>
+      <Suspense fallback={<MissionGridSkeleton />}>
+        <Await resolve={studentsPromise}>
+          {(students) => (
+            <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4'>
+              {students.map((student, index) => (
+                <Mission
+                  key={student.id}
+                  student={student}
+                  badge={index < 3 ? RANK_BADGES[index] : null}
+                  rank={index + 1}
+                />
+              ))}
+            </ul>
+          )}
+        </Await>
+      </Suspense>
     </section>
   );
 }

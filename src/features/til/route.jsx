@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
-import { Link, useLoaderData, useLocation, useNavigate } from 'react-router';
+import { Suspense, useEffect } from 'react';
+import { Link, useLoaderData, useLocation, useNavigate, Await } from 'react-router';
 import { toast } from 'sonner';
 import { fetchTilPosts } from './til-service';
 import { useAuth } from '../../hooks/use-auth';
 import { LikeCount } from '../../components/LikeCount';
 import { CommentCount } from '../../components/CommentCount';
 import { stripMarkdown } from '../../utils/markdown';
-import { TILHydrateFallback } from './TILHydrateFallback';
+import { TilPostsSkeleton } from './TILHydrateFallback';
 
 import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
@@ -25,15 +25,12 @@ export function meta() {
   ];
 }
 
-export async function clientLoader() {
-  const posts = await fetchTilPosts();
-  return { posts };
+export function loader() {
+  return { postsPromise: fetchTilPosts() };
 }
 
-export { TILHydrateFallback as HydrateFallback };
-
 export default function TIL() {
-  const { posts } = useLoaderData();
+  const { postsPromise } = useLoaderData();
   const { user, signInWithGitHub } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -78,47 +75,53 @@ export default function TIL() {
         </div>
       )}
 
-      <div className='space-y-10'>
-        {posts.map((post, index) => (
-          <article key={index} className='group'>
-            <div className='mb-4 flex items-center gap-3'>
-              <img
-                src={post.avatar}
-                alt={post.author}
-                className='h-10 w-10 rounded-full object-cover'
-              />
-              <div>
-                <p className='text-sm font-medium'>{post.author}</p>
-                <p className='text-sm text-gray-500'>{post.date}</p>
-              </div>
+      <Suspense fallback={<TilPostsSkeleton />}>
+        <Await resolve={postsPromise}>
+          {(posts) => (
+            <div className='space-y-10'>
+              {posts.map((post, index) => (
+                <article key={index} className='group'>
+                  <div className='mb-4 flex items-center gap-3'>
+                    <img
+                      src={post.avatar}
+                      alt={post.author}
+                      className='h-10 w-10 rounded-full object-cover'
+                    />
+                    <div>
+                      <p className='text-sm font-medium'>{post.author}</p>
+                      <p className='text-sm text-gray-500'>{post.date}</p>
+                    </div>
+                  </div>
+                  <Link to={`/til/@${post.githubUsername}/${post.postNumber}`}>
+                    <h2 className='mb-3 text-2xl font-bold group-hover:underline'>
+                      {post.title}
+                    </h2>
+                  </Link>
+                  <p className='mb-4 line-clamp-2 leading-relaxed text-gray-600'>
+                    {stripMarkdown(post.content)}
+                  </p>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex gap-2'>
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className='rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600'
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className='flex items-center gap-4 text-gray-500'>
+                      <LikeCount count={post.likes} />
+                      <CommentCount count={post.comments} />
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
-            <Link to={`/til/@${post.githubUsername}/${post.postNumber}`}>
-              <h2 className='mb-3 text-2xl font-bold group-hover:underline'>
-                {post.title}
-              </h2>
-            </Link>
-            <p className='mb-4 line-clamp-2 leading-relaxed text-gray-600'>
-              {stripMarkdown(post.content)}
-            </p>
-            <div className='flex items-center justify-between'>
-              <div className='flex gap-2'>
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className='rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600'
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className='flex items-center gap-4 text-gray-500'>
-                <LikeCount count={post.likes} />
-                <CommentCount count={post.comments} />
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+          )}
+        </Await>
+      </Suspense>
     </section>
   );
 }
