@@ -1,4 +1,9 @@
-import { Link, useLoaderData, useNavigate, data as routerData } from 'react-router';
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  data as routerData,
+} from 'react-router';
 import { fetchTilDetail, hasUserLikedTil, deleteTilPost } from './til-service';
 import { useAuth } from '../../hooks/use-auth';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -38,8 +43,11 @@ export function meta({ data }) {
 }
 
 export async function loader({ request, params }) {
-  const { supabase: serverSupabase, headers } = createSupabaseServerClient(request);
-  const { data: { user } } = await serverSupabase.auth.getUser();
+  const { supabase: serverSupabase, headers } =
+    createSupabaseServerClient(request);
+  const {
+    data: { user },
+  } = await serverSupabase.auth.getUser();
 
   const post = await fetchTilDetail({
     username: params.username,
@@ -66,7 +74,9 @@ export async function clientLoader({ params }) {
     postNumber: params.postNumber,
   });
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   let hasLiked = false;
   if (user) {
     hasLiked = await hasUserLikedTil({ tilId: post.id, userId: user.id });
@@ -123,11 +133,19 @@ export default function TILDetail() {
             </div>
           </div>
           {isAuthor && (
-            <DeleteButton
-              onDelete={handleDeletePost}
-              title='게시글을 삭제하시겠어요?'
-              description='삭제된 게시글은 복구할 수 없습니다.'
-            />
+            <div className='flex items-center gap-2'>
+              <Link
+                to={`/til/@${post.githubUsername}/${post.postNumber}/edit`}
+                className='text-sm text-gray-400 transition-colors hover:text-gray-900'
+              >
+                수정
+              </Link>
+              <DeleteButton
+                onDelete={handleDeletePost}
+                title='게시글을 삭제하시겠어요?'
+                description='삭제된 게시글은 복구할 수 없습니다.'
+              />
+            </div>
           )}
         </div>
       </header>
@@ -136,7 +154,12 @@ export default function TILDetail() {
         <MarkdownRenderer content={post.content} />
       </article>
 
-      <CommentSection tilId={post.id} comments={post.comments} likes={post.likes} hasLiked={hasLiked} />
+      <CommentSection
+        tilId={post.id}
+        comments={post.comments}
+        likes={post.likes}
+        hasLiked={hasLiked}
+      />
     </section>
   );
 }

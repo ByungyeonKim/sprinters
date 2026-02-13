@@ -231,6 +231,61 @@ export async function deleteTilPost({ postId }) {
   }
 }
 
+export async function updateTilPost({ postId, title, content, rawTags }) {
+  const { error: postError } = await supabase
+    .from('til_posts')
+    .update({ title: title.trim(), content: content.trim() })
+    .eq('id', postId);
+
+  if (postError) {
+    throw new Error('게시글 수정에 실패했습니다.');
+  }
+
+  const { error: deleteTagError } = await supabase
+    .from('til_tags')
+    .delete()
+    .eq('til_id', postId);
+
+  if (deleteTagError) {
+    throw new Error('기존 태그 삭제에 실패했습니다.');
+  }
+
+  const tagNames = parseTagNames(rawTags);
+
+  if (tagNames.length > 0) {
+    const { error: upsertError } = await supabase
+      .from('tags')
+      .upsert(
+        tagNames.map((name) => ({ name })),
+        { onConflict: 'name', ignoreDuplicates: true },
+      );
+
+    if (upsertError) {
+      throw new Error('태그 저장에 실패했습니다.');
+    }
+
+    const { data: tagData, error: tagError } = await supabase
+      .from('tags')
+      .select()
+      .in('name', tagNames);
+
+    if (tagError) {
+      throw new Error('태그 저장에 실패했습니다.');
+    }
+
+    const { error: tilTagError } = await supabase.from('til_tags').insert(
+      tagData.map((tag) => ({
+        til_id: postId,
+        tag_id: tag.id,
+      })),
+    );
+
+    if (tilTagError) {
+      throw new Error('태그 연결에 실패했습니다.');
+    }
+  }
+}
+
 export async function createTilPost({ userId, title, content, rawTags }) {
   const { data: post, error: postError } = await supabase
     .from('til_posts')
@@ -249,12 +304,16 @@ export async function createTilPost({ userId, title, content, rawTags }) {
   const tagNames = parseTagNames(rawTags);
 
   if (tagNames.length > 0) {
-    await supabase
+    const { error: upsertError } = await supabase
       .from('tags')
       .upsert(
         tagNames.map((name) => ({ name })),
         { onConflict: 'name', ignoreDuplicates: true },
       );
+
+    if (upsertError) {
+      throw new Error('태그 저장에 실패했습니다.');
+    }
 
     const { data: tagData, error: tagError } = await supabase
       .from('tags')

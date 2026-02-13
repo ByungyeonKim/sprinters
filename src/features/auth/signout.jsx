@@ -1,7 +1,11 @@
 import { redirect } from 'react-router';
 import { createSupabaseServerClient } from '../../lib/supabase.server';
 
-const AUTH_REQUIRED_PATHS = ['/til/new'];
+function isAuthRequired(path) {
+  if (path === '/til/new') return true;
+  if (/^\/til\/@[^/]+\/\d+\/edit$/.test(path)) return true;
+  return false;
+}
 
 export async function action({ request }) {
   const { supabase, headers } = createSupabaseServerClient(request);
@@ -9,7 +13,7 @@ export async function action({ request }) {
 
   const formData = await request.formData();
   const redirectTo = formData.get('redirectTo') || '/';
-  const target = AUTH_REQUIRED_PATHS.includes(redirectTo) ? '/' : redirectTo;
+  const target = isAuthRequired(redirectTo) ? '/' : redirectTo;
 
   return redirect(target, { headers });
 }
