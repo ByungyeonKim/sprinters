@@ -1,6 +1,5 @@
-import { Suspense, useEffect } from 'react';
-import { Link, useLoaderData, useLocation, useNavigate, Await } from 'react-router';
-import { toast } from 'sonner';
+import { Suspense } from 'react';
+import { Link, useLoaderData, Await } from 'react-router';
 import { fetchTilPosts } from './til-service';
 import { useAuth } from '../../hooks/use-auth';
 import { LikeCount } from '../../components/LikeCount';
@@ -32,15 +31,6 @@ export function loader() {
 export default function TIL() {
   const { postsPromise } = useLoaderData();
   const { user, signInWithGitHub } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (location.state?.deleted) {
-      toast.success('게시글이 삭제되었습니다.');
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location.state?.deleted]);
 
   return (
     <section className='mx-auto max-w-170'>

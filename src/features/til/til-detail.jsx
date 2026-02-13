@@ -4,6 +4,7 @@ import {
   useNavigate,
   data as routerData,
 } from 'react-router';
+import { toast } from 'sonner';
 import { fetchTilDetail, hasUserLikedTil, deleteTilPost } from './til-service';
 import { useAuth } from '../../hooks/use-auth';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -94,7 +95,8 @@ export default function TILDetail() {
 
   const handleDeletePost = async () => {
     await deleteTilPost({ postId: post.id });
-    navigate('/til', { state: { deleted: true } });
+    toast.success('게시글이 삭제되었습니다.');
+    navigate('/til');
   };
 
   return (
