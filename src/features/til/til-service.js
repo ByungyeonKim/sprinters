@@ -249,13 +249,17 @@ export async function createTilPost({ userId, title, content, rawTags }) {
   const tagNames = parseTagNames(rawTags);
 
   if (tagNames.length > 0) {
-    const { data: tagData, error: tagError } = await supabase
+    await supabase
       .from('tags')
       .upsert(
         tagNames.map((name) => ({ name })),
-        { onConflict: 'name' },
-      )
-      .select();
+        { onConflict: 'name', ignoreDuplicates: true },
+      );
+
+    const { data: tagData, error: tagError } = await supabase
+      .from('tags')
+      .select()
+      .in('name', tagNames);
 
     if (tagError) {
       throw new Error('태그 저장에 실패했습니다.');
