@@ -1,51 +1,7 @@
-import { supabase } from '../../lib/supabase';
 import { getRelativeTime } from '../../utils/date';
+import * as repo from './til-repository';
 
-// TIL 목록/상세 조회, 인기글 계산, 좋아요/댓글/글 작성·삭제 로직
-
-const listQuery = `
-  id,
-  title,
-  content_preview,
-  created_at,
-  post_number,
-  users (id, name, github, avatar),
-  til_tags (
-    tags (id, name)
-  ),
-  til_likes (count),
-  til_comments (id)
-`;
-
-const detailQuery = `
-  id,
-  title,
-  content,
-  created_at,
-  post_number,
-  users!inner (id, name, github, avatar),
-  til_tags (
-    tags (id, name)
-  ),
-  til_likes (count),
-  til_comments (
-    id,
-    author_name,
-    avatar,
-    content,
-    created_at
-  )
-`;
-
-const popularQuery = `
-  id,
-  title,
-  post_number,
-  created_at,
-  users (id, name, github, avatar),
-  til_likes (count),
-  til_comments (id)
-`;
+// 데이터 변환
 
 function formatPost(post) {
   return {
@@ -70,11 +26,29 @@ function parseTagNames(rawTags) {
     .filter((t) => t.length > 0);
 }
 
+// 태그 동기화 (create/update 공용)
+
+async function syncTags(postId, rawTags) {
+  const tagNames = parseTagNames(rawTags);
+  if (tagNames.length === 0) return;
+
+  const { error: upsertError } = await repo.upsertTags(tagNames);
+  if (upsertError) throw new Error('태그 저장에 실패했습니다.');
+
+  const { data: tagData, error: tagError } = await repo.findTagsByNames(tagNames);
+  if (tagError) throw new Error('태그 저장에 실패했습니다.');
+
+  const { error: tilTagError } = await repo.insertTilTags(
+    postId,
+    tagData.map((t) => t.id),
+  );
+  if (tilTagError) throw new Error('태그 연결에 실패했습니다.');
+}
+
+// 공개 API
+
 export async function fetchTilPosts() {
-  const { data: posts, error } = await supabase
-    .from('til_posts')
-    .select(listQuery)
-    .order('created_at', { ascending: false });
+  const { data: posts, error } = await repo.findPosts();
 
   if (error) {
     throw new Error('TIL 데이터를 불러오는데 실패했습니다.');
@@ -86,12 +60,10 @@ export async function fetchTilPosts() {
 export async function fetchTilDetail({ username, postNumber }) {
   const normalizedUsername = username.replace('@', '');
 
-  const { data: post, error } = await supabase
-    .from('til_posts')
-    .select(detailQuery)
-    .eq('users.github', normalizedUsername)
-    .eq('post_number', postNumber)
-    .single();
+  const { data: post, error } = await repo.findPostDetail(
+    normalizedUsername,
+    postNumber,
+  );
 
   if (error) {
     throw new Error('TIL 글을 불러오는데 실패했습니다.');
@@ -111,10 +83,7 @@ export async function fetchTilDetail({ username, postNumber }) {
 }
 
 export async function fetchPopularTilPosts(limit = 5) {
-  const { data: posts, error } = await supabase
-    .from('til_posts')
-    .select(popularQuery)
-    .order('created_at', { ascending: false });
+  const { data: posts, error } = await repo.findPopularPosts();
 
   if (error) {
     throw new Error('TIL 데이터를 불러오는데 실패했습니다.');
@@ -141,12 +110,7 @@ export async function fetchPopularTilPosts(limit = 5) {
 }
 
 export async function hasUserLikedTil({ tilId, userId }) {
-  const { data, error } = await supabase
-    .from('til_likes')
-    .select('id')
-    .eq('til_id', tilId)
-    .eq('user_id', userId)
-    .maybeSingle();
+  const { data, error } = await repo.findUserLike(tilId, userId);
 
   if (error) {
     throw new Error('좋아요 상태를 확인하는데 실패했습니다.');
@@ -156,10 +120,7 @@ export async function hasUserLikedTil({ tilId, userId }) {
 }
 
 export async function addTilLike({ tilId, userId }) {
-  const { error } = await supabase.from('til_likes').insert({
-    til_id: tilId,
-    user_id: userId,
-  });
+  const { error } = await repo.insertLike(tilId, userId);
 
   if (error) {
     throw new Error('좋아요 처리에 실패했습니다.');
@@ -167,11 +128,7 @@ export async function addTilLike({ tilId, userId }) {
 }
 
 export async function removeTilLike({ tilId, userId }) {
-  const { error } = await supabase
-    .from('til_likes')
-    .delete()
-    .eq('til_id', tilId)
-    .eq('user_id', userId);
+  const { error } = await repo.deleteLike(tilId, userId);
 
   if (error) {
     throw new Error('좋아요 처리에 실패했습니다.');
@@ -185,17 +142,13 @@ export async function createTilComment({
   content,
   deleteToken,
 }) {
-  const { data, error } = await supabase
-    .from('til_comments')
-    .insert({
-      til_id: tilId,
-      author_name: authorName,
-      avatar,
-      content,
-      delete_token: deleteToken,
-    })
-    .select('id')
-    .single();
+  const { data, error } = await repo.insertComment({
+    tilId,
+    authorName,
+    avatar,
+    content,
+    deleteToken,
+  });
 
   if (error) {
     throw new Error('댓글 작성에 실패했습니다.');
@@ -205,17 +158,7 @@ export async function createTilComment({
 }
 
 export async function deleteTilComment({ commentId, deleteToken }) {
-  const response = await fetch(
-    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-comment`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-      },
-      body: JSON.stringify({ commentId, deleteToken }),
-    },
-  );
+  const response = await repo.deleteComment(commentId, deleteToken);
 
   if (!response.ok) {
     const { error } = await response.json();
@@ -224,7 +167,7 @@ export async function deleteTilComment({ commentId, deleteToken }) {
 }
 
 export async function deleteTilPost({ postId }) {
-  const { error } = await supabase.from('til_posts').delete().eq('id', postId);
+  const { error } = await repo.deletePost(postId);
 
   if (error) {
     throw new Error('게시글 삭제에 실패했습니다.');
@@ -232,109 +175,36 @@ export async function deleteTilPost({ postId }) {
 }
 
 export async function updateTilPost({ postId, title, content, rawTags }) {
-  const { error: postError } = await supabase
-    .from('til_posts')
-    .update({ title: title.trim(), content: content.trim() })
-    .eq('id', postId);
+  const { error: postError } = await repo.updatePost(postId, {
+    title: title.trim(),
+    content: content.trim(),
+  });
 
   if (postError) {
     throw new Error('게시글 수정에 실패했습니다.');
   }
 
-  const { error: deleteTagError } = await supabase
-    .from('til_tags')
-    .delete()
-    .eq('til_id', postId);
+  const { error: deleteTagError } = await repo.deleteTilTags(postId);
 
   if (deleteTagError) {
     throw new Error('기존 태그 삭제에 실패했습니다.');
   }
 
-  const tagNames = parseTagNames(rawTags);
-
-  if (tagNames.length > 0) {
-    const { error: upsertError } = await supabase
-      .from('tags')
-      .upsert(
-        tagNames.map((name) => ({ name })),
-        { onConflict: 'name', ignoreDuplicates: true },
-      );
-
-    if (upsertError) {
-      throw new Error('태그 저장에 실패했습니다.');
-    }
-
-    const { data: tagData, error: tagError } = await supabase
-      .from('tags')
-      .select()
-      .in('name', tagNames);
-
-    if (tagError) {
-      throw new Error('태그 저장에 실패했습니다.');
-    }
-
-    const { error: tilTagError } = await supabase.from('til_tags').insert(
-      tagData.map((tag) => ({
-        til_id: postId,
-        tag_id: tag.id,
-      })),
-    );
-
-    if (tilTagError) {
-      throw new Error('태그 연결에 실패했습니다.');
-    }
-  }
+  await syncTags(postId, rawTags);
 }
 
 export async function createTilPost({ userId, title, content, rawTags }) {
-  const { data: post, error: postError } = await supabase
-    .from('til_posts')
-    .insert({
-      user_id: userId,
-      title: title.trim(),
-      content: content.trim(),
-    })
-    .select('id, post_number')
-    .single();
+  const { data: post, error: postError } = await repo.insertPost({
+    userId,
+    title: title.trim(),
+    content: content.trim(),
+  });
 
   if (postError) {
     throw new Error('게시글 저장에 실패했습니다.');
   }
 
-  const tagNames = parseTagNames(rawTags);
-
-  if (tagNames.length > 0) {
-    const { error: upsertError } = await supabase
-      .from('tags')
-      .upsert(
-        tagNames.map((name) => ({ name })),
-        { onConflict: 'name', ignoreDuplicates: true },
-      );
-
-    if (upsertError) {
-      throw new Error('태그 저장에 실패했습니다.');
-    }
-
-    const { data: tagData, error: tagError } = await supabase
-      .from('tags')
-      .select()
-      .in('name', tagNames);
-
-    if (tagError) {
-      throw new Error('태그 저장에 실패했습니다.');
-    }
-
-    const { error: tilTagError } = await supabase.from('til_tags').insert(
-      tagData.map((tag) => ({
-        til_id: post.id,
-        tag_id: tag.id,
-      })),
-    );
-
-    if (tilTagError) {
-      throw new Error('태그 연결에 실패했습니다.');
-    }
-  }
+  await syncTags(post.id, rawTags);
 
   return { id: post.id, postNumber: post.post_number };
 }
