@@ -19,7 +19,9 @@ import './index.css';
 
 export async function loader({ request }) {
   const { supabase, headers } = createSupabaseServerClient(request);
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   return data({ user }, { headers });
 }
 
@@ -55,7 +57,8 @@ export function Layout({ children }) {
 const SITE_URL = 'https://sprinters-hub.vercel.app';
 const OG_IMAGE = `${SITE_URL}/sprinters-og.png`;
 const SITE_NAME = 'Sprinters';
-const DEFAULT_DESCRIPTION = 'Always Moving Forward. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.';
+const DEFAULT_DESCRIPTION =
+  'Always Moving Forward. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.';
 
 export { SITE_URL, OG_IMAGE, SITE_NAME, DEFAULT_DESCRIPTION };
 
@@ -96,7 +99,7 @@ export default function App() {
             <NavLink
               to='/mission'
               className={({ isActive }) =>
-                `text-sm transition-colors ${
+                `hidden text-sm transition-colors sm:block ${
                   isActive
                     ? 'text-gray-900'
                     : 'text-gray-500 hover:text-gray-900'
@@ -108,7 +111,7 @@ export default function App() {
             <NavLink
               to='/til'
               className={({ isActive }) =>
-                `text-sm transition-colors ${
+                `hidden text-sm transition-colors sm:block ${
                   isActive
                     ? 'text-gray-900'
                     : 'text-gray-500 hover:text-gray-900'
@@ -126,10 +129,14 @@ export default function App() {
                   alt={user.user_metadata?.user_name}
                   className='h-8 w-8 rounded-full'
                 />
-                <Form method="post" action="/auth/signout">
-                  <input type="hidden" name="redirectTo" value={location.pathname} />
+                <Form method='post' action='/auth/signout'>
+                  <input
+                    type='hidden'
+                    name='redirectTo'
+                    value={location.pathname}
+                  />
                   <button
-                    type="submit"
+                    type='submit'
                     className='text-sm text-gray-500 transition-colors hover:text-gray-900'
                   >
                     로그아웃

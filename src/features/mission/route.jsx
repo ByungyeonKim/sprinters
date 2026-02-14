@@ -15,7 +15,8 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
 export function meta() {
   const title = '스프린트 미션 | Sprinters';
-  const description = '스프린트 미션 진행 상황을 한눈에 파악하고, 순위 경쟁을 해보세요.';
+  const description =
+    '스프린트 미션 진행 상황을 한눈에 파악하고, 순위 경쟁을 해보세요.';
   return [
     { title },
     { name: 'description', content: description },
@@ -42,7 +43,7 @@ export default function Missions() {
       <Suspense fallback={<MissionGridSkeleton />}>
         <Await resolve={studentsPromise}>
           {(students) => (
-            <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4'>
+            <ul className='xs:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4'>
               {students.map((student, index) => (
                 <Mission
                   key={student.id}

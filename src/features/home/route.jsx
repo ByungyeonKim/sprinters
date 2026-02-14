@@ -41,8 +41,10 @@ export default function Home() {
           alt=''
           className='mb-8 h-64 w-full rounded-2xl object-cover'
         />
-        <div className='flex items-baseline justify-between'>
-          <h1 className='text-4xl font-bold'>Learn, Write, Share.</h1>
+        <div className='items-baseline justify-between lg:flex'>
+          <h1 className='mb-2 text-4xl font-bold lg:mb-0'>
+            Learn, Write, Share.
+          </h1>
           <p className='text-lg text-gray-600'>
             혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고,
             공유해보세요.

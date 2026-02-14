@@ -1,11 +1,14 @@
-import { SkeletonCircle, SkeletonLine } from '../../components/SkeletonPrimitives';
+import {
+  SkeletonCircle,
+  SkeletonLine,
+} from '../../components/SkeletonPrimitives';
 import { MissionsHeader } from './MissionsHeader';
 
 const SKELETON_COUNT = 16;
 
 function MissionGridSkeleton() {
   return (
-    <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4'>
+    <ul className='xs:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4'>
       {[...Array(SKELETON_COUNT)].map((_, i) => (
         <li key={i} className='flex rounded-lg border border-gray-200 p-4'>
           <div className='flex grow flex-col items-center'>

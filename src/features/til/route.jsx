@@ -34,17 +34,21 @@ export default function TIL() {
 
   return (
     <section className='mx-auto max-w-170'>
-      <header className='mb-10 flex items-end justify-between border-b border-gray-200 py-10'>
+      <header className='mb-10 flex flex-wrap items-end justify-between border-b border-gray-200 py-10'>
         <div>
-          <h1 className='mb-3 text-4xl font-bold'>Today I Learned</h1>
+          <h1 className='mb-3 text-3xl font-bold sm:text-4xl'>
+            Today I Learned
+          </h1>
           <p className='text-gray-600'>
-            오늘 배운 내용을 기록하고 공유하는 공간입니다.
+            오늘 배운 내용을 기록하고
+            <br className='sm:hidden' />
+            공유하는 공간입니다.
           </p>
         </div>
         {user && (
           <Link
             to='/til/new'
-            className='rounded-full bg-violet-600 px-4 py-2 text-sm text-white transition-colors hover:bg-violet-700'
+            className='mt-4 rounded-full bg-violet-600 px-4 py-2 text-sm text-white transition-colors hover:bg-violet-700'
           >
             새 글 작성
           </Link>
