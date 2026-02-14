@@ -58,7 +58,7 @@ const SITE_URL = 'https://sprinters-hub.vercel.app';
 const OG_IMAGE = `${SITE_URL}/sprinters-og.png`;
 const SITE_NAME = 'Sprinters';
 const DEFAULT_DESCRIPTION =
-  'Always Moving Forward. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.';
+  'Learn, Write, Share. 혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.';
 
 export { SITE_URL, OG_IMAGE, SITE_NAME, DEFAULT_DESCRIPTION };
 
