@@ -89,13 +89,12 @@ export default function App() {
     <div className='min-h-screen bg-white'>
       <header className='border-b border-gray-200'>
         <div className='mx-auto flex h-14 max-w-300 items-center justify-between px-6'>
-          <NavLink to='/' className='text-[26px] font-bold tracking-tight'>
-            Sprinters
-          </NavLink>
-          <nav className='flex items-center gap-6'>
+          <div className='flex items-center gap-6'>
+            <NavLink to='/' className='text-[26px] font-bold tracking-tight'>
+              Sprinters
+            </NavLink>
             <NavLink
-              to='/'
-              end
+              to='/mission'
               className={({ isActive }) =>
                 `text-sm transition-colors ${
                   isActive
@@ -104,9 +103,22 @@ export default function App() {
                 }`
               }
             >
-              홈
+              스프린트 미션
             </NavLink>
-
+            <NavLink
+              to='/til'
+              className={({ isActive }) =>
+                `text-sm transition-colors ${
+                  isActive
+                    ? 'text-gray-900'
+                    : 'text-gray-500 hover:text-gray-900'
+                }`
+              }
+            >
+              TIL
+            </NavLink>
+          </div>
+          <nav className='flex items-center gap-6'>
             {user ? (
               <div className='flex items-center gap-3'>
                 <img

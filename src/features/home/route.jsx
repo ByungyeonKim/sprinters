@@ -1,13 +1,11 @@
 import { Suspense } from 'react';
 import { Link, useLoaderData, Await } from 'react-router';
+import sprintHero from '../../assets/sprint-hero.jpg';
 import { fetchMissionRankStudents } from '../mission/student-service';
 import { fetchPopularTilPosts } from '../til/til-service';
 import { LikeCount } from '../../components/LikeCount';
 import { CommentCount } from '../../components/CommentCount';
-import {
-  MissionRankSkeleton,
-  PopularTilSkeleton,
-} from './HomeHydrateFallback';
+import { MissionRankSkeleton, PopularTilSkeleton } from './HomeHydrateFallback';
 
 const MISSION_RANK_COUNT = 10;
 
@@ -37,36 +35,18 @@ export default function Home() {
   const { studentsPromise, popularPostsPromise } = useLoaderData();
   return (
     <div>
-      <section className='border-b border-gray-200 pt-10 pb-10'>
-        <h1 className='mb-8 text-[62px] leading-none font-bold'>
-          Always Moving
-          <br />
-          Forward.
-        </h1>
-        <p className='mb-8 max-w-lg text-xl text-gray-600'>
-          혼자 고민하던 호기심부터
-          <br />
-          오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.
-        </p>
-        <div className='flex gap-6'>
-          <Link
-            to='/mission'
-            className='group text-gray-900 underline underline-offset-4 transition-colors hover:text-gray-600'
-          >
-            스프린트 미션
-            <span className='ml-1 inline-block transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-x-1'>
-              →
-            </span>
-          </Link>
-          <Link
-            to='/til'
-            className='group text-gray-900 underline underline-offset-4 transition-colors hover:text-gray-600'
-          >
-            Today I Learned
-            <span className='ml-1 inline-block transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-x-1'>
-              →
-            </span>
-          </Link>
+      <section className='border-b border-gray-200 pb-10'>
+        <img
+          src={sprintHero}
+          alt=''
+          className='mb-8 h-64 w-full rounded-2xl object-cover'
+        />
+        <div className='flex items-baseline justify-between'>
+          <h1 className='text-4xl font-bold'>Learn, Write, Share.</h1>
+          <p className='text-lg text-gray-600'>
+            혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고,
+            공유해보세요.
+          </p>
         </div>
       </section>
 
