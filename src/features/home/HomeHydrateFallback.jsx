@@ -52,40 +52,4 @@ function PopularTilSkeleton() {
   );
 }
 
-function HomeHydrateFallback() {
-  return (
-    <div>
-      <section className='border-b border-gray-200 pt-10 pb-10'>
-        <h1 className='mb-8 text-[62px] leading-none font-bold'>
-          Always Moving
-          <br />
-          Forward.
-        </h1>
-        <p className='mb-8 max-w-lg text-xl text-gray-600'>
-          혼자 고민하던 호기심부터
-          <br />
-          오늘 배운 작은 깨달음까지 기록하고, 공유해보세요.
-        </p>
-        <div className='flex gap-6'>
-          <span className='text-gray-900 underline underline-offset-4'>
-            스프린트 미션
-            <span className='ml-1 inline-block'>→</span>
-          </span>
-          <span className='text-gray-900 underline underline-offset-4'>
-            Today I Learned
-            <span className='ml-1 inline-block'>→</span>
-          </span>
-        </div>
-      </section>
-
-      <section className='pt-12'>
-        <div className='grid gap-16 md:grid-cols-2'>
-          <MissionRankSkeleton />
-          <PopularTilSkeleton />
-        </div>
-      </section>
-    </div>
-  );
-}
-
-export { HomeHydrateFallback, MissionRankSkeleton, PopularTilSkeleton };
+export { MissionRankSkeleton, PopularTilSkeleton };

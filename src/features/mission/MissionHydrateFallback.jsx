@@ -2,7 +2,6 @@ import {
   SkeletonCircle,
   SkeletonLine,
 } from '../../components/SkeletonPrimitives';
-import { MissionsHeader } from './MissionsHeader';
 
 const SKELETON_COUNT = 16;
 
@@ -22,13 +21,4 @@ function MissionGridSkeleton() {
   );
 }
 
-function MissionHydrateFallback() {
-  return (
-    <div>
-      <MissionsHeader />
-      <MissionGridSkeleton />
-    </div>
-  );
-}
-
-export { MissionHydrateFallback, MissionGridSkeleton };
+export { MissionGridSkeleton };

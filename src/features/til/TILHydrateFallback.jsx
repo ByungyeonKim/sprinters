@@ -34,20 +34,4 @@ function TilPostsSkeleton() {
   );
 }
 
-function TILHydrateFallback() {
-  return (
-    <div className='mx-auto max-w-170'>
-      <header className='mb-10 flex items-end justify-between border-b border-gray-200 py-10'>
-        <div>
-          <h1 className='mb-3 text-4xl font-bold'>Today I Learned</h1>
-          <p className='text-gray-600'>
-            오늘 배운 내용을 기록하고 공유하는 공간입니다.
-          </p>
-        </div>
-      </header>
-      <TilPostsSkeleton />
-    </div>
-  );
-}
-
-export { TILHydrateFallback, TilPostsSkeleton };
+export { TilPostsSkeleton };
