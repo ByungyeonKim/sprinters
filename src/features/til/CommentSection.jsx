@@ -1,27 +1,31 @@
-import { useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useRevalidator } from 'react-router';
 import { LikeButton } from './LikeButton';
 import { CommentForm } from './CommentForm';
 import { CommentList } from './CommentList';
 import {
+  subscribeOwnedCommentIds,
   getOwnedCommentIds,
+  getOwnedCommentIdsServerSnapshot,
   addOwnedCommentId,
   removeOwnedCommentId,
 } from '../../utils/comment';
 
 function CommentSection({ tilId, comments, likes, hasLiked }) {
   const revalidator = useRevalidator();
-  const [ownedCommentIds, setOwnedCommentIds] = useState(getOwnedCommentIds);
+  const ownedCommentIds = useSyncExternalStore(
+    subscribeOwnedCommentIds,
+    getOwnedCommentIds,
+    getOwnedCommentIdsServerSnapshot,
+  );
 
   const handleCommentCreated = (commentId) => {
     addOwnedCommentId(commentId);
-    setOwnedCommentIds((prev) => [...prev, commentId]);
     revalidator.revalidate();
   };
 
   const handleCommentDeleted = (commentId) => {
     removeOwnedCommentId(commentId);
-    setOwnedCommentIds((prev) => prev.filter((id) => id !== commentId));
     revalidator.revalidate();
   };
 

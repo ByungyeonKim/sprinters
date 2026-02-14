@@ -1,56 +1,77 @@
 const OWN_COMMENT_IDS_KEY = 'sprintersOwnedCommentIds';
 
+let listeners = [];
+let cachedRaw = null;
+let cachedIds = [];
+
+function emitChange() {
+  cachedRaw = null;
+  listeners.forEach((l) => l());
+}
+
+export function subscribeOwnedCommentIds(listener) {
+  listeners = [...listeners, listener];
+  return () => {
+    listeners = listeners.filter((l) => l !== listener);
+  };
+}
+
 function canUseStorage() {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 }
 
-function readOwnedCommentIds() {
+export function getOwnedCommentIds() {
   if (!canUseStorage()) {
-    return [];
+    return cachedIds;
   }
 
   const raw = localStorage.getItem(OWN_COMMENT_IDS_KEY);
+  if (raw === cachedRaw) {
+    return cachedIds;
+  }
+
+  cachedRaw = raw;
+
   if (!raw) {
-    return [];
+    cachedIds = [];
+    return cachedIds;
   }
 
   try {
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-    return parsed.map((id) => String(id));
+    cachedIds = Array.isArray(parsed) ? parsed.map((id) => String(id)) : [];
   } catch {
-    return [];
-  }
-}
-
-function writeOwnedCommentIds(ids) {
-  if (!canUseStorage()) {
-    return ids;
+    cachedIds = [];
   }
 
-  localStorage.setItem(OWN_COMMENT_IDS_KEY, JSON.stringify(ids));
-  return ids;
+  return cachedIds;
 }
 
-export function getOwnedCommentIds() {
-  return readOwnedCommentIds();
+const SERVER_SNAPSHOT = [];
+export function getOwnedCommentIdsServerSnapshot() {
+  return SERVER_SNAPSHOT;
 }
 
 export function addOwnedCommentId(commentId) {
   const normalizedId = String(commentId);
-  const ids = readOwnedCommentIds();
+  const ids = getOwnedCommentIds();
 
   if (ids.includes(normalizedId)) {
-    return ids;
+    return;
   }
 
-  return writeOwnedCommentIds([...ids, normalizedId]);
+  if (canUseStorage()) {
+    localStorage.setItem(OWN_COMMENT_IDS_KEY, JSON.stringify([...ids, normalizedId]));
+  }
+  emitChange();
 }
 
 export function removeOwnedCommentId(commentId) {
   const normalizedId = String(commentId);
-  const ids = readOwnedCommentIds().filter((id) => id !== normalizedId);
-  return writeOwnedCommentIds(ids);
+  const ids = getOwnedCommentIds().filter((id) => id !== normalizedId);
+
+  if (canUseStorage()) {
+    localStorage.setItem(OWN_COMMENT_IDS_KEY, JSON.stringify(ids));
+  }
+  emitChange();
 }
