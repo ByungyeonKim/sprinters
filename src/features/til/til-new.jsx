@@ -24,7 +24,9 @@ export function meta() {
 
 export async function loader({ request }) {
   const { supabase, headers } = createSupabaseServerClient(request);
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     throw redirect('/til');
@@ -109,110 +111,96 @@ export default function TILNew() {
   };
 
   return (
-    <section className='mx-auto max-w-170'>
-      <header className='mb-10 flex items-center justify-between border-b border-gray-200 py-10'>
-        <h1 className='text-4xl font-bold'>생각의 조각들을 이곳에 남기세요.</h1>
-        <Link to='/til' className='text-sm text-gray-500 hover:text-gray-900'>
-          취소
-        </Link>
+    <form onSubmit={handleSubmit}>
+      <header className='sticky top-0 z-10 border-b border-gray-200 bg-white'>
+        <div className='mx-auto flex h-14 max-w-300 items-center justify-between px-6'>
+          <Link to='/til' className='text-sm text-gray-500 hover:text-gray-900'>
+            취소
+          </Link>
+          <button
+            type='submit'
+            disabled={isSubmitting}
+            className='rounded bg-gray-100 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50'
+          >
+            {isSubmitting ? '저장 중...' : '작성 완료'}
+          </button>
+        </div>
       </header>
 
-      <form onSubmit={handleSubmit} className='space-y-6'>
-        <div>
-          <label htmlFor='title' className='mb-2 block text-sm font-medium'>
-            제목
-          </label>
-          <input
-            type='text'
-            id='title'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder='오늘 배운 내용을 한 줄로 요약해보세요'
-            className='w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-violet-500 focus:outline-none'
-          />
+      <div className='mx-auto max-w-prose px-6 pb-16'>
+        <input
+          type='text'
+          id='title'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder='제목'
+          className='mt-8 w-full border-none text-4xl font-bold placeholder:text-gray-300 focus:outline-none'
+        />
+
+        <div className='mt-6 flex gap-1'>
+          <button
+            type='button'
+            onClick={() => setIsPreview(false)}
+            className={`rounded px-3 py-1 text-sm ${
+              !isPreview
+                ? 'bg-gray-900 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            작성
+          </button>
+          <button
+            type='button'
+            onClick={() => setIsPreview(true)}
+            className={`rounded px-3 py-1 text-sm ${
+              isPreview
+                ? 'bg-gray-900 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            미리보기
+          </button>
         </div>
 
-        <div>
-          <div className='mb-2 flex items-center justify-between'>
-            <label htmlFor='content' className='block text-sm font-medium'>
-              내용
-            </label>
-            <div className='flex gap-2'>
-              <button
-                type='button'
-                onClick={() => setIsPreview(false)}
-                className={`rounded px-3 py-1 text-sm ${
-                  !isPreview
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                작성
-              </button>
-              <button
-                type='button'
-                onClick={() => setIsPreview(true)}
-                className={`rounded px-3 py-1 text-sm ${
-                  isPreview
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                미리보기
-              </button>
-            </div>
+        {isPreview ? (
+          <div
+            ref={previewRef}
+            tabIndex={0}
+            onKeyDown={handleTabKeyDown}
+            className='prose mt-4 min-h-64 w-full max-w-none focus:outline-none'
+          >
+            {content ? (
+              <MarkdownRenderer content={content} />
+            ) : (
+              <p className='text-gray-400'>미리볼 내용이 없습니다.</p>
+            )}
           </div>
-          {isPreview ? (
-            <div
-              ref={previewRef}
-              tabIndex={0}
-              onKeyDown={handleTabKeyDown}
-              className='prose min-h-64 w-full max-w-none rounded-lg border border-gray-200 px-4 py-3 focus:outline-none'
-            >
-              {content ? (
-                <MarkdownRenderer content={content} />
-              ) : (
-                <p className='text-gray-400'>미리볼 내용이 없습니다.</p>
-              )}
-            </div>
-          ) : (
-            <textarea
-              ref={textareaRef}
-              id='content'
-              rows={10}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              onKeyDown={handleTabKeyDown}
-              placeholder='마크다운 문법을 사용할 수 있습니다'
-              className='w-full resize-none rounded-lg border border-gray-200 px-4 py-3 focus:border-violet-500 focus:outline-none'
-            />
-          )}
-        </div>
+        ) : (
+          <textarea
+            ref={textareaRef}
+            id='content'
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            onKeyDown={handleTabKeyDown}
+            placeholder='내용을 입력하세요...'
+            className='mt-4 field-sizing-content min-h-64 w-full resize-none border-none text-lg leading-relaxed placeholder:text-gray-300 focus:outline-none'
+          />
+        )}
+      </div>
 
-        <div>
-          <label htmlFor='tags' className='mb-2 block text-sm font-medium'>
-            태그
-          </label>
+      <div className='fixed bottom-4 left-1/2 w-full max-w-prose -translate-x-1/2 px-6'>
+        <div className='rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg'>
           <input
             type='text'
             id='tags'
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            placeholder='쉼표로 구분하여 입력 (예: React, TypeScript)'
-            className='w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-violet-500 focus:outline-none'
+            autoComplete='off'
+            placeholder='태그를 입력하세요 (쉼표로 구분)'
+            className='w-full border-none text-sm text-gray-500 placeholder:text-gray-300 focus:outline-none'
           />
         </div>
-
-        <div className='flex justify-end'>
-          <button
-            type='submit'
-            disabled={isSubmitting}
-            className='rounded-full bg-violet-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50'
-          >
-            {isSubmitting ? '저장 중...' : '작성 완료'}
-          </button>
-        </div>
-      </form>
-    </section>
+      </div>
+    </form>
   );
 }
