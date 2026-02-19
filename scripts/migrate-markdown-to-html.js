@@ -9,6 +9,7 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
@@ -42,7 +43,14 @@ async function migrate() {
       continue;
     }
 
-    const html = marked.parse(post.content || '');
+    const rawHtml = marked.parse(post.content || '');
+    const html = sanitizeHtml(rawHtml, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        img: ['src', 'alt'],
+      },
+    });
 
     const { error: updateError } = await supabase
       .from('til_posts')

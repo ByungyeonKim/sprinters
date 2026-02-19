@@ -6,6 +6,7 @@ import {
 } from 'react-router';
 import { toast } from 'sonner';
 import { fetchTilDetail, hasUserLikedTil, deleteTilPost } from './til-service';
+import { sanitizeContent } from '../../utils/html.server';
 import { useAuth } from '../../hooks/use-auth';
 
 import { CommentSection } from './CommentSection';
@@ -54,6 +55,7 @@ export async function loader({ request, params }) {
     username: params.username,
     postNumber: params.postNumber,
   });
+  post.content = sanitizeContent(post.content);
 
   let hasLiked = false;
   if (user) {
