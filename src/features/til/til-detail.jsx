@@ -5,7 +5,7 @@ import {
   data as routerData,
 } from 'react-router';
 import { toast } from 'sonner';
-import { fetchTilDetail, hasUserLikedTil, deleteTilPost } from './til-service';
+import { fetchTilDetail, deleteTilPost } from './til-service';
 import { sanitizeContent } from '../../utils/html.server';
 import { useAuth } from '../../hooks/use-auth';
 
@@ -13,7 +13,6 @@ import { CommentSection } from './CommentSection';
 import { DeleteButton } from './DeleteButton';
 import { ChevronLeftIcon } from '../../components/icons';
 import { createSupabaseServerClient } from '../../lib/supabase.server';
-import { supabase } from '../../lib/supabase';
 
 export function headers({ loaderHeaders, parentHeaders }) {
   const headers = new Headers(parentHeaders);
@@ -71,22 +70,6 @@ export async function loader({ request, params }) {
   return routerData({ post, hasLiked }, { headers });
 }
 
-export async function clientLoader({ params }) {
-  const post = await fetchTilDetail({
-    username: params.username,
-    postNumber: params.postNumber,
-  });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  let hasLiked = false;
-  if (user) {
-    hasLiked = await hasUserLikedTil({ tilId: post.id, userId: user.id });
-  }
-
-  return { post, hasLiked };
-}
 
 export default function TILDetail() {
   const { post, hasLiked } = useLoaderData();
