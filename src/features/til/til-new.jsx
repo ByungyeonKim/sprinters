@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
-import { useNavigate, data, redirect } from 'react-router';
+import { useState } from 'react';
+import { useNavigation, useSubmit, data, redirect } from 'react-router';
 import { toast } from 'sonner';
-import { useAuth } from '../../hooks/use-auth';
-import { createTilPost } from './til-service';
+import { syncTags } from './til-service';
+import { sanitizeContent } from '../../utils/html.server';
 import { createSupabaseServerClient } from '../../lib/supabase.server';
-import { EditorHeader, PreviewToggle, ContentArea, FloatingTagInput } from './TilEditor';
+import { EditorHeader, TiptapEditor, FloatingTagInput } from './TilEditor';
 
 import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
@@ -36,6 +36,35 @@ export async function loader({ request }) {
   return data(null, { headers });
 }
 
+export async function action({ request }) {
+  const { supabase, headers } = createSupabaseServerClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw redirect('/til');
+  }
+
+  const formData = await request.formData();
+  const title = formData.get('title').trim();
+  const content = sanitizeContent(formData.get('content'));
+  const rawTags = formData.get('tags') || '';
+
+  const { data: post, error } = await supabase
+    .from('til_posts')
+    .insert({ user_id: user.id, title, content })
+    .select('id, post_number')
+    .single();
+
+  if (error) throw new Error('게시글 저장에 실패했습니다.');
+
+  await syncTags(supabase, post.id, rawTags);
+
+  const username = user.user_metadata?.user_name;
+  return redirect(`/til/@${username}/${post.post_number}`, { headers });
+}
+
 export function headers({ loaderHeaders, parentHeaders }) {
   const headers = new Headers(parentHeaders);
   loaderHeaders.getSetCookie().forEach((cookie) => {
@@ -45,91 +74,49 @@ export function headers({ loaderHeaders, parentHeaders }) {
 }
 
 export default function TILNew() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === 'submitting';
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tags, setTags] = useState('');
-  const [isPreview, setIsPreview] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const previewRef = useRef(null);
-  const textareaRef = useRef(null);
-
-  const handleTabKeyDown = (e) => {
-    if (e.ctrlKey && e.shiftKey) {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        setIsPreview(false);
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        setIsPreview(true);
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!user) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
+  const handleSubmit = () => {
     if (!title.trim() || !content.trim()) {
       toast.info('제목과 내용을 모두 입력해주세요.');
       return;
     }
 
-    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.set('title', title);
+    formData.set('content', content);
+    formData.set('tags', tags);
 
-    const githubUsername = user.user_metadata?.user_name;
-
-    try {
-      const { postNumber } = await createTilPost({
-        userId: user.id,
-        title,
-        content,
-        rawTags: tags,
-      });
-
-      navigate(`/til/@${githubUsername}/${postNumber}`);
-    } catch (error) {
-      console.error('TIL 저장 실패:', error);
-      alert('저장에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    submit(formData, { method: 'post' });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <EditorHeader cancelTo='/til' submitLabel='작성 완료' isSubmitting={isSubmitting} />
+    <div className='flex min-h-screen flex-col bg-gray-50'>
+      <EditorHeader cancelTo='/til' submitLabel='작성 완료' isSubmitting={isSubmitting} onSave={handleSubmit} />
 
-      <div className='mx-auto max-w-prose px-6 pb-16'>
-        <input
-          type='text'
-          id='title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          autoFocus
-          placeholder='제목을 입력하세요'
-          className='mt-14 w-full border-none text-4xl font-bold placeholder:text-gray-300 focus:outline-none'
-        />
+      <div className='mx-auto flex w-full max-w-4xl flex-1 flex-col px-6 py-14 pb-20'>
+        <div className='flex flex-1 flex-col rounded-xl bg-white px-8 py-10 shadow-sm'>
+          <input
+            type='text'
+            id='title'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            autoFocus
+            placeholder='제목을 입력하세요'
+            className='w-full border-none text-4xl font-bold placeholder:text-gray-300 focus:outline-none'
+          />
 
-        <PreviewToggle isPreview={isPreview} onToggle={setIsPreview} />
-        <ContentArea
-          isPreview={isPreview}
-          content={content}
-          previewRef={previewRef}
-          textareaRef={textareaRef}
-          onContentChange={setContent}
-          onKeyDown={handleTabKeyDown}
-        />
+          <TiptapEditor onUpdate={setContent} />
+        </div>
       </div>
 
       <FloatingTagInput tags={tags} onTagsChange={setTags} />
-    </form>
+    </div>
   );
 }

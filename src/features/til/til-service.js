@@ -26,21 +26,26 @@ function parseTagNames(rawTags) {
     .filter((t) => t.length > 0);
 }
 
-// 태그 동기화 (create/update 공용)
+// 태그 동기화 (서버 action에서 사용)
 
-async function syncTags(postId, rawTags) {
+export async function syncTags(supabase, postId, rawTags) {
   const tagNames = parseTagNames(rawTags);
   if (tagNames.length === 0) return;
 
-  const { error: upsertError } = await repo.upsertTags(tagNames);
+  const { error: upsertError } = await supabase.from('tags').upsert(
+    tagNames.map((name) => ({ name })),
+    { onConflict: 'name', ignoreDuplicates: true },
+  );
   if (upsertError) throw new Error('태그 저장에 실패했습니다.');
 
-  const { data: tagData, error: tagError } = await repo.findTagsByNames(tagNames);
+  const { data: tagData, error: tagError } = await supabase
+    .from('tags')
+    .select()
+    .in('name', tagNames);
   if (tagError) throw new Error('태그 저장에 실패했습니다.');
 
-  const { error: tilTagError } = await repo.insertTilTags(
-    postId,
-    tagData.map((t) => t.id),
+  const { error: tilTagError } = await supabase.from('til_tags').insert(
+    tagData.map((t) => ({ til_id: postId, tag_id: t.id })),
   );
   if (tilTagError) throw new Error('태그 연결에 실패했습니다.');
 }
@@ -174,37 +179,3 @@ export async function deleteTilPost({ postId }) {
   }
 }
 
-export async function updateTilPost({ postId, title, content, rawTags }) {
-  const { error: postError } = await repo.updatePost(postId, {
-    title: title.trim(),
-    content: content.trim(),
-  });
-
-  if (postError) {
-    throw new Error('게시글 수정에 실패했습니다.');
-  }
-
-  const { error: deleteTagError } = await repo.deleteTilTags(postId);
-
-  if (deleteTagError) {
-    throw new Error('기존 태그 삭제에 실패했습니다.');
-  }
-
-  await syncTags(postId, rawTags);
-}
-
-export async function createTilPost({ userId, title, content, rawTags }) {
-  const { data: post, error: postError } = await repo.insertPost({
-    userId,
-    title: title.trim(),
-    content: content.trim(),
-  });
-
-  if (postError) {
-    throw new Error('게시글 저장에 실패했습니다.');
-  }
-
-  await syncTags(post.id, rawTags);
-
-  return { id: post.id, postNumber: post.post_number };
-}
