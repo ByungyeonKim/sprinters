@@ -7,7 +7,7 @@ import {
 import { toast } from 'sonner';
 import { fetchTilDetail, hasUserLikedTil, deleteTilPost } from './til-service';
 import { useAuth } from '../../hooks/use-auth';
-import { MarkdownRenderer } from './MarkdownRenderer';
+
 import { CommentSection } from './CommentSection';
 import { DeleteButton } from './DeleteButton';
 import { ChevronLeftIcon } from '../../components/icons';
@@ -152,9 +152,10 @@ export default function TILDetail() {
         </div>
       </header>
 
-      <article className='prose max-w-none'>
-        <MarkdownRenderer content={post.content} />
-      </article>
+      <article
+        className='prose max-w-none'
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
 
       <CommentSection
         tilId={post.id}

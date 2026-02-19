@@ -4,7 +4,7 @@ import { fetchTilPosts } from './til-service';
 import { useAuth } from '../../hooks/use-auth';
 import { LikeCount } from '../../components/LikeCount';
 import { CommentCount } from '../../components/CommentCount';
-import { stripMarkdown } from '../../utils/markdown';
+import { stripHtml } from '../../utils/html';
 import { TilPostsSkeleton } from './TILHydrateFallback';
 
 import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
@@ -92,7 +92,7 @@ export default function TIL() {
                     </h2>
                   </Link>
                   <p className='mb-4 line-clamp-2 leading-relaxed text-gray-600'>
-                    {stripMarkdown(post.content)}
+                    {stripHtml(post.content)}
                   </p>
                   <div className='flex items-center justify-between'>
                     <div className='flex gap-2'>
