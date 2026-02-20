@@ -37,7 +37,7 @@ export default function Missions() {
   const { studentsPromise } = useLoaderData();
 
   return (
-    <section>
+    <section className='mx-auto max-w-170'>
       <MissionsHeader />
 
       <Suspense fallback={<MissionGridSkeleton />}>

@@ -3,9 +3,9 @@ import { InfoIcon } from '../../components/icons';
 
 function MissionsHeader() {
   return (
-    <header className='mb-10 flex flex-col gap-6 border-b border-gray-200 py-10 sm:flex-row sm:items-end sm:justify-between'>
+    <header className='mb-10 flex flex-col gap-6 border-b border-gray-200 py-10 sm:flex-row sm:items-start sm:justify-between'>
       <div>
-        <h1 className='mb-3 text-4xl font-bold'>스프린트 미션</h1>
+        <h1 className='mb-3 text-3xl font-bold sm:text-4xl'>스프린트 미션</h1>
         <p className='text-gray-600'>
           다음 미션 하나만 더 해볼까요?
           <br /> 몇 개의 미션을 완료했는지 확인해보세요.
