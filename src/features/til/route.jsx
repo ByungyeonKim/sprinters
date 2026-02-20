@@ -40,9 +40,9 @@ export default function TIL() {
             Today I Learned
           </h1>
           <p className='text-gray-600'>
-            오늘 배운 내용을 기록하고
+            오늘 배운 내용을 기록하고, {''}
             <br className='sm:hidden' />
-            공유하는 공간입니다.
+            공유해보세요.
           </p>
         </div>
         {user && (
