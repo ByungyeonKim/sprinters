@@ -98,9 +98,14 @@ export default function TILNew() {
 
   return (
     <div className='flex min-h-screen flex-col bg-gray-50'>
-      <EditorHeader cancelTo='/til' submitLabel='작성 완료' isSubmitting={isSubmitting} onSave={handleSubmit} />
+      <EditorHeader
+        cancelTo='/til'
+        submitLabel='작성 완료'
+        isSubmitting={isSubmitting}
+        onSave={handleSubmit}
+      />
 
-      <div className='mx-auto flex w-full max-w-4xl flex-1 flex-col px-6 py-14 pb-20'>
+      <div className='mx-auto flex w-full max-w-4xl flex-1 flex-col px-6 py-18'>
         <div className='flex flex-1 flex-col rounded-xl bg-white px-8 py-10 shadow-sm'>
           <input
             type='text'
@@ -109,14 +114,14 @@ export default function TILNew() {
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
             placeholder='제목을 입력하세요'
-            className='w-full border-none text-4xl font-bold placeholder:text-gray-300 focus:outline-none'
+            className='w-full border-none text-2xl font-bold placeholder:text-gray-300 focus:outline-none sm:text-4xl'
           />
 
           <TiptapEditor onUpdate={setContent} />
         </div>
-      </div>
 
-      <FloatingTagInput tags={tags} onTagsChange={setTags} />
+        <FloatingTagInput tags={tags} onTagsChange={setTags} />
+      </div>
     </div>
   );
 }

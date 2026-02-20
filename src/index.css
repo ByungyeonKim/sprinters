@@ -228,6 +228,10 @@
   content: none;
 }
 
+.prose ol ol {
+  list-style-type: lower-alpha;
+}
+
 .tiptap {
   height: 100%;
 }
