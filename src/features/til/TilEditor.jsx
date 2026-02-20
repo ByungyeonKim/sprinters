@@ -2,6 +2,24 @@ import { Link } from 'react-router';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import {
+  Heading2Icon,
+  Heading3Icon,
+  BoldIcon,
+  ItalicIcon,
+  StrikethroughIcon,
+  ListIcon,
+  ListOrderedIcon,
+  QuoteIcon,
+  CodeXmlIcon,
+  MinusIcon,
+} from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../components/ui/tooltip';
 
 export function EditorHeader({ cancelTo, submitLabel, isSubmitting, onSave }) {
   return (
@@ -23,19 +41,24 @@ export function EditorHeader({ cancelTo, submitLabel, isSubmitting, onSave }) {
   );
 }
 
-function ToolbarButton({ onClick, active, children }) {
+function ToolbarButton({ onClick, active, tooltip, children }) {
   return (
-    <button
-      type='button'
-      onClick={onClick}
-      className={`rounded px-2 py-1 text-sm ${
-        active
-          ? 'bg-gray-900 text-white'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      }`}
-    >
-      {children}
-    </button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type='button'
+          onClick={onClick}
+          className={`rounded p-1.5 ${
+            active
+              ? 'bg-gray-900 text-white'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          {children}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" sideOffset={6}>{tooltip}</TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -43,68 +66,80 @@ function EditorToolbar({ editor }) {
   if (!editor) return null;
 
   return (
+    <TooltipProvider>
     <div className='flex flex-wrap gap-1 border-b border-gray-100 pb-3'>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         active={editor.isActive('heading', { level: 2 })}
+        tooltip='제목 2'
       >
-        H2
+        <Heading2Icon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         active={editor.isActive('heading', { level: 3 })}
+        tooltip='제목 3'
       >
-        H3
+        <Heading3Icon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         active={editor.isActive('bold')}
+        tooltip='굵게'
       >
-        Bold
+        <BoldIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
         active={editor.isActive('italic')}
+        tooltip='기울임'
       >
-        Italic
+        <ItalicIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleStrike().run()}
         active={editor.isActive('strike')}
+        tooltip='취소선'
       >
-        Strike
+        <StrikethroughIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         active={editor.isActive('bulletList')}
+        tooltip='글머리 기호'
       >
-        Bullet
+        <ListIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         active={editor.isActive('orderedList')}
+        tooltip='번호 매기기'
       >
-        Ordered
+        <ListOrderedIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         active={editor.isActive('blockquote')}
+        tooltip='인용'
       >
-        Quote
+        <QuoteIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         active={editor.isActive('codeBlock')}
+        tooltip='코드 블록'
       >
-        Code
+        <CodeXmlIcon className='size-4' />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         active={false}
+        tooltip='구분선'
       >
-        HR
+        <MinusIcon className='size-4' />
       </ToolbarButton>
     </div>
+    </TooltipProvider>
   );
 }
 
@@ -118,6 +153,7 @@ export function TiptapEditor({ initialContent, onUpdate }) {
     ],
     content: initialContent || '',
     immediatelyRender: false,
+    shouldRerenderOnTransaction: true,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getHTML());
     },
