@@ -3,7 +3,6 @@ import { TextSelection } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { CodeBlockNodeView } from './CodeBlockNodeView';
 import {
-  CODE_THEME_LABEL,
   DEFAULT_CODE_LANGUAGE,
   SUPPORTED_CODE_LANGUAGES,
   normalizeCodeLanguage,
@@ -30,7 +29,6 @@ export const CodeBlockExtension = CodeBlock.extend({
       defaultLanguage: DEFAULT_CODE_LANGUAGE,
       languageClassPrefix: 'language-',
       supportedLanguages: SUPPORTED_CODE_LANGUAGES,
-      themeLabel: CODE_THEME_LABEL,
       onLanguageChange: undefined,
     };
   },
