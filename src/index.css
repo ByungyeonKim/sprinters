@@ -284,6 +284,98 @@
   pointer-events: none;
 }
 
+@keyframes code-copy-hover-bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  35% {
+    transform: translateY(-1px) scale(1.08);
+  }
+
+  65% {
+    transform: translateY(0) scale(0.96);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.til-content pre.shiki .code-copy-button {
+  position: absolute;
+  top: calc(var(--code-label-section-height) + 0.62rem);
+  right: 0.8rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 0.375rem;
+  background: rgb(9 13 23 / 82%);
+  color: rgb(160 168 183 / 92%);
+  padding: 0;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+  transform-origin: center;
+  cursor: pointer;
+}
+
+.til-content pre.shiki .code-copy-button .code-copy-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.til-content pre.shiki .code-copy-button .code-copy-icon-check {
+  display: none;
+}
+
+.til-content pre.shiki .code-copy-button svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.til-content pre.shiki .code-copy-button:hover {
+  border-color: rgb(255 255 255 / 24%);
+  color: rgb(197 204 217 / 96%);
+  animation: code-copy-hover-bounce 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+}
+
+.til-content pre.shiki .code-copy-button[data-copied='true'] {
+  border-color: rgb(125 138 159 / 60%);
+  background: rgb(30 39 58 / 90%);
+  color: rgb(220 226 238 / 98%);
+}
+
+.til-content pre.shiki .code-copy-button[data-copied='true'] .code-copy-icon-copy {
+  display: none;
+}
+
+.til-content pre.shiki .code-copy-button[data-copied='true'] .code-copy-icon-check {
+  display: inline-flex;
+}
+
+.til-content pre.shiki .code-copy-button:focus-visible {
+  outline: 2px solid rgb(138 152 176 / 70%);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .til-content pre.shiki .code-copy-button:hover {
+    animation: none;
+  }
+}
+
 .til-content pre.shiki > code::-webkit-scrollbar {
   height: 0.6rem;
 }

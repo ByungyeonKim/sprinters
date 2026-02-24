@@ -84,12 +84,29 @@ function escapeHtmlAttribute(value) {
     .replace(/>/g, '&gt;');
 }
 
+const CODE_COPY_BUTTON_HTML = `
+<button type="button" class="code-copy-button" data-code-copy-button data-copied="false" aria-label="코드 복사" title="코드 복사">
+  <span class="code-copy-icon code-copy-icon-copy" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false">
+      <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+  </span>
+  <span class="code-copy-icon code-copy-icon-check" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false">
+      <path d="M20 6 9 17l-5-5"></path>
+    </svg>
+  </span>
+</button>
+`;
+
 function withCodeLanguageMeta(highlightedCode, language) {
   const label = CODE_LANGUAGE_LABELS[language] || language;
 
   return highlightedCode.replace(
-    /<pre\b/,
-    `<pre data-code-language="${escapeHtmlAttribute(language)}" data-code-language-label="${escapeHtmlAttribute(label)}"`,
+    /<pre\b([^>]*)>/,
+    (_, preAttributes = '') =>
+      `<pre${preAttributes} data-code-language="${escapeHtmlAttribute(language)}" data-code-language-label="${escapeHtmlAttribute(label)}">${CODE_COPY_BUTTON_HTML}`,
   );
 }
 

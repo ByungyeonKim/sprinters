@@ -4,6 +4,7 @@ import {
   useNavigate,
   data as routerData,
 } from 'react-router';
+import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { fetchTilDetail, deleteTilPost } from './til-service';
 import { sanitizeContent } from '../../utils/html.server';
@@ -72,11 +73,33 @@ export async function loader({ request, params }) {
   return routerData({ post, hasLiked }, { headers });
 }
 
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'absolute';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  const didCopy = document.execCommand('copy');
+  document.body.removeChild(textarea);
+
+  if (!didCopy) {
+    throw new Error('copy failed');
+  }
+}
 
 export default function TILDetail() {
   const { post, hasLiked } = useLoaderData();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const articleRef = useRef(null);
 
   const isAuthor = user?.user_metadata?.user_name === post.githubUsername;
 
@@ -85,6 +108,65 @@ export default function TILDetail() {
     toast.success('게시글이 삭제되었습니다.');
     navigate('/til');
   };
+
+  useEffect(() => {
+    const articleElement = articleRef.current;
+    if (!articleElement) return;
+
+    const resetTimers = new Map();
+    const resetCopyButton = (button) => {
+      button.dataset.copied = 'false';
+      button.setAttribute('aria-label', '코드 복사');
+      button.setAttribute('title', '코드 복사');
+    };
+
+    const handleCopyClick = async (button) => {
+      const preElement = button.closest('pre.shiki');
+      const codeElement = preElement?.querySelector('code');
+      const codeText = codeElement?.textContent || '';
+      if (!codeText) return;
+
+      try {
+        await copyTextToClipboard(codeText);
+      } catch {
+        return;
+      }
+
+      button.dataset.copied = 'true';
+      button.setAttribute('aria-label', '복사 완료');
+      button.setAttribute('title', '복사 완료');
+
+      const existingTimer = resetTimers.get(button);
+      if (existingTimer) {
+        window.clearTimeout(existingTimer);
+      }
+
+      const nextTimer = window.setTimeout(() => {
+        resetCopyButton(button);
+        resetTimers.delete(button);
+      }, 1500);
+
+      resetTimers.set(button, nextTimer);
+    };
+
+    const handleClick = (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const copyButton = event.target.closest('[data-code-copy-button]');
+      if (!(copyButton instanceof HTMLButtonElement)) return;
+      if (!articleElement.contains(copyButton)) return;
+
+      event.preventDefault();
+      void handleCopyClick(copyButton);
+    };
+
+    articleElement.addEventListener('click', handleClick);
+
+    return () => {
+      articleElement.removeEventListener('click', handleClick);
+      resetTimers.forEach((timerId) => window.clearTimeout(timerId));
+    };
+  }, [post.content]);
 
   return (
     <section className='mx-auto max-w-170'>
@@ -140,6 +222,7 @@ export default function TILDetail() {
       </header>
 
       <article
+        ref={articleRef}
         className='prose til-content max-w-none'
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
