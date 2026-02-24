@@ -7,6 +7,7 @@ import {
 import { toast } from 'sonner';
 import { fetchTilDetail, deleteTilPost } from './til-service';
 import { sanitizeContent } from '../../utils/html.server';
+import { highlightCodeBlocks } from '../../utils/shiki.server';
 import { useAuth } from '../../hooks/use-auth';
 
 import { CommentSection } from './CommentSection';
@@ -54,7 +55,8 @@ export async function loader({ request, params }) {
     username: params.username,
     postNumber: params.postNumber,
   });
-  post.content = sanitizeContent(post.content);
+  const sanitizedContent = sanitizeContent(post.content);
+  post.content = await highlightCodeBlocks(sanitizedContent);
 
   let hasLiked = false;
   if (user) {
@@ -138,7 +140,7 @@ export default function TILDetail() {
       </header>
 
       <article
-        className='prose max-w-none'
+        className='prose til-content max-w-none'
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 

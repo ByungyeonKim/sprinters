@@ -6,6 +6,10 @@ export function sanitizeContent(html) {
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
       img: ['src', 'alt'],
+      code: ['class'],
+    },
+    allowedClasses: {
+      code: [/^language-[a-z0-9-]+$/],
     },
   });
 }
