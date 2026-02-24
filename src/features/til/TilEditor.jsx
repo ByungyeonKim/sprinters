@@ -20,6 +20,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../components/ui/tooltip';
+import { DEFAULT_CODE_LANGUAGE, normalizeCodeLanguage } from './code-languages';
+import { CodeBlockExtension } from './CodeBlockExtension';
 
 export function EditorHeader({ cancelTo, submitLabel, isSubmitting, onSave }) {
   return (
@@ -155,7 +157,15 @@ function EditorToolbar({ editor }) {
 export function TiptapEditor({ initialContent, onUpdate }) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      CodeBlockExtension.configure({
+        languageClassPrefix: 'language-',
+        defaultLanguage: DEFAULT_CODE_LANGUAGE,
+        enableTabIndentation: true,
+        tabSize: 2,
+      }),
       Placeholder.configure({
         placeholder: '내용을 입력하세요...',
       }),
@@ -165,6 +175,15 @@ export function TiptapEditor({ initialContent, onUpdate }) {
     shouldRerenderOnTransaction: true,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getHTML());
+    },
+    onTransaction: ({ editor }) => {
+      const activeLanguage = normalizeCodeLanguage(
+        editor.getAttributes('codeBlock')?.language,
+      );
+
+      if (activeLanguage) {
+        editor.storage.codeBlock.lastLanguage = activeLanguage;
+      }
     },
   });
 
