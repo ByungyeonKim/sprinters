@@ -243,3 +243,61 @@
   height: 0;
   pointer-events: none;
 }
+
+.til-content pre.shiki {
+  --code-label-section-height: 2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  padding: calc(var(--code-label-section-height) + 0.75rem) 0 0;
+}
+
+.til-content pre.shiki > code {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 1rem 1rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(118 127 145 / 72%) rgb(9 13 23 / 76%);
+}
+
+.til-content pre.shiki::before {
+  content: '';
+  position: absolute;
+  top: var(--code-label-section-height);
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+  pointer-events: none;
+}
+
+.til-content pre.shiki::after {
+  content: attr(data-code-language-label);
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  color: rgb(186 194 208 / 92%);
+  font-size: 0.68rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.til-content pre.shiki > code::-webkit-scrollbar {
+  height: 0.6rem;
+}
+
+.til-content pre.shiki > code::-webkit-scrollbar-track {
+  background: rgb(9 13 23 / 76%);
+}
+
+.til-content pre.shiki > code::-webkit-scrollbar-thumb {
+  border: 2px solid rgb(9 13 23 / 76%);
+  border-radius: 9999px;
+  background: rgb(118 127 145 / 72%);
+}
+
+.til-content pre.shiki > code::-webkit-scrollbar-thumb:hover {
+  background: rgb(151 160 178 / 78%);
+}
