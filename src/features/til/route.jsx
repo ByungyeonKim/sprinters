@@ -74,7 +74,7 @@ export default function TIL() {
           {(posts) => (
             <div className='space-y-10'>
               {posts.map((post, index) => (
-                <article key={index} className='group'>
+                <article key={index} className='rounded-xl p-5 -mx-5'>
                   <div className='mb-4 flex items-center gap-3'>
                     <img
                       src={post.avatar}
@@ -86,14 +86,14 @@ export default function TIL() {
                       <p className='text-sm text-gray-500'>{post.date}</p>
                     </div>
                   </div>
-                  <Link to={`/til/@${post.githubUsername}/${post.postNumber}`}>
+                  <Link to={`/til/@${post.githubUsername}/${post.postNumber}`} className='group'>
                     <h2 className='mb-3 text-2xl font-bold group-hover:underline'>
                       {post.title}
                     </h2>
+                    <p className='mb-4 line-clamp-2 leading-relaxed text-gray-600 group-hover:underline'>
+                      {stripHtml(post.content)}
+                    </p>
                   </Link>
-                  <p className='mb-4 line-clamp-2 leading-relaxed text-gray-600'>
-                    {stripHtml(post.content)}
-                  </p>
                   <div className='flex items-center justify-between'>
                     <div className='flex gap-2'>
                       {post.tags.map((tag) => (
