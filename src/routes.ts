@@ -7,6 +7,7 @@ export default [
     route("til", "features/til/route.jsx"),
     route("til/:username/:postNumber", "features/til/til-detail.jsx"),
     route("qna", "features/qna/route.jsx"),
+    route("qna/:questionId", "features/qna/qna-detail.jsx"),
   ]),
   route("til/new", "features/til/til-new.jsx"),
   route("til/:username/:postNumber/edit", "features/til/til-edit.jsx"),
