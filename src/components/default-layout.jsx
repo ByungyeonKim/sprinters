@@ -54,6 +54,18 @@ export default function DefaultLayout() {
             >
               Q&A
             </NavLink>
+            <NavLink
+              to='/library'
+              className={({ isActive }) =>
+                `hidden text-sm transition-colors sm:block ${
+                  isActive
+                    ? 'text-gray-900'
+                    : 'text-gray-500 hover:text-gray-900'
+                }`
+              }
+            >
+              라이브러리
+            </NavLink>
           </div>
           <nav className='flex items-center gap-6'>
             {user ? (
