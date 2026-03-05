@@ -12,9 +12,7 @@ export function meta({ data }) {
   }
   const { tutorial, currentStep } = data;
   const step = tutorial.steps[currentStep];
-  return [
-    { title: `${step?.title ?? tutorial.title} | Sprinters` },
-  ];
+  return [{ title: `${step?.title ?? tutorial.title} | Sprinters` }];
 }
 
 export async function loader({ params, request }) {
@@ -51,10 +49,7 @@ export async function loader({ params, request }) {
 
   const url = new URL(request.url);
   const stepParam = url.searchParams.get('step') ?? '';
-  const stepIndex = Math.max(
-    0,
-    Math.min(Number(stepParam) || 0, maxStep),
-  );
+  const stepIndex = Math.max(0, Math.min(Number(stepParam) || 0, maxStep));
 
   const highlightedSteps = await Promise.all(
     flatSessions.map(async (step) => ({
@@ -69,7 +64,13 @@ export async function loader({ params, request }) {
   };
 }
 
-function LibraryDetailHeader({ title, steps, chapterMeta, currentStep, onStepChange }) {
+function LibraryDetailHeader({
+  title,
+  steps,
+  chapterMeta,
+  currentStep,
+  onStepChange,
+}) {
   return (
     <header className='z-10 border-b border-gray-200 bg-white'>
       <div className='flex h-14 items-center px-4'>
@@ -82,7 +83,7 @@ function LibraryDetailHeader({ title, steps, chapterMeta, currentStep, onStepCha
             라이브러리
           </Link>
           <span className='text-gray-300'>/</span>
-          <span className='font-medium text-gray-900 truncate'>{title}</span>
+          <span className='truncate font-medium text-gray-900'>{title}</span>
         </nav>
       </div>
 
@@ -95,14 +96,22 @@ function LibraryDetailHeader({ title, steps, chapterMeta, currentStep, onStepCha
         >
           {chapterMeta?.length > 0
             ? chapterMeta.map((ch, ci) => (
-                <optgroup key={ci} label={`Ch.${ci + 1} ${ch.title}${ch.locked ? ' (추후 공개 예정)' : ''}`}>
+                <optgroup
+                  key={ci}
+                  label={`Ch.${ci + 1} ${ch.title}${ch.locked ? ' (공개 예정)' : ''}`}
+                >
                   {ch.locked
                     ? null
-                    : steps.slice(ch.startIndex, ch.startIndex + ch.count).map((s, i) => (
-                        <option key={ch.startIndex + i} value={ch.startIndex + i}>
-                          {ch.startIndex + i + 1}. {s.title}
-                        </option>
-                      ))}
+                    : steps
+                        .slice(ch.startIndex, ch.startIndex + ch.count)
+                        .map((s, i) => (
+                          <option
+                            key={ch.startIndex + i}
+                            value={ch.startIndex + i}
+                          >
+                            {ch.startIndex + i + 1}. {s.title}
+                          </option>
+                        ))}
                 </optgroup>
               ))
             : steps.map((s, i) => (
@@ -127,7 +136,6 @@ export default function LibraryDetail() {
   const contentRef = useRef(null);
   useCodeCopy(contentRef, [displayedStep]);
 
-
   const step = tutorial.steps[displayedStep];
 
   // entering-start → entering: 브라우저가 시작 위치를 paint한 뒤 transition 시작
@@ -139,7 +147,9 @@ export default function LibraryDetail() {
         if (!cancelled) setPhase('entering');
       });
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [phase]);
 
   // prefers-reduced-motion fallback: transitionend가 발생하지 않으므로 직접 전환
@@ -171,7 +181,8 @@ export default function LibraryDetail() {
     return () => clearTimeout(timer);
   }, [phase, direction, pendingStep]);
 
-  const firstLockedIndex = tutorial.chapterMeta.find((ch) => ch.locked)?.startIndex ?? Infinity;
+  const firstLockedIndex =
+    tutorial.chapterMeta.find((ch) => ch.locked)?.startIndex ?? Infinity;
 
   const handleStepChange = useCallback(
     (index) => {
@@ -189,7 +200,10 @@ export default function LibraryDetail() {
       }
       // exiting 중이면 pendingStep·direction만 갱신 → transition이 현재 위치에서 이어감
 
-      const url = index === 0 ? window.location.pathname : `${window.location.pathname}?step=${index}`;
+      const url =
+        index === 0
+          ? window.location.pathname
+          : `${window.location.pathname}?step=${index}`;
       window.history.replaceState(null, '', url);
       scrollContainerRef.current?.scrollTo({ top: 0 });
     },
@@ -212,17 +226,26 @@ export default function LibraryDetail() {
 
   const contentStyle =
     phase === 'exiting'
-      ? { opacity: 0, transform: `translateX(${direction === 'forward' ? '-200px' : '200px'})` }
-    : phase === 'entering-start'
-      ? { opacity: 0, transform: `translateX(${direction === 'forward' ? '200px' : '-200px'})`, transition: 'none' }
-    : phase === 'entering'
-      ? { opacity: 1, transform: 'translateX(0)' }
-    : undefined;
+      ? {
+          opacity: 0,
+          transform: `translateX(${direction === 'forward' ? '-200px' : '200px'})`,
+        }
+      : phase === 'entering-start'
+        ? {
+            opacity: 0,
+            transform: `translateX(${direction === 'forward' ? '200px' : '-200px'})`,
+            transition: 'none',
+          }
+        : phase === 'entering'
+          ? { opacity: 1, transform: 'translateX(0)' }
+          : undefined;
 
   const transitionClass =
-    phase === 'exiting' ? 'step-exit-transition' :
-    phase === 'entering' ? 'step-enter-transition' :
-    '';
+    phase === 'exiting'
+      ? 'step-exit-transition'
+      : phase === 'entering'
+        ? 'step-enter-transition'
+        : '';
 
   return (
     <div className='flex h-screen flex-col'>
@@ -245,7 +268,11 @@ export default function LibraryDetail() {
           onToggle={() => setSidebarOpen((prev) => !prev)}
         />
 
-        <div ref={scrollContainerRef} className='flex-1 overflow-y-auto overflow-x-hidden' style={{ scrollbarGutter: 'stable' }}>
+        <div
+          ref={scrollContainerRef}
+          className='flex-1 overflow-x-hidden overflow-y-auto'
+          style={{ scrollbarGutter: 'stable' }}
+        >
           <div
             className={`mx-auto max-w-3xl px-6 pt-10 pb-20 ${transitionClass}`}
             style={contentStyle}

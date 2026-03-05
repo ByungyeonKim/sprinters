@@ -1,60 +1,88 @@
 import { useState } from 'react';
 
-export function StepSidebar({ steps, chapterMeta, currentStep, onStepChange, isOpen, onToggle }) {
-  const items = chapterMeta?.length ? (
-    chapterMeta.map((ch, ci) => (
-      <ChapterGroup
-        key={ci}
-        chapter={ch}
-        chapterIndex={ci}
-        steps={steps}
-        currentStep={currentStep}
-        onStepChange={onStepChange}
-      />
-    ))
-  ) : (
-    steps.map((step, index) => (
-      <StepItem
-        key={index}
-        step={step}
-        index={index}
-        currentStep={currentStep}
-        onStepChange={onStepChange}
-      />
-    ))
-  );
+export function StepSidebar({
+  steps,
+  chapterMeta,
+  currentStep,
+  onStepChange,
+  isOpen,
+  onToggle,
+}) {
+  const items = chapterMeta?.length
+    ? chapterMeta.map((ch, ci) => (
+        <ChapterGroup
+          key={ci}
+          chapter={ch}
+          chapterIndex={ci}
+          steps={steps}
+          currentStep={currentStep}
+          onStepChange={onStepChange}
+        />
+      ))
+    : steps.map((step, index) => (
+        <StepItem
+          key={index}
+          step={step}
+          index={index}
+          currentStep={currentStep}
+          onStepChange={onStepChange}
+        />
+      ));
 
   return (
     <>
       <button
         onClick={onToggle}
-        className={`hidden lg:flex fixed top-1/2 -translate-y-1/2 z-20 items-center justify-center w-7 h-12 bg-white border border-gray-200 text-gray-400 hover:text-gray-600 hover:bg-gray-50 shadow-sm transition-[left,transform,border-radius] duration-300 ${
+        className={`fixed top-1/2 z-20 hidden h-12 w-7 -translate-y-1/2 items-center justify-center border border-gray-200 bg-white text-gray-400 shadow-sm transition-[left,transform,border-radius] duration-300 hover:bg-gray-50 hover:text-gray-600 lg:flex ${
           isOpen
             ? 'left-64 -translate-x-1/2 rounded-full'
             : 'left-0 translate-x-0 rounded-r-full border-l-0'
         }`}
         aria-label={isOpen ? '사이드바 닫기' : '사이드바 열기'}
       >
-        <svg className='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
-          {isOpen
-            ? <path strokeLinecap='round' strokeLinejoin='round' d='M15 19l-7-7 7-7' />
-            : <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
-          }
+        <svg
+          className='h-4 w-4'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke='currentColor'
+          strokeWidth={2}
+        >
+          {isOpen ? (
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              d='M15 19l-7-7 7-7'
+            />
+          ) : (
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              d='M9 5l7 7-7 7'
+            />
+          )}
         </svg>
       </button>
-      <nav className={`hidden lg:block shrink-0 border-r border-gray-200 transition-[width,border-color] duration-300 overflow-hidden ${isOpen ? 'w-64' : 'w-0 border-r-0'}`}>
-        <div className='min-w-64 h-full'>
-          <ol className='h-full overflow-y-auto p-4'>
-            {items}
-          </ol>
+      <nav
+        className={`hidden shrink-0 overflow-hidden border-r border-gray-200 transition-[width,border-color] duration-300 lg:block ${isOpen ? 'w-64' : 'w-0 border-r-0'}`}
+      >
+        <div className='h-full min-w-64'>
+          <ol className='h-full overflow-y-auto p-4'>{items}</ol>
         </div>
       </nav>
     </>
   );
 }
 
-function ChapterGroup({ chapter, chapterIndex, steps, currentStep, onStepChange }) {
-  const isCurrentChapter = currentStep >= chapter.startIndex && currentStep < chapter.startIndex + chapter.count;
+function ChapterGroup({
+  chapter,
+  chapterIndex,
+  steps,
+  currentStep,
+  onStepChange,
+}) {
+  const isCurrentChapter =
+    currentStep >= chapter.startIndex &&
+    currentStep < chapter.startIndex + chapter.count;
   const [isOpen, setIsOpen] = useState(isCurrentChapter);
   const [prevIsCurrent, setPrevIsCurrent] = useState(isCurrentChapter);
 
@@ -72,13 +100,18 @@ function ChapterGroup({ chapter, chapterIndex, steps, currentStep, onStepChange 
           <span className='flex h-6 shrink-0 items-center justify-center rounded-full border border-gray-200 px-2 text-[10px] font-medium tracking-tight text-gray-300'>
             Ch.{chapterIndex + 1}
           </span>
-          <span>{chapter.title} <span className='text-[11px]'>(추후 공개 예정)</span></span>
+          <span>
+            {chapter.title} <span className='text-[11px]'>(공개 예정)</span>
+          </span>
         </div>
       </li>
     );
   }
 
-  const chapterSessions = steps.slice(chapter.startIndex, chapter.startIndex + chapter.count);
+  const chapterSessions = steps.slice(
+    chapter.startIndex,
+    chapter.startIndex + chapter.count,
+  );
 
   return (
     <li className={chapterIndex > 0 ? 'mt-3' : ''}>
