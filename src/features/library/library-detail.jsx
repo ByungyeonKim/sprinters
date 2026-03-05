@@ -322,11 +322,18 @@ export default function LibraryDetail() {
             style={contentStyle}
             onTransitionEnd={handleTransitionEnd}
           >
-            <article
-              ref={contentRef}
-              className='prose library-content max-w-none'
-              dangerouslySetInnerHTML={{ __html: step.content }}
-            />
+            <article ref={contentRef} className='prose library-content max-w-none'>
+              <h1
+                className={
+                  step.title === '학습 로드맵'
+                    ? 'sr-only'
+                    : 'text-4xl border-b-3 border-foreground/70 pb-4 mb-15 dark:border-foreground/50'
+                }
+              >
+                {step.title}
+              </h1>
+              <div className='[&>:first-child]:mt-0' dangerouslySetInnerHTML={{ __html: step.content }} />
+            </article>
           </div>
         </div>
       </div>
