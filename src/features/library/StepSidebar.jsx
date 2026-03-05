@@ -6,7 +6,6 @@ export function StepSidebar({
   currentStep,
   onStepChange,
   isOpen,
-  onToggle,
 }) {
   const items = chapterMeta?.length
     ? chapterMeta.map((ch, ci) => (
@@ -31,39 +30,8 @@ export function StepSidebar({
 
   return (
     <>
-      <button
-        onClick={onToggle}
-        className={`fixed top-1/2 z-20 hidden h-12 w-7 -translate-y-1/2 items-center justify-center border border-gray-200 bg-white text-gray-400 shadow-sm transition-[left,transform,border-radius] duration-300 hover:bg-gray-50 hover:text-gray-600 lg:flex ${
-          isOpen
-            ? 'left-64 -translate-x-1/2 rounded-full'
-            : 'left-0 translate-x-0 rounded-r-full border-l-0'
-        }`}
-        aria-label={isOpen ? '사이드바 닫기' : '사이드바 열기'}
-      >
-        <svg
-          className='h-4 w-4'
-          fill='none'
-          viewBox='0 0 24 24'
-          stroke='currentColor'
-          strokeWidth={2}
-        >
-          {isOpen ? (
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M15 19l-7-7 7-7'
-            />
-          ) : (
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M9 5l7 7-7 7'
-            />
-          )}
-        </svg>
-      </button>
       <nav
-        className={`hidden shrink-0 overflow-hidden border-r border-gray-200 transition-[width,border-color] duration-300 lg:block ${isOpen ? 'w-64' : 'w-0 border-r-0'}`}
+        className={`hidden shrink-0 overflow-hidden border-r border-gray-200 bg-white transition-[width,border-color] duration-300 lg:block ${isOpen ? 'w-64' : 'w-0 border-r-0'}`}
       >
         <div className='h-full min-w-64'>
           <ol className='h-full overflow-y-auto p-4'>{items}</ol>
@@ -119,14 +87,14 @@ function ChapterGroup({
         onClick={() => setIsOpen(!isOpen)}
         className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
           isCurrentChapter
-            ? 'bg-gray-100 font-medium text-gray-900'
+            ? 'bg-gray-900 font-medium text-white'
             : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
         }`}
       >
         <span
           className={`flex h-6 shrink-0 items-center justify-center rounded-full px-2 text-[10px] font-medium tracking-tight transition-colors ${
             isCurrentChapter
-              ? 'bg-gray-900 text-white'
+              ? 'bg-gray-500 text-white'
               : 'border border-gray-300 text-gray-400'
           }`}
         >
@@ -134,7 +102,7 @@ function ChapterGroup({
         </span>
         <span>{chapter.title}</span>
         <svg
-          className={`ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+          className={`ml-auto h-4 w-4 shrink-0 ${isCurrentChapter ? 'text-white' : 'text-gray-400'} transition-transform ${isOpen ? 'rotate-90' : ''}`}
           fill='none'
           viewBox='0 0 24 24'
           stroke='currentColor'

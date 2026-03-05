@@ -5,6 +5,7 @@ import { tutorialsBySlug } from './library-data';
 import { useCodeCopy } from '../../hooks/use-code-copy';
 import { StepSidebar } from './StepSidebar';
 import { StepNavigation } from './StepNavigation';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../components/ui/tooltip';
 
 export function meta({ data }) {
   if (!data?.tutorial) {
@@ -248,7 +249,7 @@ export default function LibraryDetail() {
         : '';
 
   return (
-    <div className='flex h-screen flex-col'>
+    <div className='flex h-screen flex-col bg-gray-50'>
       <LibraryDetailHeader
         title={tutorial.title}
         steps={tutorial.steps}
@@ -265,14 +266,47 @@ export default function LibraryDetail() {
           currentStep={pendingStep}
           onStepChange={handleStepChange}
           isOpen={sidebarOpen}
-          onToggle={() => setSidebarOpen((prev) => !prev)}
         />
 
         <div
           ref={scrollContainerRef}
-          className='flex-1 overflow-x-hidden overflow-y-auto'
+          className='relative flex-1 overflow-x-hidden overflow-y-auto'
           style={{ scrollbarGutter: 'stable' }}
         >
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setSidebarOpen((prev) => !prev)}
+                  className='sticky top-3 left-3 z-10 hidden h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-700 lg:flex'
+                  aria-label={sidebarOpen ? '사이드바 닫기' : '사이드바 열기'}
+                >
+                  <svg
+                    className='h-4 w-4'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    strokeWidth={2}
+                  >
+                    {sidebarOpen ? (
+                      <>
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M3 4h18M3 12h12M3 20h18' />
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-3 3 3 3' />
+                      </>
+                    ) : (
+                      <>
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M3 4h18M3 12h12M3 20h18' />
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M17 9l3 3-3 3' />
+                      </>
+                    )}
+                  </svg>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side='right' sideOffset={6}>
+                {sidebarOpen ? '사이드바 닫기' : '사이드바 열기'}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div
             className={`mx-auto max-w-3xl px-6 pt-10 pb-20 ${transitionClass}`}
             style={contentStyle}
