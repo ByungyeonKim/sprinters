@@ -60,7 +60,7 @@ export default {
         {
           title: 'CSR의 동작 원리와 한계',
           content: `
-<h2>CSR(Client-Side Rendering)이란?</h2>
+<h2 id="what-is-csr"><a href="#what-is-csr" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>CSR(Client-Side Rendering)이란?</a></h2>
 <p>React로 만든 SPA(Single Page Application)는 기본적으로 <strong>CSR</strong> 방식으로 동작합니다. 브라우저가 서버에서 빈 HTML을 받고, JavaScript 번들을 다운로드한 뒤, 클라이언트에서 React가 UI를 렌더링하는 방식입니다.</p>
 
 <h3>CSR의 동작 과정</h3>
@@ -86,7 +86,7 @@ export default {
 5. 사용자 → 이제서야 콘텐츠를 볼 수 있음</code></pre>
 <p>즉, JavaScript가 완전히 로드되고 실행될 때까지 사용자는 <strong>빈 화면</strong>을 보게 됩니다.</p>
 
-<h2>CSR의 문제점들</h2>
+<h2 id="problems-of-csr"><a href="#problems-of-csr" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>CSR의 문제점들</a></h2>
 
 <h3>1. SEO(검색 엔진 최적화) 문제</h3>
 <p>검색 엔진 크롤러가 CSR 앱을 방문하면 어떤 일이 벌어질까요? 브라우저에서 <strong>우클릭 → 페이지 소스 보기</strong>를 하면 서버가 보내주는 원본 HTML을 확인할 수 있습니다. 검색 엔진 크롤러도 바로 이 HTML을 수집합니다.</p>
@@ -203,7 +203,7 @@ JS 다운로드       ████████
 ──────────────────────────────────────────────────────
 → 각 요청이 순차적으로 실행 = 느린 사용자 경험</code></pre>
 
-<h2>정리: 왜 서버가 필요한가?</h2>
+<h2 id="why-we-need-server"><a href="#why-we-need-server" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정리: 왜 서버가 필요한가?</a></h2>
 <p>CSR의 근본적인 한계를 정리하면:</p>
 <table>
 <thead><tr><th>문제</th><th>원인</th></tr></thead>
@@ -220,7 +220,7 @@ JS 다운로드       ████████
         {
           title: 'Next.js의 등장과 프로젝트 시작',
           content: `
-<h2>Next.js가 CSR 문제를 해결하는 방법</h2>
+<h2 id="how-nextjs-solves-csr"><a href="#how-nextjs-solves-csr" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Next.js가 CSR 문제를 해결하는 방법</a></h2>
 <p>이전 세션에서 살펴본 CSR의 한계를 Next.js는 어떻게 해결할까요?</p>
 
 <table>
@@ -255,7 +255,7 @@ Next.js (자동 코드 분할)
 <h3>렌더링 전략 개요</h3>
 <p>Next.js는 서버에서 HTML을 미리 렌더링할 수 있습니다. 빌드 시점에 미리 생성하거나, 사용자 요청 시마다 서버에서 생성하는 등 상황에 따라 전략을 선택할 수 있는데, 이 부분은 이후 챕터에서 자세히 다룹니다.</p>
 
-<h2>프로젝트 생성하기</h2>
+<h2 id="create-a-project"><a href="#create-a-project" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>프로젝트 생성하기</a></h2>
 <p><code>create-next-app</code>으로 새 프로젝트를 만듭니다:</p>
 <pre><code class="language-shell">npx create-next-app@latest my-app</code></pre>
 
@@ -279,7 +279,7 @@ Next.js (자동 코드 분할)
 <li><strong>App Router</strong> — Next.js의 최신 라우팅 시스템입니다. 반드시 선택하세요.</li>
 </ul>
 
-<h2>프로젝트 구조 이해</h2>
+<h2 id="understand-project-structure"><a href="#understand-project-structure" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>프로젝트 구조 이해</a></h2>
 <p>생성된 프로젝트의 디렉토리 구조입니다:</p>
 <pre><code class="language-text">my-app/
 ├── app/                      # App Router 핵심 디렉토리
@@ -306,7 +306,7 @@ Next.js (자동 코드 분할)
 </tbody>
 </table>
 
-<h2>개발 서버 실행과 첫 페이지 수정</h2>
+<h2 id="run-dev-server-and-edit"><a href="#run-dev-server-and-edit" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>개발 서버 실행과 첫 페이지 수정</a></h2>
 <p>프로젝트 디렉토리로 이동한 뒤 개발 서버를 실행합니다:</p>
 <pre><code class="language-shell">cd my-app
 npm run dev</code></pre>
@@ -332,7 +332,7 @@ export default function Home() {
         {
           title: 'App Router와 파일 기반 라우팅',
           content: `
-<h2>App Router란?</h2>
+<h2 id="what-is-app-router"><a href="#what-is-app-router" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>App Router란?</a></h2>
 <p><a href="https://github.com/vercel/next.js/discussions/41745" target="_blank" rel="noopener noreferrer">Next.js 13부터 도입</a>된 <strong>App Router</strong>는 <code>app/</code> 디렉토리 기반의 라우팅 시스템입니다. 이전의 Pages Router(<code>pages/</code> 디렉토리)를 대체하며, React Server Components, 중첩 레이아웃, 스트리밍 등 최신 기능을 지원합니다.</p>
 
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
@@ -350,7 +350,7 @@ export default function Home() {
 </table>
 <p>새 프로젝트라면 App Router를 사용하세요. Pages Router는 레거시 호환용으로만 유지됩니다.</p>
 
-<h2>핵심 파일 규칙</h2>
+<h2 id="file-conventions"><a href="#file-conventions" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>핵심 파일 규칙</a></h2>
 <p>App Router에서는 특정 이름을 가진 파일들이 <strong>특별한 역할</strong>을 합니다:</p>
 
 <h3><code>page.tsx</code> — 페이지 UI</h3>
@@ -420,7 +420,7 @@ export default function NotFound() {
   return &lt;h1&gt;페이지를 찾을 수 없습니다&lt;/h1&gt;;
 }</code></pre>
 
-<h2>정적 라우트 만들기</h2>
+<h2 id="create-static-routes"><a href="#create-static-routes" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정적 라우트 만들기</a></h2>
 <p>App Router에서 <strong>폴더 이름이 곧 URL 세그먼트</strong>가 됩니다:</p>
 <pre><code class="language-text">app/
 ├── page.tsx              → /
@@ -452,7 +452,7 @@ export default function Blog() {
   );
 }</code></pre>
 
-<h2>동적 라우트</h2>
+<h2 id="create-dynamic-routes"><a href="#create-dynamic-routes" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>동적 라우트</a></h2>
 <p>URL의 일부를 변수로 사용해야 할 때 대괄호로 폴더명을 감쌉니다:</p>
 
 <h3><code>[slug]</code> — 단일 동적 세그먼트</h3>
@@ -478,7 +478,7 @@ export default async function BlogPost({ params }: Props) {
         {
           title: '레이아웃 시스템과 중첩 라우팅',
           content: `
-<h2>루트 레이아웃</h2>
+<h2 id="root-layout"><a href="#root-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>루트 레이아웃</a></h2>
 <p><code>app/layout.tsx</code>는 Next.js 앱에서 <strong>필수</strong>인 파일입니다. 모든 페이지를 감싸며, <code>&lt;html&gt;</code>과 <code>&lt;body&gt;</code> 태그를 반드시 포함해야 합니다.</p>
 
 <pre><code class="language-tsx">// app/layout.tsx
@@ -513,7 +513,7 @@ export default function RootLayout({
 }</code></pre>
 <p>이 레이아웃은 앱의 모든 페이지에 적용됩니다. 헤더와 푸터는 어떤 페이지로 이동하든 항상 표시됩니다.</p>
 
-<h2>중첩 레이아웃</h2>
+<h2 id="nested-layouts"><a href="#nested-layouts" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>중첩 레이아웃</a></h2>
 <p>하위 폴더에 <code>layout.tsx</code>를 추가하면 <strong>자동으로 중첩</strong>됩니다:</p>
 <pre><code class="language-text">app/
 ├── layout.tsx              # 루트 레이아웃 (헤더, 푸터)
@@ -553,7 +553,7 @@ export default function DashboardLayout({
        └── 설정 페이지 (page.tsx)</code></pre>
 <p>레이아웃이 자동으로 감싸지므로, 별도 설정 없이도 <strong>일관된 UI 구조</strong>를 만들 수 있습니다.</p>
 
-<h2>레이아웃의 핵심 특성</h2>
+<h2 id="key-layout-characteristics"><a href="#key-layout-characteristics" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>레이아웃의 핵심 특성</a></h2>
 
 <h3>상태 유지 — 리렌더링되지 않음</h3>
 <p>레이아웃은 하위 페이지가 전환되어도 <strong>리렌더링되지 않습니다</strong>. 대시보드 사이드바의 스크롤 위치, 입력 중인 검색어 등의 상태가 유지됩니다.</p>
@@ -563,7 +563,7 @@ export default function DashboardLayout({
 
 <p><code>template.tsx</code>라는 별도 파일을 사용하면 페이지 전환 시마다 새로 마운트할 수도 있지만, 이는 <a href="https://nextjs.org/docs/app/api-reference/file-conventions/template" target="_blank" rel="noopener noreferrer">공식 문서</a>에서 자세히 확인할 수 있습니다.</p>
 
-<h2>실습: 블로그 프로젝트 레이아웃 구성</h2>
+<h2 id="practice-blog-layout"><a href="#practice-blog-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>실습: 블로그 프로젝트 레이아웃 구성</a></h2>
 <p>지금까지 배운 내용을 종합하여 블로그 프로젝트의 레이아웃을 구성해 봅시다.</p>
 <pre><code class="language-text">app/
 ├── layout.tsx          # 루트 레이아웃: 헤더(내비게이션) + 푸터
@@ -732,7 +732,7 @@ export default function BlogLayout({
         {
           title: '서버 컴포넌트와 클라이언트 컴포넌트',
           content: `
-<h2>왜 컴포넌트를 서버와 클라이언트로 나눌까?</h2>
+<h2 id="why-split-into-server-and-client"><a href="#why-split-into-server-and-client" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>왜 컴포넌트를 서버와 클라이언트로 나눌까?</a></h2>
 <p>Ch.1에서 우리는 CSR의 문제를 살펴보았습니다. 빈 HTML, 큰 번들, API 키 노출... 이 문제들을 해결하려면 <strong>서버가 필요</strong>하다는 결론에 도달했죠. 서버가 해결책이라면, 극단적으로 모든 것을 서버에서 처리하는 게 최선처럼 보일 수도 있습니다:</p>
 
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
@@ -747,7 +747,7 @@ export default function BlogLayout({
 </ul>
 <p>이것들이 불가능한 이유는 단순합니다. 서버 컴포넌트의 코드는 서버에서만 실행되고 브라우저에는 <strong>실행 결과만 전달</strong>되기 때문입니다. 코드 자체가 브라우저에 존재하지 않으니, 클릭에 반응하거나 상태를 유지하는 것은 원천적으로 불가능합니다. 그래서 React는 컴포넌트를 두 종류로 나눕니다: <strong>서버 컴포넌트</strong>와 <strong>클라이언트 컴포넌트</strong>.</p>
 
-<h2>서버 컴포넌트</h2>
+<h2 id="what-are-server-components"><a href="#what-are-server-components" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>서버 컴포넌트</a></h2>
 <p>App Router에서 모든 컴포넌트는 <strong>기본적으로 서버 컴포넌트</strong>입니다. 아무 지시어도 붙이지 않으면 서버에서 실행됩니다.</p>
 
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
@@ -827,7 +827,7 @@ export default function ServerComponent() {
   return &lt;button onClick={() =&gt; alert('클릭!')}&gt;버튼&lt;/button&gt;;
 }</code></pre>
 
-<h2>클라이언트 컴포넌트</h2>
+<h2 id="what-are-client-components"><a href="#what-are-client-components" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>클라이언트 컴포넌트</a></h2>
 <p>파일 최상단에 <code>'use client'</code> 지시어를 추가하면 클라이언트 컴포넌트가 됩니다. 이것은 기존 React 컴포넌트와 동일합니다.</p>
 
 <pre><code class="language-tsx">'use client';
@@ -849,7 +849,7 @@ export default function Counter() {
 <span>클라이언트 컴포넌트가 없으면 사용자와의 상호작용이 불가능합니다. 버튼, 폼, 토글, 모달 — 모두 클라이언트 컴포넌트가 필요합니다. "서버가 좋고 클라이언트가 나쁜 것"이 아니라, <strong>각자의 역할이 다를 뿐</strong>입니다.</span>
 </div>
 
-<h2>멘탈 모델: 서버가 기본, 클라이언트는 필요할 때만</h2>
+<h2 id="server-first-mental-model"><a href="#server-first-mental-model" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>멘탈 모델: 서버가 기본, 클라이언트는 필요할 때만</a></h2>
 <p>App Router에서의 사고방식은 이렇습니다:</p>
 <pre><code class="language-text">1. 새 컴포넌트를 만든다
 2. 인터랙션이 필요한가? (클릭, 입력, 상태 등)
@@ -889,7 +889,7 @@ export default function BlogLayout({
 }</code></pre>
 <p>이 코드의 문제는 무엇일까요? <code>useState</code>가 필요한 것은 카테고리 토글 버튼뿐인데, <strong>레이아웃 전체</strong>에 <code>'use client'</code>를 붙였습니다. 이렇게 하면 레이아웃의 코드 전부가 클라이언트 번들에 포함됩니다.</p>
 
-<h2>비교 테이블: 서버 vs 클라이언트 컴포넌트</h2>
+<h2 id="server-vs-client-comparison"><a href="#server-vs-client-comparison" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>비교 테이블: 서버 vs 클라이언트 컴포넌트</a></h2>
 <table>
 <thead><tr><th></th><th>서버 컴포넌트</th><th>클라이언트 컴포넌트</th></tr></thead>
 <tbody>
@@ -911,7 +911,7 @@ export default function BlogLayout({
         {
           title: "'use client' 경계와 컴포넌트 설계",
           content: `
-<h2>'use client'는 "경계"를 만든다</h2>
+<h2 id="use-client-creates-boundary"><a href="#use-client-creates-boundary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>'use client'는 "경계"를 만든다</a></h2>
 <img src="${nextJsBasicModuleImg}" alt="use client 경계와 모듈 의존성 트리" style="width:100%;aspect-ratio:2752/1536;border-radius:8px;margin:1rem 0;" />
 <p><code>'use client'</code>를 단순히 "이 파일을 클라이언트에서 실행해라"로 이해하면 절반만 맞습니다. 정확한 의미는 이렇습니다:</p>
 
@@ -951,7 +951,7 @@ export default function PostDate({ date }: { date: string }) {
   return &lt;time&gt;{formatDate(date)}&lt;/time&gt;;
 }</code></pre>
 
-<h2>설계 원칙: 'use client' 경계는 가능한 한 컴포넌트 트리의 끝에 배치한다</h2>
+<h2 id="push-boundary-to-leaves"><a href="#push-boundary-to-leaves" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>설계 원칙: 'use client' 경계는 가능한 한 컴포넌트 트리의 끝에 배치한다</a></h2>
 <p><code>'use client'</code> 경계가 트리 위쪽에 있을수록 더 많은 코드가 클라이언트 번들에 포함됩니다. 반대로 경계를 <strong>가능한 한 컴포넌트 트리의 끝(leaf) 가까이</strong> 내려놓으면 서버 컴포넌트의 이점을 최대로 살릴 수 있습니다.</p>
 
 <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
@@ -1016,7 +1016,7 @@ export default function BlogLayout({
 
 <p>이제 <code>BlogLayout</code>은 서버 컴포넌트로 유지되고, <code>'use client'</code> 경계는 정말 인터랙션이 필요한 <code>CategorySidebar</code>에만 적용됩니다.</p>
 
-<h2>판단 플로우차트</h2>
+<h2 id="decision-flowchart"><a href="#decision-flowchart" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>판단 플로우차트</a></h2>
 <p>새 컴포넌트를 만들 때 이 흐름을 따르세요:</p>
 <pre><code class="language-text">새 컴포넌트를 만든다
   │
@@ -1040,7 +1040,7 @@ export default function BlogLayout({
 <span>하나의 컴포넌트가 "데이터 표시 + 인터랙션"을 모두 담고 있다면, <strong>인터랙션 부분만 별도 클라이언트 컴포넌트로 분리</strong>하세요. 나머지는 서버 컴포넌트로 유지할 수 있습니다. 이것이 "경계를 트리 끝으로 내리는" 핵심 전략입니다.</span>
 </div>
 
-<h2>정리</h2>
+<h2 id="use-client-summary"><a href="#use-client-summary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정리</a></h2>
 <table>
 <thead><tr><th>개념</th><th>핵심 내용</th></tr></thead>
 <tbody>
@@ -1057,7 +1057,7 @@ export default function BlogLayout({
         {
           title: '합성 패턴과 직렬화 경계',
           content: `
-<h2>클라이언트에서 서버 컴포넌트를 import할 수 없다</h2>
+<h2 id="cannot-import-server-in-client"><a href="#cannot-import-server-in-client" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>클라이언트에서 서버 컴포넌트를 import할 수 없다</a></h2>
 <p>이전 세션에서 배운 규칙을 다시 떠올려 봅시다: <strong>클라이언트 컴포넌트가 import한 것은 모두 클라이언트가 된다.</strong></p>
 <p>그렇다면 클라이언트 컴포넌트 파일에서 서버 컴포넌트를 import하면 어떻게 될까요?</p>
 
@@ -1079,7 +1079,7 @@ export function ClientWrapper() {
 
 <p>그렇다면 "서버 컴포넌트에서 생성된 콘텐츠를 클라이언트 컴포넌트 안에 넣고 싶을 때"는 어떻게 해야 할까요?</p>
 
-<h2>children 합성(composition) 패턴</h2>
+<h2 id="children-composition-pattern"><a href="#children-composition-pattern" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>children 합성(composition) 패턴</a></h2>
 <p>해답은 <strong>import 대신 children(또는 다른 prop)으로 전달</strong>하는 것입니다.</p>
 
 <pre><code class="language-text">import vs children 차이:
@@ -1131,7 +1131,7 @@ export default function Home() {
   );
 }</code></pre>
 
-<h2>실전 패턴 1: Provider 패턴</h2>
+<h2 id="provider-pattern"><a href="#provider-pattern" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>실전 패턴 1: Provider 패턴</a></h2>
 <p>전역 상태나 테마를 제공하는 Provider는 보통 Context API를 사용하므로 클라이언트 컴포넌트여야 합니다. 하지만 Provider 아래의 모든 페이지가 클라이언트가 되면 안 되겠죠?</p>
 
 <pre><code class="language-tsx">// providers/ThemeProvider.tsx
@@ -1185,7 +1185,7 @@ export default function RootLayout({
 
 <p><code>ThemeProvider</code>는 클라이언트 컴포넌트이지만, <code>children</code>으로 전달된 페이지 컴포넌트들은 여전히 서버 컴포넌트로 유지됩니다. Provider가 children을 <strong>import하지 않고 slot으로 받기</strong> 때문입니다.</p>
 
-<h2>실전 패턴 2: 인터랙티브 래퍼 패턴</h2>
+<h2 id="interactive-wrapper-pattern"><a href="#interactive-wrapper-pattern" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>실전 패턴 2: 인터랙티브 래퍼 패턴</a></h2>
 <p>스크롤 애니메이션, 드래그 앤 드롭 등 인터랙션이 필요하지만 내부 콘텐츠는 서버에서 렌더링하고 싶을 때 사용합니다.</p>
 
 <pre><code class="language-tsx">// components/Accordion.tsx
@@ -1239,7 +1239,7 @@ export default function FAQ() {
   );
 }</code></pre>
 
-<h2>직렬화 경계: 서버 → 클라이언트 props 제약</h2>
+<h2 id="serialization-boundary"><a href="#serialization-boundary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>직렬화 경계: 서버 → 클라이언트 props 제약</a></h2>
 <p>서버 컴포넌트에서 클라이언트 컴포넌트로 props를 전달할 때, <strong>React가 직렬화 가능한 값</strong>만 전달할 수 있습니다.</p>
 
 <table>
@@ -1276,7 +1276,7 @@ export function ClientButton() {
   return &lt;button onClick={handleClick}&gt;클릭&lt;/button&gt;;
 }</code></pre>
 
-<h2>흔한 실수와 에러 메시지</h2>
+<h2 id="common-mistakes-and-errors"><a href="#common-mistakes-and-errors" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>흔한 실수와 에러 메시지</a></h2>
 
 <h3>실수 1: 서버 컴포넌트에서 Hook 사용</h3>
 <pre><code class="language-tsx">// ❌ app/page.tsx (서버 컴포넌트)
@@ -1308,7 +1308,7 @@ explicitly expose it by marking it with "use server". Or maybe you meant to call
 function rather than return it.</code></pre>
 <p><strong>해결:</strong> 함수는 클라이언트 컴포넌트 내부에서 정의하거나, Server Action(<code>'use server'</code>)으로 만들어 전달하세요. Server Action은 Ch.3에서 다룹니다.</p>
 
-<h2>server-only 패키지</h2>
+<h2 id="server-only-package"><a href="#server-only-package" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>server-only 패키지</a></h2>
 <p>서버에서만 실행되어야 하는 코드가 실수로 클라이언트 번들에 포함되는 것을 <strong>빌드 시점에</strong> 차단할 수 있습니다.</p>
 
 <pre><code class="language-shell">npm install server-only</code></pre>
@@ -1330,7 +1330,7 @@ It should only be used from a Server Component.</code></pre>
 <strong>언제 사용하나요?</strong> DB 접근, API 키 사용, 파일 시스템 접근 등 민감한 로직이 담긴 모듈에 추가하면 좋습니다. 실수로 클라이언트에 노출되는 것을 방지하는 안전장치입니다.
 </div>
 
-<h2>정리</h2>
+<h2 id="composition-summary"><a href="#composition-summary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정리</a></h2>
 <table>
 <thead><tr><th>패턴</th><th>핵심 아이디어</th></tr></thead>
 <tbody>
@@ -1348,7 +1348,7 @@ It should only be used from a Server Component.</code></pre>
         {
           title: '블로그 인터랙션 추가 실습',
           content: `
-<h2>이번 세션에서 할 일</h2>
+<h2 id="what-we-will-build"><a href="#what-we-will-build" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>이번 세션에서 할 일</a></h2>
 <p>Ch.1에서 만든 블로그 프로젝트에 서버/클라이언트 컴포넌트 설계를 적용합니다. 구체적으로:</p>
 <ol>
 <li><strong>BlogLayout 리팩터링</strong> — 전체 클라이언트 → 서버 컴포넌트 + CategorySidebar 분리</li>
@@ -1361,7 +1361,7 @@ It should only be used from a Server Component.</code></pre>
 <strong>참고:</strong> 이 실습에서는 데이터를 하드코딩된 배열로 사용합니다. 실제 API나 DB 연동은 Ch.3에서 다룹니다.
 </div>
 
-<h2>Step 1: BlogLayout 리팩터링</h2>
+<h2 id="step1-refactor-blog-layout"><a href="#step1-refactor-blog-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 1: BlogLayout 리팩터링</a></h2>
 <p>Ch.1의 BlogLayout은 <code>useState</code> 하나 때문에 전체가 클라이언트 컴포넌트였습니다. 인터랙션이 필요한 사이드바만 분리합시다.</p>
 
 <h3>CategorySidebar 클라이언트 컴포넌트 생성</h3>
@@ -1428,7 +1428,7 @@ export default function BlogLayout({
 </tbody>
 </table>
 
-<h2>Step 2: 좋아요 버튼 추가</h2>
+<h2 id="step2-add-like-button"><a href="#step2-add-like-button" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 2: 좋아요 버튼 추가</a></h2>
 <p>블로그 글 상세 페이지에 좋아요 버튼을 추가합니다. 이것은 전형적인 "서버 페이지 + 클라이언트 끝단 컴포넌트" 패턴입니다.</p>
 
 <h3>LikeButton 클라이언트 컴포넌트</h3>
@@ -1509,7 +1509,7 @@ export default async function Post({
 
 <p>페이지 전체는 서버 컴포넌트이므로 <code>posts</code> 배열이나 페이지 렌더링 코드는 클라이언트 JavaScript 번들에 포함되지 않습니다. 브라우저에서 실행되는 코드는 <code>LikeButton</code> 컴포넌트뿐입니다.</p>
 
-<h2>Step 3: 검색 기능 추가</h2>
+<h2 id="step3-add-search"><a href="#step3-add-search" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 3: 검색 기능 추가</a></h2>
 <p>글 목록을 실시간으로 필터링하는 검색 기능을 추가합니다. 검색은 사용자 입력에 반응해야 하므로 클라이언트 컴포넌트가 필요합니다.</p>
 
 <h3>SearchablePostList 클라이언트 컴포넌트</h3>
@@ -1588,7 +1588,7 @@ export default function Blog() {
 <span>검색 필터링은 사용자 입력에 반응해야 하므로 클라이언트에서 실행되어야 합니다. 데이터(<code>posts</code>)를 서버에서 준비하고 React가 직렬화 가능한 형태로 클라이언트 컴포넌트에 전달합니다. 이렇게 하면 데이터 조회는 서버에서, 인터랙션은 클라이언트에서 분담할 수 있습니다.</span>
 </div>
 
-<h2>Step 4: 최종 프로젝트 구조 점검</h2>
+<h2 id="step4-review-project-structure"><a href="#step4-review-project-structure" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 4: 최종 프로젝트 구조 점검</a></h2>
 <p>완성된 프로젝트의 서버/클라이언트 경계를 확인합시다:</p>
 
 <pre><code class="language-text">app/
@@ -1620,7 +1620,7 @@ components/
 
 <p><code>'use client'</code> 경계가 모두 <strong>트리의 끝 가까이</strong> 위치한 것을 확인할 수 있습니다.</p>
 
-<h2>이 챕터에서 내린 설계 판단들</h2>
+<h2 id="design-decisions-in-this-chapter"><a href="#design-decisions-in-this-chapter" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>이 챕터에서 내린 설계 판단들</a></h2>
 <table>
 <thead><tr><th>설계 판단</th><th>근거</th></tr></thead>
 <tbody>
