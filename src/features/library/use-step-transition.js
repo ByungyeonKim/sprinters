@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+const TRANSITION_END_PROPERTY = 'opacity';
+const TRANSITION_TIMEOUT_MS = {
+  entering: 470,
+  exiting: 330,
+};
+
 export function useStepTransition({
   initialStep,
   maxStep,
@@ -14,11 +20,20 @@ export function useStepTransition({
   const pendingStepRef = useRef(initialStep);
   const phaseRef = useRef('idle');
   const stepChangeRequestIdRef = useRef(0);
+  const timedPhaseIdRef = useRef(0);
 
-  const updatePhase = useCallback((nextPhase) => {
+  const setPhaseState = useCallback((nextPhase) => {
     phaseRef.current = nextPhase;
     setPhase(nextPhase);
   }, []);
+
+  const startTimedPhase = useCallback(
+    (nextPhase) => {
+      timedPhaseIdRef.current += 1;
+      setPhaseState(nextPhase);
+    },
+    [setPhaseState],
+  );
 
   const updatePendingStep = useCallback((nextStep) => {
     pendingStepRef.current = nextStep;
@@ -32,7 +47,7 @@ export function useStepTransition({
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (!cancelled) {
-          updatePhase('entering');
+          startTimedPhase('entering');
         }
       });
     });
@@ -40,7 +55,7 @@ export function useStepTransition({
     return () => {
       cancelled = true;
     };
-  }, [phase, updatePhase]);
+  }, [phase, startTimedPhase]);
 
   useEffect(() => {
     if (phase === 'idle') return;
@@ -49,36 +64,68 @@ export function useStepTransition({
     if (!mediaQuery.matches) return;
 
     let cancelled = false;
+    const expectedPhase = phase;
+    const expectedTimedPhaseId = timedPhaseIdRef.current;
+
     queueMicrotask(() => {
       if (cancelled) return;
 
-      if (phase === 'exiting') {
+      if (expectedPhase === 'exiting') {
+        if (
+          phaseRef.current !== expectedPhase ||
+          timedPhaseIdRef.current !== expectedTimedPhaseId
+        ) {
+          return;
+        }
+
         setDisplayedStep(pendingStepRef.current);
+        setPhaseState('idle');
+        return;
       }
 
-      updatePhase('idle');
+      if (expectedPhase === 'entering') {
+        if (
+          phaseRef.current !== expectedPhase ||
+          timedPhaseIdRef.current !== expectedTimedPhaseId
+        ) {
+          return;
+        }
+      } else if (phaseRef.current !== expectedPhase) {
+        return;
+      }
+
+      setPhaseState('idle');
     });
 
     return () => {
       cancelled = true;
     };
-  }, [phase, updatePhase]);
+  }, [phase, setPhaseState]);
 
   useEffect(() => {
     if (phase !== 'exiting' && phase !== 'entering') return;
 
-    const timeoutMs = phase === 'exiting' ? 330 : 470;
+    const expectedPhase = phase;
+    const expectedTimedPhaseId = timedPhaseIdRef.current;
+    const timeoutMs = TRANSITION_TIMEOUT_MS[phase];
     const timer = setTimeout(() => {
-      if (phase === 'exiting') {
+      if (
+        phaseRef.current !== expectedPhase ||
+        timedPhaseIdRef.current !== expectedTimedPhaseId
+      ) {
+        return;
+      }
+
+      if (expectedPhase === 'exiting') {
         setDisplayedStep(pendingStepRef.current);
-        updatePhase('entering-start');
-      } else if (phase === 'entering') {
-        updatePhase('idle');
+        setPhaseState('entering-start');
+      } else if (expectedPhase === 'entering') {
+        setPhaseState('idle');
       }
     }, timeoutMs);
 
     return () => clearTimeout(timer);
-  }, [phase, updatePhase]);
+  }, [phase, setPhaseState]);
 
   const handleStepChange = useCallback(
     (nextStep) => {
@@ -104,7 +151,7 @@ export function useStepTransition({
         if (currentPhase === 'entering-start') {
           setDisplayedStep(nextStep);
         } else if (currentPhase !== 'exiting') {
-          updatePhase('exiting');
+          startTimedPhase('exiting');
         }
 
         const url =
@@ -119,23 +166,24 @@ export function useStepTransition({
       ensureStepReady,
       maxStep,
       scrollContainerRef,
+      startTimedPhase,
       updatePendingStep,
-      updatePhase,
     ],
   );
 
   const handleTransitionEnd = useCallback(
     (event) => {
       if (event.target !== event.currentTarget) return;
+      if (event.propertyName !== TRANSITION_END_PROPERTY) return;
 
       if (phaseRef.current === 'exiting') {
         setDisplayedStep(pendingStepRef.current);
-        updatePhase('entering-start');
+        setPhaseState('entering-start');
       } else if (phaseRef.current === 'entering') {
-        updatePhase('idle');
+        setPhaseState('idle');
       }
     },
-    [updatePhase],
+    [setPhaseState],
   );
 
   const contentStyle = useMemo(() => {
