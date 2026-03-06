@@ -1,4 +1,6 @@
-export function StepNavigation({
+import { memo } from 'react';
+
+export const StepNavigation = memo(function StepNavigation({
   steps,
   currentStep,
   onStepChange,
@@ -45,4 +47,4 @@ export function StepNavigation({
       </div>
     </div>
   );
-}
+});

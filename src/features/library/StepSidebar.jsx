@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
-export function StepSidebar({
+export const StepSidebar = memo(function StepSidebar({
   steps,
   chapterMeta,
   currentStep,
@@ -39,7 +39,7 @@ export function StepSidebar({
       </nav>
     </>
   );
-}
+});
 
 function ChapterGroup({
   chapter,
@@ -52,14 +52,27 @@ function ChapterGroup({
     currentStep >= chapter.startIndex &&
     currentStep < chapter.startIndex + chapter.count;
   const [isOpen, setIsOpen] = useState(isCurrentChapter);
-  const [prevIsCurrent, setPrevIsCurrent] = useState(isCurrentChapter);
+  const wasCurrentChapterRef = useRef(isCurrentChapter);
 
-  if (isCurrentChapter && !prevIsCurrent) {
-    setPrevIsCurrent(true);
-    setIsOpen(true);
-  } else if (!isCurrentChapter && prevIsCurrent) {
-    setPrevIsCurrent(false);
-  }
+  useEffect(() => {
+    if (isCurrentChapter && !wasCurrentChapterRef.current) {
+      let cancelled = false;
+
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setIsOpen(true);
+        }
+      });
+
+      wasCurrentChapterRef.current = isCurrentChapter;
+
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    wasCurrentChapterRef.current = isCurrentChapter;
+  }, [isCurrentChapter]);
 
   if (chapter.locked) {
     return (
