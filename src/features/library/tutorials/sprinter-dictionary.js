@@ -27,7 +27,7 @@ export const terms = [
     term: 'SEO',
     termEn: 'Search Engine Optimization',
     description:
-      '검색 엔진(구글, 네이버 등)이 페이지를 잘 인식하고 상위에 노출되도록 최적화하는 것입니다. SSR은 HTML이 미리 준비되어 있어 SEO에 유리합니다.',
+      '검색 엔진이 웹페이지의 내용을 잘 이해하고, 관련 검색 결과에 적절하게 노출할 수 있도록 개선하는 최적화입니다. 제목, 설명, 구조화된 HTML, 메타데이터 등이 중요한 요소로 사용됩니다. SSR은 페이지의 HTML을 미리 제공할 수 있어, 검색 엔진이 콘텐츠를 더 쉽게 확인하는 데 도움이 될 수 있습니다.',
     category: '0',
     categoryLabel: '렌더링과 성능',
   },
@@ -243,7 +243,7 @@ export const terms = [
     term: 'Provider 패턴',
     termEn: null,
     description:
-      'React Context의 Provider를 클라이언트 컴포넌트로 만들고, children에 서버 컴포넌트를 넣는 패턴입니다. 테마, 인증 상태 등 전역 상태를 제공하면서도 서버 컴포넌트의 이점을 유지합니다.',
+      'React Context Provider를 클라이언트 컴포넌트로 만들고, 이를 서버 컴포넌트에서 감싸 하위 클라이언트 컴포넌트에 공통 상태를 제공하는 패턴입니다. 테마처럼 여러 컴포넌트가 함께 써야 하는 값을 공유할 때 유용하며, 서버 컴포넌트의 렌더링 이점도 함께 유지할 수 있습니다.',
     category: '2',
     categoryLabel: '서버·클라이언트 컴포넌트',
   },
