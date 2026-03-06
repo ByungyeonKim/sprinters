@@ -1,12 +1,65 @@
-import { Link, useLoaderData } from 'react-router';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useLoaderData } from 'react-router';
+import { useMemo, useRef, useState } from 'react';
 import { highlightCodeBlocks } from '../../utils/shiki.server';
 import { tutorialsBySlug } from './library-data';
 import { useCodeCopy } from '../../hooks/use-code-copy';
+import { MobileStepSelect } from './MobileStepSelect';
 import { StepSidebar } from './StepSidebar';
 import { StepNavigation } from './StepNavigation';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../components/ui/tooltip';
-import { DictionarySearch } from './DictionarySearch';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../components/ui/tooltip';
+import { LibraryHeader } from './LibraryHeader';
+import { useHighlightedLibrarySteps } from './use-highlighted-library-steps';
+import { useStepTransition } from './use-step-transition';
+
+const highlightedStepContentCache = new Map();
+
+function getHighlightedStepContent(slug, stepIndex, content) {
+  const cacheKey = `${slug}:${stepIndex}`;
+  const cachedEntry = highlightedStepContentCache.get(cacheKey);
+
+  if (cachedEntry?.source === content) {
+    return cachedEntry.promise;
+  }
+
+  const promise = highlightCodeBlocks(content);
+  highlightedStepContentCache.set(cacheKey, { source: content, promise });
+  return promise;
+}
+
+function getEagerStepIndices(chapterMeta, currentStep, maxStep) {
+  const eagerStepIndices = new Set([currentStep]);
+  const currentChapter = chapterMeta.find(
+    (chapter) =>
+      !chapter.locked &&
+      currentStep >= chapter.startIndex &&
+      currentStep < chapter.startIndex + chapter.count,
+  );
+
+  if (currentChapter) {
+    for (
+      let stepIndex = currentChapter.startIndex;
+      stepIndex < currentChapter.startIndex + currentChapter.count;
+      stepIndex += 1
+    ) {
+      eagerStepIndices.add(stepIndex);
+    }
+  }
+
+  if (currentStep > 0) {
+    eagerStepIndices.add(currentStep - 1);
+  }
+
+  if (currentStep < maxStep) {
+    eagerStepIndices.add(currentStep + 1);
+  }
+
+  return eagerStepIndices;
+}
 
 export function meta({ data }) {
   if (!data?.tutorial) {
@@ -52,225 +105,104 @@ export async function loader({ params, request }) {
   const url = new URL(request.url);
   const stepParam = url.searchParams.get('step') ?? '';
   const stepIndex = Math.max(0, Math.min(Number(stepParam) || 0, maxStep));
-
-  const highlightedSteps = await Promise.all(
-    flatSessions.map(async (step) => ({
-      ...step,
-      content: await highlightCodeBlocks(step.content),
-    })),
+  const eagerStepIndices = getEagerStepIndices(chapterMeta, stepIndex, maxStep);
+  const eagerHighlightedStepEntries = await Promise.all(
+    [...eagerStepIndices].map(async (index) => [
+      index,
+      await getHighlightedStepContent(slug, index, flatSessions[index].content),
+    ]),
   );
+  const deferredStepIndices = flatSessions
+    .map((_, index) => index)
+    .filter((index) => index <= maxStep && !eagerStepIndices.has(index));
+  const deferredHighlightedStepContentsPromise = deferredStepIndices.length
+    ? Promise.all(
+        deferredStepIndices.map(async (index) => [
+          index,
+          await getHighlightedStepContent(
+            slug,
+            index,
+            flatSessions[index].content,
+          ),
+        ]),
+      ).then(Object.fromEntries)
+    : null;
 
   return {
-    tutorial: { ...tutorial, steps: highlightedSteps, chapterMeta },
+    tutorial: { ...tutorial, steps: flatSessions, chapterMeta },
     currentStep: stepIndex,
+    eagerHighlightedStepContents: Object.fromEntries(
+      eagerHighlightedStepEntries,
+    ),
+    deferredHighlightedStepContentsPromise,
   };
 }
 
-function LibraryDetailHeader({
-  title,
-  steps,
-  chapterMeta,
-  currentStep,
-  onStepChange,
-}) {
-  return (
-    <header className='z-10 border-b border-gray-200 bg-white'>
-      <div className='flex h-14 items-center justify-between px-4'>
-        <nav className='flex items-center gap-1.5 text-sm'>
-          <Link to='/' className='text-gray-500 hover:text-gray-900'>
-            Sprinters
-          </Link>
-          <span className='text-gray-300'>/</span>
-          <Link to='/library' className='text-gray-500 hover:text-gray-900'>
-            라이브러리
-          </Link>
-          <span className='text-gray-300'>/</span>
-          <span className='truncate font-medium text-gray-900'>{title}</span>
-        </nav>
-        <div className='flex items-center gap-3'>
-          <DictionarySearch />
-          <a
-            href='https://github.com/ByungyeonKim/sprinters'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='text-gray-400 transition-colors hover:text-gray-900'
-          >
-            <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 24 24'>
-              <path d='M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z' />
-            </svg>
-          </a>
-        </div>
-      </div>
+export default function LibraryDetail() {
+  const loaderData = useLoaderData();
 
-      <div className='border-t border-gray-100 px-4 py-2 lg:hidden'>
-        <select
-          aria-label='세션 선택'
-          value={currentStep}
-          onChange={(e) => onStepChange(Number(e.target.value))}
-          className='w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700'
-        >
-          {chapterMeta?.length > 0
-            ? chapterMeta.map((ch, ci) => (
-                <optgroup
-                  key={ci}
-                  label={`Ch.${ci + 1} ${ch.title}${ch.locked ? ' (공개 예정)' : ''}`}
-                >
-                  {ch.locked
-                    ? null
-                    : steps
-                        .slice(ch.startIndex, ch.startIndex + ch.count)
-                        .map((s, i) => (
-                          <option
-                            key={ch.startIndex + i}
-                            value={ch.startIndex + i}
-                          >
-                            {ch.startIndex + i + 1}. {s.title}
-                          </option>
-                        ))}
-                </optgroup>
-              ))
-            : steps.map((s, i) => (
-                <option key={i} value={i}>
-                  {i + 1}. {s.title}
-                </option>
-              ))}
-        </select>
-      </div>
-    </header>
+  return (
+    <LibraryDetailContent
+      key={`${loaderData.tutorial.slug}:${loaderData.currentStep}`}
+      {...loaderData}
+    />
   );
 }
 
-export default function LibraryDetail() {
-  const { tutorial, currentStep: initialStep } = useLoaderData();
-  const [pendingStep, setPendingStep] = useState(initialStep);
-  const [displayedStep, setDisplayedStep] = useState(initialStep);
-  const [phase, setPhase] = useState('idle'); // 'idle' | 'exiting' | 'entering-start' | 'entering'
-  const [direction, setDirection] = useState(null); // 'forward' | 'backward' | null
+function LibraryDetailContent({
+  tutorial,
+  currentStep: initialStep,
+  eagerHighlightedStepContents,
+  deferredHighlightedStepContentsPromise,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const scrollContainerRef = useRef(null);
   const contentRef = useRef(null);
-  useCodeCopy(contentRef, [displayedStep]);
+  const { highlightedStepContents, ensureHighlightedStepContent } =
+    useHighlightedLibrarySteps({
+      initialHighlightedStepContents: eagerHighlightedStepContents,
+      deferredHighlightedStepContentsPromise,
+    });
+  const maxStep = useMemo(() => {
+    const firstLockedIndex =
+      tutorial.chapterMeta.find((chapter) => chapter.locked)?.startIndex ??
+      tutorial.steps.length;
+
+    return firstLockedIndex - 1;
+  }, [tutorial.chapterMeta, tutorial.steps.length]);
+  const {
+    contentStyle,
+    displayedStep,
+    handleStepChange,
+    handleTransitionEnd,
+    pendingStep,
+    transitionClass,
+  } = useStepTransition({
+    initialStep,
+    maxStep,
+    ensureStepReady: ensureHighlightedStepContent,
+    scrollContainerRef,
+  });
 
   const step = tutorial.steps[displayedStep];
-
-  // entering-start → entering: 브라우저가 시작 위치를 paint한 뒤 transition 시작
-  useEffect(() => {
-    if (phase !== 'entering-start') return;
-    let cancelled = false;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (!cancelled) setPhase('entering');
-      });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [phase]);
-
-  // prefers-reduced-motion fallback: transitionend가 발생하지 않으므로 직접 전환
-  useEffect(() => {
-    if (phase === 'idle') return;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (!mq.matches) return;
-
-    if (phase === 'exiting') {
-      setDisplayedStep(pendingStep);
-      setPhase('idle');
-    } else if (phase === 'entering-start' || phase === 'entering') {
-      setPhase('idle');
-    }
-  }, [phase, pendingStep]);
-
-  // safety timeout: transitionend가 발화하지 않는 엣지 케이스 대비
-  useEffect(() => {
-    if (phase !== 'exiting' && phase !== 'entering') return;
-    const ms = phase === 'exiting' ? 330 : 470;
-    const timer = setTimeout(() => {
-      if (phase === 'exiting') {
-        setDisplayedStep(pendingStep);
-        setPhase('entering-start');
-      } else if (phase === 'entering') {
-        setPhase('idle');
-      }
-    }, ms);
-    return () => clearTimeout(timer);
-  }, [phase, direction, pendingStep]);
-
-  const firstLockedIndex =
-    tutorial.chapterMeta.find((ch) => ch.locked)?.startIndex ?? Infinity;
-
-  const handleStepChange = useCallback(
-    (index) => {
-      if (index === pendingStep || index >= firstLockedIndex) return;
-
-      const dir = index > pendingStep ? 'forward' : 'backward';
-      setDirection(dir);
-      setPendingStep(index);
-
-      if (phase === 'entering-start') {
-        // 콘텐츠가 보이지 않는 상태 → 바로 새 콘텐츠로 교체, entering-start 유지
-        setDisplayedStep(index);
-      } else if (phase !== 'exiting') {
-        setPhase('exiting');
-      }
-      // exiting 중이면 pendingStep·direction만 갱신 → transition이 현재 위치에서 이어감
-
-      const url =
-        index === 0
-          ? window.location.pathname
-          : `${window.location.pathname}?step=${index}`;
-      window.history.replaceState(null, '', url);
-      scrollContainerRef.current?.scrollTo({ top: 0 });
-    },
-    [pendingStep, phase, firstLockedIndex],
-  );
-
-  const handleTransitionEnd = useCallback(
-    (e) => {
-      if (e.target !== e.currentTarget) return;
-
-      if (phase === 'exiting') {
-        setDisplayedStep(pendingStep);
-        setPhase('entering-start');
-      } else if (phase === 'entering') {
-        setPhase('idle');
-      }
-    },
-    [phase, pendingStep],
-  );
-
-  const contentStyle =
-    phase === 'exiting'
-      ? {
-          opacity: 0,
-          transform: `translateX(${direction === 'forward' ? '-200px' : '200px'})`,
-        }
-      : phase === 'entering-start'
-        ? {
-            opacity: 0,
-            transform: `translateX(${direction === 'forward' ? '200px' : '-200px'})`,
-            transition: 'none',
-          }
-        : phase === 'entering'
-          ? { opacity: 1, transform: 'translateX(0)' }
-          : undefined;
-
-  const transitionClass =
-    phase === 'exiting'
-      ? 'step-exit-transition'
-      : phase === 'entering'
-        ? 'step-enter-transition'
-        : '';
-
-  return (
-    <div className='flex h-screen flex-col bg-gray-50'>
-      <LibraryDetailHeader
-        title={tutorial.title}
+  const displayedStepContent =
+    highlightedStepContents[displayedStep] ?? step.content;
+  useCodeCopy(contentRef, [displayedStep, displayedStepContent]);
+  const mobileStepSelect = useMemo(
+    () => (
+      <MobileStepSelect
         steps={tutorial.steps}
         chapterMeta={tutorial.chapterMeta}
         currentStep={pendingStep}
         onStepChange={handleStepChange}
       />
+    ),
+    [tutorial.steps, tutorial.chapterMeta, pendingStep, handleStepChange],
+  );
+
+  return (
+    <div className='flex h-screen flex-col bg-gray-50'>
+      <LibraryHeader title={tutorial.title}>{mobileStepSelect}</LibraryHeader>
 
       {/* 본문 */}
       <div className='flex min-h-0 flex-1'>
@@ -304,13 +236,29 @@ export default function LibraryDetail() {
                   >
                     {sidebarOpen ? (
                       <>
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M3 4h18M3 12h12M3 20h18' />
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-3 3 3 3' />
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M3 4h18M3 12h12M3 20h18'
+                        />
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M19 9l-3 3 3 3'
+                        />
                       </>
                     ) : (
                       <>
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M3 4h18M3 12h12M3 20h18' />
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M17 9l3 3-3 3' />
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M3 4h18M3 12h12M3 20h18'
+                        />
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M17 9l3 3-3 3'
+                        />
                       </>
                     )}
                   </svg>
@@ -326,17 +274,23 @@ export default function LibraryDetail() {
             style={contentStyle}
             onTransitionEnd={handleTransitionEnd}
           >
-            <article ref={contentRef} className='prose library-content max-w-none'>
+            <article
+              ref={contentRef}
+              className='prose library-content max-w-none'
+            >
               <h1
                 className={
                   step.title === '학습 로드맵'
                     ? 'sr-only'
-                    : 'text-4xl border-b-3 border-foreground/70 pb-4 mb-15 dark:border-foreground/50'
+                    : 'border-foreground/70 dark:border-foreground/50 mb-15 border-b-3 pb-4 text-4xl'
                 }
               >
                 {step.title}
               </h1>
-              <div className='[&>:first-child]:mt-0' dangerouslySetInnerHTML={{ __html: step.content }} />
+              <div
+                className='[&>:first-child]:mt-0'
+                dangerouslySetInnerHTML={{ __html: displayedStepContent }}
+              />
             </article>
           </div>
         </div>
@@ -346,7 +300,7 @@ export default function LibraryDetail() {
         steps={tutorial.steps}
         currentStep={pendingStep}
         onStepChange={handleStepChange}
-        maxStep={firstLockedIndex - 1}
+        maxStep={maxStep}
         sidebarOpen={sidebarOpen}
       />
     </div>
