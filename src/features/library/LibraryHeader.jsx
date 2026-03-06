@@ -19,6 +19,12 @@ export const LibraryHeader = memo(function LibraryHeader({ title, children }) {
         </nav>
         <div className='flex items-center gap-3'>
           <DictionarySearch />
+          <Link
+            to='/til/new'
+            className='text-sm text-gray-400 transition-colors hover:text-gray-900'
+          >
+            TIL 쓰기
+          </Link>
           <a
             href='https://github.com/ByungyeonKim/sprinters'
             target='_blank'
