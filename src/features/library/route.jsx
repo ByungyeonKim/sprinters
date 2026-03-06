@@ -28,11 +28,17 @@ export default function LibraryPage() {
               {tutorial.description}
             </p>
             <div className='flex items-center gap-3 text-xs text-gray-400'>
-              <span>{tutorial.difficulty}</span>
-              <span>·</span>
-              <span>{tutorial.chapters}개 챕터</span>
-              <span>·</span>
-              <span>{tutorial.totalSessions}개 세션</span>
+              {tutorial.totalTerms ? (
+                <span>{tutorial.totalTerms}개의 용어</span>
+              ) : (
+                <>
+                  <span>{tutorial.difficulty}</span>
+                  <span>·</span>
+                  <span>{tutorial.chapters}개 챕터</span>
+                  <span>·</span>
+                  <span>{tutorial.totalSessions}개 세션</span>
+                </>
+              )}
             </div>
           </Link>
         ))}
