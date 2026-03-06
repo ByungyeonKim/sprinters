@@ -8,6 +8,15 @@ export const tutorials = [
     chapters: 4,
     totalSessions: 9,
   },
+  {
+    slug: 'sprinter-dictionary',
+    title: '스프린터 사전',
+    description:
+      'IT 개발에 필요한 핵심 용어와 개념을 정리합니다.',
+    difficulty: '전체',
+    chapters: 1,
+    totalSessions: 3,
+  },
 ];
 
 export const tutorialsBySlug = Object.fromEntries(

@@ -483,6 +483,18 @@
   opacity: 0.6;
 }
 
+.library-content table {
+  table-layout: fixed;
+}
+
+.library-content th:first-child {
+  width: 20%;
+}
+
+.library-content th:last-child {
+  width: 15%;
+}
+
 .qna-content p {
   white-space: pre-wrap;
 }

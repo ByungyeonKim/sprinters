@@ -10,6 +10,7 @@ export default [
     route("qna/:questionId", "features/qna/qna-detail.jsx"),
     route("library", "features/library/route.jsx"),
   ]),
+  route("library/sprinter-dictionary", "features/library/sprinter-dictionary.jsx"),
   route("library/:slug", "features/library/library-detail.jsx"),
   route("til/new", "features/til/til-new.jsx"),
   route("til/:username/:postNumber/edit", "features/til/til-edit.jsx"),

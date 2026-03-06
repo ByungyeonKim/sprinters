@@ -19,12 +19,12 @@ export default function LibraryPage() {
           <Link
             key={tutorial.slug}
             to={`/library/${tutorial.slug}`}
-            className='group rounded-xl border border-gray-200 p-6 transition-colors hover:border-gray-300 hover:bg-gray-50'
+            className='group flex flex-col rounded-xl border border-gray-200 p-6 transition-colors hover:border-gray-300 hover:bg-gray-50'
           >
             <h2 className='mb-2 text-lg font-semibold group-hover:text-black'>
               {tutorial.title}
             </h2>
-            <p className='mb-4 text-sm leading-relaxed text-gray-500'>
+            <p className='mb-4 flex-1 text-sm leading-relaxed text-gray-500'>
               {tutorial.description}
             </p>
             <div className='flex items-center gap-3 text-xs text-gray-400'>
