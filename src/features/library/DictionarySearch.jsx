@@ -9,6 +9,8 @@ const CATEGORY_LABELS = [
   '서버·클라이언트 컴포넌트',
 ];
 
+const termsByCategory = Object.groupBy(terms, (t) => t.category);
+
 function searchFilter(value, search, keywords) {
   const valueLower = value.toLowerCase();
   const searchLower = search.toLowerCase();
@@ -90,8 +92,7 @@ function SearchModal({ open, onOpenChange }) {
         idx,
         maxScore: Math.max(
           0,
-          ...terms
-            .filter((t) => t.category === String(idx))
+          ...(termsByCategory[String(idx)] || [])
             .map((t) => searchFilter(t.term, search, [t.termEn || ''])),
         ),
       })).sort((a, b) => b.maxScore - a.maxScore)
@@ -121,9 +122,7 @@ function SearchModal({ open, onOpenChange }) {
         </Command.Empty>
         {sortedGroups.map(({ label, idx }) => (
           <Command.Group key={idx} heading={label} className='cmdk-group'>
-            {terms
-              .filter((t) => t.category === String(idx))
-              .map((t) => (
+            {(termsByCategory[String(idx)] || []).map((t) => (
                 <Command.Item
                   key={t.term}
                   value={t.term}
