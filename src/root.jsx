@@ -18,7 +18,9 @@ export async function loader({ request }) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  return data({ user }, { headers });
+  const ua = request.headers.get('user-agent') || '';
+  const isMac = /Mac|iPhone|iPad/.test(ua);
+  return data({ user, isMac }, { headers });
 }
 
 export function headers({ loaderHeaders }) {
