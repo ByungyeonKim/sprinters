@@ -1,5 +1,5 @@
-import { useLoaderData } from 'react-router';
-import { useMemo, useRef, useState } from 'react';
+import { useLoaderData, useSearchParams } from 'react-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { highlightCodeBlocks } from '../../utils/shiki.server';
 import { tutorialsBySlug } from './library-data';
 import { useCodeCopy } from '../../hooks/use-code-copy';
@@ -17,6 +17,33 @@ import { useHighlightedLibrarySteps } from './use-highlighted-library-steps';
 import { useStepTransition } from './use-step-transition';
 
 const highlightedStepContentCache = new Map();
+
+function clampStepIndex(stepParam, maxStep) {
+  const parsedStep = Number(stepParam);
+  const normalizedStep = Number.isInteger(parsedStep) ? parsedStep : 0;
+
+  return Math.max(0, Math.min(normalizedStep, maxStep));
+}
+
+function setStepSearchParam(searchParams, stepIndex) {
+  if (stepIndex === 0) {
+    searchParams.delete('step');
+    return searchParams;
+  }
+
+  searchParams.set('step', String(stepIndex));
+  return searchParams;
+}
+
+function areSearchParamsEqualExceptStep(currentUrl, nextUrl) {
+  const currentSearchParams = new URLSearchParams(currentUrl.search);
+  const nextSearchParams = new URLSearchParams(nextUrl.search);
+
+  currentSearchParams.delete('step');
+  nextSearchParams.delete('step');
+
+  return currentSearchParams.toString() === nextSearchParams.toString();
+}
 
 function getHighlightedStepContent(slug, stepIndex, content) {
   const cacheKey = `${slug}:${stepIndex}`;
@@ -70,6 +97,24 @@ export function meta({ data }) {
   return [{ title: `${step?.title ?? tutorial.title} | Sprinters` }];
 }
 
+export function shouldRevalidate({
+  currentUrl,
+  currentParams,
+  defaultShouldRevalidate,
+  nextParams,
+  nextUrl,
+}) {
+  if (
+    currentParams.slug === nextParams.slug &&
+    currentUrl.pathname === nextUrl.pathname &&
+    areSearchParamsEqualExceptStep(currentUrl, nextUrl)
+  ) {
+    return false;
+  }
+
+  return defaultShouldRevalidate;
+}
+
 export async function loader({ params, request }) {
   const { slug } = params;
   const meta = tutorialsBySlug[slug];
@@ -103,8 +148,7 @@ export async function loader({ params, request }) {
     : flatSessions.length - 1;
 
   const url = new URL(request.url);
-  const stepParam = url.searchParams.get('step') ?? '';
-  const stepIndex = Math.max(0, Math.min(Number(stepParam) || 0, maxStep));
+  const stepIndex = clampStepIndex(url.searchParams.get('step') ?? '', maxStep);
   const eagerStepIndices = getEagerStepIndices(chapterMeta, stepIndex, maxStep);
   const eagerHighlightedStepEntries = await Promise.all(
     [...eagerStepIndices].map(async (index) => [
@@ -141,23 +185,18 @@ export async function loader({ params, request }) {
 export default function LibraryDetail() {
   const loaderData = useLoaderData();
 
-  return (
-    <LibraryDetailContent
-      key={`${loaderData.tutorial.slug}:${loaderData.currentStep}`}
-      {...loaderData}
-    />
-  );
+  return <LibraryDetailContent key={loaderData.tutorial.slug} {...loaderData} />;
 }
 
 function LibraryDetailContent({
   tutorial,
-  currentStep: initialStep,
   eagerHighlightedStepContents,
   deferredHighlightedStepContentsPromise,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const scrollContainerRef = useRef(null);
   const contentRef = useRef(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { highlightedStepContents, ensureHighlightedStepContent } =
     useHighlightedLibrarySteps({
       initialHighlightedStepContents: eagerHighlightedStepContents,
@@ -170,6 +209,44 @@ function LibraryDetailContent({
 
     return firstLockedIndex - 1;
   }, [tutorial.chapterMeta, tutorial.steps.length]);
+  const currentStep = useMemo(
+    () => clampStepIndex(searchParams.get('step') ?? '', maxStep),
+    [maxStep, searchParams],
+  );
+  const updateStepUrl = useCallback(
+    (nextStep, { replace = false } = {}) => {
+      setSearchParams(
+        (currentSearchParams) => {
+          const nextSearchParams = new URLSearchParams(currentSearchParams);
+          return setStepSearchParam(nextSearchParams, nextStep);
+        },
+        { preventScrollReset: true, replace },
+      );
+    },
+    [setSearchParams],
+  );
+
+  useEffect(() => {
+    const normalizedSearchParams = setStepSearchParam(
+      new URLSearchParams(searchParams),
+      currentStep,
+    );
+
+    if (normalizedSearchParams.toString() === searchParams.toString()) {
+      return;
+    }
+
+    setSearchParams(normalizedSearchParams, {
+      preventScrollReset: true,
+      replace: true,
+    });
+  }, [currentStep, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    const currentTitleStep = tutorial.steps[currentStep];
+    document.title = `${currentTitleStep?.title ?? tutorial.title} | Sprinters`;
+  }, [currentStep, tutorial.steps, tutorial.title]);
+
   const {
     contentStyle,
     displayedStep,
@@ -178,9 +255,10 @@ function LibraryDetailContent({
     pendingStep,
     transitionClass,
   } = useStepTransition({
-    initialStep,
+    currentStep,
     maxStep,
     ensureStepReady: ensureHighlightedStepContent,
+    onStepUrlChange: updateStepUrl,
     scrollContainerRef,
   });
 

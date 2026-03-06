@@ -7,17 +7,18 @@ const TRANSITION_TIMEOUT_MS = {
 };
 
 export function useStepTransition({
-  initialStep,
+  currentStep,
   maxStep,
   ensureStepReady,
+  onStepUrlChange,
   scrollContainerRef,
 }) {
-  const [pendingStep, setPendingStep] = useState(initialStep);
-  const [displayedStep, setDisplayedStep] = useState(initialStep);
+  const [pendingStep, setPendingStep] = useState(currentStep);
+  const [displayedStep, setDisplayedStep] = useState(currentStep);
   const [phase, setPhase] = useState('idle');
   const [direction, setDirection] = useState(null);
 
-  const pendingStepRef = useRef(initialStep);
+  const pendingStepRef = useRef(currentStep);
   const phaseRef = useRef('idle');
   const stepChangeRequestIdRef = useRef(0);
   const timedPhaseIdRef = useRef(0);
@@ -127,8 +128,8 @@ export function useStepTransition({
     return () => clearTimeout(timer);
   }, [phase, setPhaseState]);
 
-  const handleStepChange = useCallback(
-    (nextStep) => {
+  const requestStepChange = useCallback(
+    (nextStep, { replace = false, syncUrl = false } = {}) => {
       const requestId = stepChangeRequestIdRef.current + 1;
       stepChangeRequestIdRef.current = requestId;
 
@@ -154,21 +155,33 @@ export function useStepTransition({
           startTimedPhase('exiting');
         }
 
-        const url =
-          nextStep === 0
-            ? window.location.pathname
-            : `${window.location.pathname}?step=${nextStep}`;
-        window.history.replaceState(null, '', url);
+        if (syncUrl) {
+          onStepUrlChange(nextStep, { replace });
+        }
+
         scrollContainerRef.current?.scrollTo({ top: 0 });
       })();
     },
     [
       ensureStepReady,
       maxStep,
+      onStepUrlChange,
       scrollContainerRef,
       startTimedPhase,
       updatePendingStep,
     ],
+  );
+
+  useEffect(() => {
+    if (currentStep === pendingStepRef.current) return;
+    requestStepChange(currentStep);
+  }, [currentStep, requestStepChange]);
+
+  const handleStepChange = useCallback(
+    (nextStep) => {
+      requestStepChange(nextStep, { syncUrl: true });
+    },
+    [requestStepChange],
   );
 
   const handleTransitionEnd = useCallback(
