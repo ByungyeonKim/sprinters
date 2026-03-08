@@ -3,7 +3,6 @@ import {
   Suspense,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import { useMatches } from 'react-router';
@@ -15,7 +14,12 @@ let dictionarySearchDialogPromise;
 
 function preloadDictionarySearchDialog() {
   if (!dictionarySearchDialogPromise) {
-    dictionarySearchDialogPromise = loadDictionarySearchDialog();
+    dictionarySearchDialogPromise = loadDictionarySearchDialog().catch(
+      (error) => {
+        dictionarySearchDialogPromise = undefined;
+        throw error;
+      },
+    );
   }
 
   return dictionarySearchDialogPromise;
@@ -24,41 +28,25 @@ function preloadDictionarySearchDialog() {
 export function DictionarySearch() {
   const [open, setOpen] = useState(false);
   const [shouldRenderDialog, setShouldRenderDialog] = useState(false);
-  const mountedRef = useRef(true);
   const matches = useMatches();
   const isMac = matches[0]?.data?.isMac ?? true;
 
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
-
-  const warmDialog = useCallback(async () => {
-    await preloadDictionarySearchDialog();
-
-    if (mountedRef.current) {
-      setShouldRenderDialog(true);
-    }
-  }, []);
-
   const handleWarmDialog = useCallback(() => {
-    void warmDialog().catch(() => {});
-  }, [warmDialog]);
+    void preloadDictionarySearchDialog().catch(() => {});
+  }, []);
 
   const handleOpen = useCallback(() => {
-    void warmDialog()
-      .then(() => {
-        if (mountedRef.current) {
-          setOpen(true);
-        }
-      })
-      .catch(() => {});
-  }, [warmDialog]);
+    setShouldRenderDialog(true);
+    setOpen(true);
+    void preloadDictionarySearchDialog().catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        event.key.toLowerCase() === 'k'
+      ) {
         event.preventDefault();
         handleOpen();
       }

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Command, defaultFilter } from 'cmdk';
+import { Dialog as DialogPrimitive } from 'radix-ui';
 import { terms } from './tutorials/sprinter-dictionary.js';
 
 const CATEGORY_LABELS = [
@@ -72,7 +73,9 @@ export default function DictionarySearchDialog({ open, onOpenChange }) {
             검색으로 돌아가기
           </button>
           <div className='cmdk-detail-header'>
-            <h2 className='cmdk-detail-term'>{selectedTerm.term}</h2>
+            <DialogPrimitive.Title className='cmdk-detail-term'>
+              {selectedTerm.term}
+            </DialogPrimitive.Title>
             {selectedTerm.termEn && (
               <span className='cmdk-detail-term-en'>{selectedTerm.termEn}</span>
             )}
@@ -80,7 +83,9 @@ export default function DictionarySearchDialog({ open, onOpenChange }) {
               {selectedTerm.categoryLabel}
             </span>
           </div>
-          <p className='cmdk-detail-description'>{selectedTerm.description}</p>
+          <DialogPrimitive.Description className='cmdk-detail-description'>
+            {selectedTerm.description}
+          </DialogPrimitive.Description>
         </div>
       </Command.Dialog>
     );
@@ -109,6 +114,13 @@ export default function DictionarySearchDialog({ open, onOpenChange }) {
       filter={searchFilter}
       loop
     >
+      <DialogPrimitive.Title className='sr-only'>
+        용어 검색
+      </DialogPrimitive.Title>
+      <DialogPrimitive.Description className='sr-only'>
+        프론트엔드 학습 용어를 검색하고 결과 목록에서 항목을 선택해 상세
+        설명을 확인할 수 있습니다.
+      </DialogPrimitive.Description>
       <Command.Input
         value={search}
         placeholder='용어 검색...'
