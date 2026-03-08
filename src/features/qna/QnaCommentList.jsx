@@ -9,9 +9,13 @@ function QnaCommentList({ comments, onCommentDeleted }) {
   const handleDelete = async (commentId) => {
     if (!user?.id) return;
 
-    await deleteQnaComment(commentId, user.id);
-    toast.success('댓글이 삭제되었습니다.');
-    onCommentDeleted?.(commentId);
+    try {
+      await deleteQnaComment(commentId, user.id);
+      toast.success('댓글이 삭제되었습니다.');
+      onCommentDeleted?.(commentId);
+    } catch {
+      toast.error('댓글 삭제에 실패했습니다.');
+    }
   };
 
   if (!comments?.length) {
