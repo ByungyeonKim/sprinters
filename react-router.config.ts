@@ -5,4 +5,11 @@ export default {
   appDirectory: "src",
   ssr: true,
   presets: [vercelPreset()],
+  async prerender() {
+    return [
+      '/library',
+      '/library/nextjs-basics',
+      '/library/sprinter-dictionary',
+    ];
+  },
 } satisfies Config;
