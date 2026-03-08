@@ -1,17 +1,17 @@
-import { useRevalidator } from 'react-router';
 import { toast } from 'sonner';
 import { deleteQnaComment } from './qna-service';
 import { useAuth } from '../../hooks/use-auth';
 import { DeleteButton } from '../til/DeleteButton';
 
-function QnaCommentList({ comments }) {
+function QnaCommentList({ comments, onCommentDeleted }) {
   const { user } = useAuth();
-  const revalidator = useRevalidator();
 
   const handleDelete = async (commentId) => {
+    if (!user?.id) return;
+
     await deleteQnaComment(commentId, user.id);
     toast.success('댓글이 삭제되었습니다.');
-    revalidator.revalidate();
+    onCommentDeleted?.(commentId);
   };
 
   if (!comments?.length) {

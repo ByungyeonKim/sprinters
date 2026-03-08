@@ -1,18 +1,16 @@
-import { useState } from 'react';
-import { useRevalidator } from 'react-router';
+import { startTransition, useEffect, useState } from 'react';
+import { useFetcher } from 'react-router';
 import { Code2 } from 'lucide-react';
-import { createQnaComment } from './qna-service';
 import { serializeQnaContent } from './qna-content';
 import { useAuth } from '../../hooks/use-auth';
 import { CodeAttachModal } from './CodeAttachModal';
 import { CodeAttachPreview } from './CodeAttachPreview';
 import { useCodeAttachment } from './use-code-attachment';
 
-function QnaCommentForm({ questionId }) {
+function QnaCommentForm({ questionId, onCommentCreated }) {
   const { user } = useAuth();
-  const revalidator = useRevalidator();
+  const fetcher = useFetcher();
   const [content, setContent] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     codeBlocks,
     resetCodeBlocks,
@@ -24,32 +22,46 @@ function QnaCommentForm({ questionId }) {
 
   const authorName = user?.user_metadata?.user_name || user?.user_metadata?.name;
   const avatar = user?.user_metadata?.avatar_url;
+  const isSubmitting = fetcher.state !== 'idle';
+
+  useEffect(() => {
+    if (fetcher.state !== 'idle' || !fetcher.data) return;
+
+    if (fetcher.data.comment) {
+      startTransition(() => {
+        setContent('');
+        resetCodeBlocks();
+        onCommentCreated?.(fetcher.data.comment);
+      });
+      return;
+    }
+
+    if (fetcher.data.error) {
+      alert(fetcher.data.error);
+    }
+  }, [
+    fetcher.data,
+    fetcher.state,
+    onCommentCreated,
+    resetCodeBlocks,
+  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!content.trim()) return;
 
-    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.set('intent', 'create-comment');
+    formData.set(
+      'content',
+      serializeQnaContent(content.trim(), codeBlocks),
+    );
 
-    try {
-      await createQnaComment({
-        questionId,
-        userId: user.id,
-        authorName,
-        avatar,
-        content: serializeQnaContent(content.trim(), codeBlocks),
-      });
-
-      setContent('');
-      resetCodeBlocks();
-      revalidator.revalidate();
-    } catch (error) {
-      console.error('댓글 작성 실패:', error);
-      alert('댓글 작성에 실패했습니다.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    fetcher.submit(formData, {
+      method: 'post',
+      action: `/qna/${questionId}`,
+    });
   };
 
   return (
@@ -74,9 +86,10 @@ function QnaCommentForm({ questionId }) {
           {codeBlocks.map((block, index) => (
             <CodeAttachPreview
               key={index}
+              index={index}
               codeBlock={block}
-              onEdit={() => handleCodeEdit(index)}
-              onDelete={() => handleCodeDelete(index)}
+              onEdit={handleCodeEdit}
+              onDelete={handleCodeDelete}
             />
           ))}
         </div>

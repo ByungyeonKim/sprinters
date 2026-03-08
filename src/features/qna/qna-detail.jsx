@@ -4,9 +4,13 @@ import {
   useNavigate,
   data as routerData,
 } from 'react-router';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { fetchQnaDetail, deleteQnaQuestion } from './qna-service';
+import {
+  fetchQnaDetail,
+  deleteQnaQuestion,
+  formatQnaComment,
+} from './qna-service';
 import { parseQnaContentToHtml, extractPlainText } from './qna-content';
 import { highlightCodeBlocks } from '../../utils/shiki.server';
 import { useAuth } from '../../hooks/use-auth';
@@ -20,10 +24,12 @@ import { createSupabaseServerClient } from '../../lib/supabase.server';
 
 import { SITE_URL, OG_IMAGE, SITE_NAME } from '../../root';
 
-export function headers({ loaderHeaders, parentHeaders }) {
+export function headers({ loaderHeaders, actionHeaders, parentHeaders }) {
   const headers = new Headers(parentHeaders);
-  loaderHeaders.getSetCookie().forEach((cookie) => {
-    headers.append('Set-Cookie', cookie);
+  [loaderHeaders, actionHeaders].forEach((headerSource) => {
+    headerSource?.getSetCookie().forEach((cookie) => {
+      headers.append('Set-Cookie', cookie);
+    });
   });
   return headers;
 }
@@ -82,20 +88,99 @@ export async function loader({ request, params }) {
   return routerData({ question, hasLiked }, { headers });
 }
 
+export async function action({ request, params }) {
+  const formData = await request.formData();
+  const intent = formData.get('intent');
+
+  if (intent !== 'create-comment') {
+    return routerData(
+      { intent, error: '지원하지 않는 요청입니다.' },
+      { status: 400 },
+    );
+  }
+
+  const { supabase: serverSupabase, headers } =
+    createSupabaseServerClient(request);
+  const {
+    data: { user },
+  } = await serverSupabase.auth.getUser();
+
+  if (!user) {
+    return routerData(
+      { intent, error: '로그인이 필요합니다.' },
+      { status: 401, headers },
+    );
+  }
+
+  const rawContent = formData.get('content');
+  const content = typeof rawContent === 'string' ? rawContent.trim() : '';
+
+  if (!content) {
+    return routerData(
+      { intent, error: '댓글 내용을 입력해주세요.' },
+      { status: 400, headers },
+    );
+  }
+
+  const authorName = user.user_metadata?.user_name || user.user_metadata?.name;
+  const avatar = user.user_metadata?.avatar_url;
+
+  const { data: comment, error } = await serverSupabase
+    .from('qna_comments')
+    .insert({
+      question_id: params.questionId,
+      user_id: user.id,
+      author_name: authorName,
+      avatar,
+      content,
+    })
+    .select('id, user_id, author_name, avatar, content, created_at')
+    .single();
+
+  if (error) {
+    return routerData(
+      { intent, error: '댓글 작성에 실패했습니다.' },
+      { status: 500, headers },
+    );
+  }
+
+  const formattedComment = formatQnaComment(comment);
+  formattedComment.contentHtml = await highlightCodeBlocks(
+    parseQnaContentToHtml(formattedComment.content),
+  );
+
+  return routerData({ intent, comment: formattedComment }, { headers });
+}
+
 export default function QnaDetail() {
   const { question, hasLiked } = useLoaderData();
   const navigate = useNavigate();
   const { user } = useAuth();
   const contentRef = useRef(null);
+  const [comments, setComments] = useState(question.comments);
   useCodeCopy(contentRef, [question.contentHtml]);
 
   const isOwner = user?.id === question.userId;
+
+  useEffect(() => {
+    setComments(question.comments);
+  }, [question]);
 
   const handleDelete = async () => {
     await deleteQnaQuestion(question.id, user.id);
     toast.success('질문이 삭제되었습니다.');
     navigate('/qna');
   };
+
+  const handleCommentCreated = useCallback((comment) => {
+    setComments((prev) => [comment, ...prev]);
+  }, []);
+
+  const handleCommentDeleted = useCallback((commentId) => {
+    setComments((prev) =>
+      prev.filter((comment) => comment.id !== commentId),
+    );
+  }, []);
 
   return (
     <section className='mx-auto max-w-170'>
@@ -147,10 +232,18 @@ export default function QnaDetail() {
 
         <section>
           <h2 className='mb-6 text-lg font-bold'>
-            댓글 {question.comments.length > 0 && question.comments.length}
+            댓글 {comments.length > 0 && comments.length}
           </h2>
-          {user && <QnaCommentForm questionId={question.id} />}
-          <QnaCommentList comments={question.comments} />
+          {user && (
+            <QnaCommentForm
+              questionId={question.id}
+              onCommentCreated={handleCommentCreated}
+            />
+          )}
+          <QnaCommentList
+            comments={comments}
+            onCommentDeleted={handleCommentDeleted}
+          />
         </section>
       </div>
     </section>

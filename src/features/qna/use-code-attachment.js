@@ -1,62 +1,78 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+
+function getCodeBlockPreview(code) {
+  return code.split('\n').slice(0, 5).join('\n');
+}
+
+function createCodeBlock(language, code) {
+  return {
+    language,
+    code,
+    previewLines: getCodeBlockPreview(code),
+  };
+}
 
 export function useCodeAttachment() {
   const [codeBlocks, setCodeBlocks] = useState([]);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [editingCodeBlock, setEditingCodeBlock] = useState(null);
 
-  const resetCodeBlocks = () => {
+  const resetCodeBlocks = useCallback(() => {
     setCodeBlocks([]);
-  };
+  }, []);
 
-  const openAddModal = () => {
+  const openAddModal = useCallback(() => {
     setEditingCodeBlock(null);
     setIsCodeModalOpen(true);
-  };
+  }, []);
 
-  const handleCodeEdit = (index) => {
+  const handleCodeEdit = useCallback((index) => {
     setEditingCodeBlock(index);
     setIsCodeModalOpen(true);
-  };
+  }, []);
 
-  const handleCodeDelete = (index) => {
+  const handleCodeDelete = useCallback((index) => {
     setCodeBlocks((prev) => prev.filter((_, i) => i !== index));
-  };
+  }, []);
 
-  const handleCodeSubmit = ({ language, code }) => {
+  const handleCodeSubmit = useCallback(({ language, code }) => {
+    const nextBlock = createCodeBlock(language, code);
+
     if (editingCodeBlock !== null) {
       setCodeBlocks((prev) =>
         prev.map((block, i) =>
-          i === editingCodeBlock ? { language, code } : block,
+          i === editingCodeBlock ? nextBlock : block,
         ),
       );
     } else {
-      setCodeBlocks((prev) => [...prev, { language, code }]);
+      setCodeBlocks((prev) => [...prev, nextBlock]);
     }
     setEditingCodeBlock(null);
     setIsCodeModalOpen(false);
-  };
+  }, [editingCodeBlock]);
 
-  const handleModalOpenChange = (open) => {
+  const handleModalOpenChange = useCallback((open) => {
     setIsCodeModalOpen(open);
     if (!open) {
       setEditingCodeBlock(null);
     }
-  };
+  }, []);
 
-  const codeModalProps = {
+  const editingBlock =
+    editingCodeBlock !== null ? codeBlocks[editingCodeBlock] : null;
+
+  const codeModalProps = useMemo(() => ({
     open: isCodeModalOpen,
     onOpenChange: handleModalOpenChange,
     onSubmit: handleCodeSubmit,
-    initialLanguage:
-      editingCodeBlock !== null
-        ? codeBlocks[editingCodeBlock]?.language
-        : undefined,
-    initialCode:
-      editingCodeBlock !== null
-        ? codeBlocks[editingCodeBlock]?.code
-        : undefined,
-  };
+    initialLanguage: editingBlock?.language,
+    initialCode: editingBlock?.code,
+  }), [
+    editingBlock,
+    handleCodeSubmit,
+    handleModalOpenChange,
+    isCodeModalOpen,
+  ]);
 
   return {
     codeBlocks,

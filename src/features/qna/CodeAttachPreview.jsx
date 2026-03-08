@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { SUPPORTED_CODE_LANGUAGES } from '../til/code-languages';
 
@@ -5,9 +6,16 @@ const LANGUAGE_LABELS = Object.fromEntries(
   SUPPORTED_CODE_LANGUAGES.map((lang) => [lang.value, lang.label]),
 );
 
-function CodeAttachPreview({ codeBlock, onEdit, onDelete }) {
+const CodeAttachPreview = memo(function CodeAttachPreview({
+  index,
+  codeBlock,
+  onEdit,
+  onDelete,
+}) {
   const label = LANGUAGE_LABELS[codeBlock.language] || codeBlock.language;
-  const previewLines = codeBlock.code.split('\n').slice(0, 5).join('\n');
+  const previewLines =
+    codeBlock.previewLines ??
+    codeBlock.code.split('\n').slice(0, 5).join('\n');
 
   return (
     <div className='rounded-lg border border-gray-200 bg-gray-50'>
@@ -16,7 +24,7 @@ function CodeAttachPreview({ codeBlock, onEdit, onDelete }) {
         <div className='flex items-center gap-1'>
           <button
             type='button'
-            onClick={onEdit}
+            onClick={() => onEdit(index)}
             className='rounded p-1 text-gray-400 transition-colors hover:text-gray-600'
             title='수정'
           >
@@ -24,7 +32,7 @@ function CodeAttachPreview({ codeBlock, onEdit, onDelete }) {
           </button>
           <button
             type='button'
-            onClick={onDelete}
+            onClick={() => onDelete(index)}
             className='rounded p-1 text-gray-400 transition-colors hover:text-red-500'
             title='삭제'
           >
@@ -37,6 +45,6 @@ function CodeAttachPreview({ codeBlock, onEdit, onDelete }) {
       </pre>
     </div>
   );
-}
+});
 
 export { CodeAttachPreview };

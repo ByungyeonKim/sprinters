@@ -14,6 +14,17 @@ function formatQuestion(question) {
   };
 }
 
+export function formatQnaComment(comment) {
+  return {
+    id: comment.id,
+    userId: comment.user_id,
+    author: comment.author_name,
+    avatar: comment.avatar,
+    content: comment.content,
+    date: getRelativeTime(comment.created_at),
+  };
+}
+
 export async function fetchQnaQuestions() {
   const { data: questions, error } = await repo.findQuestions();
 
@@ -33,14 +44,7 @@ export async function fetchQnaDetail(questionId) {
 
   const comments = (question.qna_comments || [])
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .map((comment) => ({
-      id: comment.id,
-      userId: comment.user_id,
-      author: comment.author_name,
-      avatar: comment.avatar,
-      content: comment.content,
-      date: getRelativeTime(comment.created_at),
-    }));
+    .map(formatQnaComment);
 
   return { ...formatQuestion(question), comments };
 }

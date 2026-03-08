@@ -98,9 +98,10 @@ function QuestionForm() {
           {codeBlocks.map((block, index) => (
             <CodeAttachPreview
               key={index}
+              index={index}
               codeBlock={block}
-              onEdit={() => handleCodeEdit(index)}
-              onDelete={() => handleCodeDelete(index)}
+              onEdit={handleCodeEdit}
+              onDelete={handleCodeDelete}
             />
           ))}
         </div>
