@@ -1,17 +1,10 @@
 import { useState } from 'react';
 import { LibraryHeader } from './LibraryHeader';
-import { terms } from './tutorials/sprinter-dictionary.js';
+import { dictionaryFilters, terms } from './sprinter-dictionary-data';
 
 export function meta() {
   return [{ title: '스프린터 사전 | Sprinters' }];
 }
-
-const FILTERS = [
-  { label: '전체', value: 'all' },
-  { label: '렌더링과 성능', value: '0' },
-  { label: 'Next.js와 라우팅', value: '1' },
-  { label: '서버·클라이언트 컴포넌트', value: '2' },
-];
 
 function TermRow({ term }) {
   return (
@@ -49,7 +42,7 @@ export default function SprinterDictionary() {
       >
         <div className='mx-auto max-w-3xl px-6 pt-10 pb-20'>
           <div className='mb-8 flex flex-wrap gap-2'>
-            {FILTERS.map((f) => (
+            {dictionaryFilters.map((f) => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}

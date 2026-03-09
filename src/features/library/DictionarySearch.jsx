@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useMatches } from 'react-router';
+import { useRouteLoaderData } from 'react-router';
 
 const loadDictionarySearchDialog = () => import('./DictionarySearchDialog');
 const LazyDictionarySearchDialog = lazy(loadDictionarySearchDialog);
@@ -28,8 +28,8 @@ function preloadDictionarySearchDialog() {
 export function DictionarySearch() {
   const [open, setOpen] = useState(false);
   const [shouldRenderDialog, setShouldRenderDialog] = useState(false);
-  const matches = useMatches();
-  const isMac = matches[0]?.data?.isMac ?? true;
+  const rootData = useRouteLoaderData('root');
+  const isMac = rootData?.isMac ?? true;
 
   const handleWarmDialog = useCallback(() => {
     void preloadDictionarySearchDialog().catch(() => {});
