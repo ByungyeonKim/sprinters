@@ -1,3 +1,4 @@
+import { transformerMetaHighlight } from '@shikijs/transformers';
 import { createHighlighter } from 'shiki';
 import {
   DEFAULT_CODE_LANGUAGE,
@@ -76,6 +77,17 @@ function resolveCodeLanguage(codeAttributes) {
   return normalizeCodeLanguage(rawLanguage);
 }
 
+function resolveHighlightMeta(codeAttributes) {
+  const dataLineMatch = codeAttributes.match(
+    /\bdata-line\s*=\s*(?:"([^"]*)"|'([^']*)')/i,
+  );
+  const dataLineValue = dataLineMatch?.[1] || dataLineMatch?.[2];
+
+  if (!dataLineValue) return undefined;
+
+  return `{${dataLineValue}}`;
+}
+
 function escapeHtmlAttribute(value) {
   return value
     .replace(/&/g, '&amp;')
@@ -134,10 +146,15 @@ export async function highlightCodeBlocks(html) {
       continue;
     }
 
+    const highlightMeta = resolveHighlightMeta(codeAttributes);
     const code = decodeHtmlEntities(encodedCode);
     const highlightedCode = highlighter.codeToHtml(code, {
       lang: language,
       theme: SHIKI_THEME,
+      ...(highlightMeta && {
+        meta: { __raw: highlightMeta },
+        transformers: [transformerMetaHighlight()],
+      }),
     });
 
     output += withCodeLanguageMeta(highlightedCode, language);

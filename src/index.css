@@ -431,6 +431,18 @@
   }
 }
 
+.til-content pre.shiki .line.highlighted,
+.library-content pre.shiki .line.highlighted,
+.qna-content pre.shiki .line.highlighted {
+  display: inline-block;
+  width: calc(100% + 2rem);
+  margin-inline: -1rem;
+  padding-inline: 1rem;
+  background-color: rgb(130 170 255 / 12%);
+  border-left: 3px solid rgb(130 170 255 / 80%);
+  padding-left: calc(1rem - 3px);
+}
+
 .til-content pre.shiki > code::-webkit-scrollbar,
 .library-content pre.shiki > code::-webkit-scrollbar,
 .qna-content pre.shiki > code::-webkit-scrollbar {
