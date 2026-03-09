@@ -1653,7 +1653,7 @@ components/
     },
     {
       title: 'Data Fetching & 렌더링',
-      locked: false,
+      locked: import.meta.env.PROD,
       sessions: [
         {
           title: '데이터 소스와 서버 fetching',
