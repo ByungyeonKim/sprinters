@@ -494,9 +494,93 @@ export default async function BlogPost({ params }: Props) {
 <h2 id="root-layout"><a href="#root-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>루트 레이아웃</a></h2>
 <p><code>app/layout.tsx</code>는 Next.js 앱에서 <strong>필수</strong>인 파일입니다. 모든 페이지를 감싸며, <code>&lt;html&gt;</code>과 <code>&lt;body&gt;</code> 태그를 반드시 포함해야 합니다.</p>
 
-<pre><code class="language-tsx">// app/layout.tsx
+<pre><code class="language-tsx">// app/layout.tsx - 루트 레이아웃
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    &lt;html lang='ko'&gt;
+      &lt;body&gt;
+        &lt;header&gt;My Blog&lt;/header&gt;
+        &lt;main&gt;{children}&lt;/main&gt;
+        &lt;footer&gt;Copyright 2026 My Blog&lt;/footer&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre>
+<p>이 레이아웃은 앱의 모든 페이지에 적용됩니다. 헤더와 푸터는 어떤 페이지로 이동하든 항상 표시됩니다.</p>
+
+<h2 id="nested-layouts"><a href="#nested-layouts" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>중첩 레이아웃</a></h2>
+<p>하위 폴더에 <code>layout.tsx</code>를 추가하면 <strong>자동으로 중첩</strong>됩니다:</p>
+<pre><code class="language-text">app/
+├── layout.tsx              # 루트 레이아웃 (헤더, 푸터)
+├── page.tsx                # /
+└── dashboard/
+    ├── layout.tsx          # 대시보드 레이아웃 (사이드바)
+    ├── page.tsx            # /dashboard
+    └── settings/
+        └── page.tsx        # /dashboard/settings</code></pre>
+
+<pre><code class="language-tsx">// app/dashboard/layout.tsx
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    &lt;div&gt;
+      &lt;aside&gt;사이드바&lt;/aside&gt;
+      &lt;section&gt;{children}&lt;/section&gt;
+    &lt;/div&gt;
+  )
+}</code></pre>
+
+<p><code>/dashboard/settings</code>에 접근하면 렌더링 순서는 다음과 같습니다:</p>
+<pre><code class="language-text">루트 레이아웃 (헤더, 푸터)
+  └── 대시보드 레이아웃 (사이드바)
+       └── 설정 페이지 (page.tsx)</code></pre>
+<p>레이아웃이 자동으로 중첩되어, 별도 설정 없이도 <strong>일관된 UI 구조</strong>를 만들 수 있습니다.</p>
+
+<h2 id="key-layout-characteristics"><a href="#key-layout-characteristics" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>레이아웃의 핵심 특성</a></h2>
+
+<h3>상태 유지 — 리렌더링되지 않음</h3>
+<p>레이아웃은 하위 페이지가 전환되어도 <strong>리렌더링되지 않습니다</strong>. 예를 들어, 대시보드 레이아웃 사이드바의 스크롤 위치는 페이지 이동 시에도 유지가 됩니다. 또한, 입력 필드의 사용자값처럼, UI 상태(State)도 유지가 됩니다.</p>
+<pre><code class="language-text">/dashboard → /dashboard/settings 이동 시:
+  ✅ 대시보드 레이아웃: 리렌더링 없음 (상태 유지)
+  🔄 페이지 컴포넌트만 교체됨</code></pre>
+
+<p><code>template.tsx</code>라는 별도 파일을 사용하면 페이지 전환 시마다 새로 마운트할 수도 있지만, 이는 <a href="https://nextjs.org/docs/app/api-reference/file-conventions/template" target="_blank" rel="noopener noreferrer">공식 문서</a>에서 자세히 확인하실 수 있습니다.</p>
+
+<h2 id="practice-blog-layout"><a href="#practice-blog-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>실습: 블로그 프로젝트 레이아웃 구성</a></h2>
+<p>지금까지 배운 내용을 종합하여, 간단한 블로그 프로젝트를 만들어 보겠습니다. 프로젝트 생성은 <a href="/library/nextjs-basics?step=2#create-a-project">세션 3 - 프로젝트 생성하기</a>를 참고해 주세요.</p>
+<pre><code class="language-text">app/
+├── layout.tsx          # 루트 레이아웃: 헤더(내비게이션) + 푸터
+├── page.tsx            # / (홈)
+├── about/
+│   └── page.tsx        # /about (소개)
+└── blog/
+    ├── layout.tsx      # 블로그 레이아웃: 사이드바(카테고리)
+    ├── page.tsx        # /blog (글 목록)
+    └── [slug]/
+        └── page.tsx    # /blog/:slug (글 상세)</code></pre>
+
+<pre><code class="language-tsx">// app/layout.tsx — 루트 레이아웃
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
 import Link from 'next/link';
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+});
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   title: 'My Blog',
@@ -505,128 +589,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    &lt;html lang="ko"&gt;
-      &lt;body&gt;
-        &lt;header&gt;
-          &lt;nav&gt;
-            &lt;Link href="/"&gt;홈&lt;/Link&gt;
-            &lt;Link href="/blog"&gt;블로그&lt;/Link&gt;
-            &lt;Link href="/about"&gt;소개&lt;/Link&gt;
-          &lt;/nav&gt;
-        &lt;/header&gt;
-        &lt;main&gt;{children}&lt;/main&gt;
-        &lt;footer&gt;© 2025 My Blog&lt;/footer&gt;
-      &lt;/body&gt;
-    &lt;/html&gt;
-  );
-}</code></pre>
-<p>이 레이아웃은 앱의 모든 페이지에 적용됩니다. 헤더와 푸터는 어떤 페이지로 이동하든 항상 표시됩니다.</p>
-
-<h2 id="nested-layouts"><a href="#nested-layouts" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>중첩 레이아웃</a></h2>
-<p>하위 폴더에 <code>layout.tsx</code>를 추가하면 <strong>자동으로 중첩</strong>됩니다:</p>
-<pre><code class="language-text">app/
-├── layout.tsx              # 루트 레이아웃 (헤더, 푸터)
-├── page.tsx                # 홈 페이지
-└── dashboard/
-    ├── layout.tsx          # 대시보드 레이아웃 (사이드바)
-    ├── page.tsx            # /dashboard
-    └── settings/
-        └── page.tsx        # /dashboard/settings</code></pre>
-
-<pre><code class="language-tsx">// app/dashboard/layout.tsx
-import Link from 'next/link';
-
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    &lt;div className="flex"&gt;
-      &lt;aside className="w-64 border-r p-4"&gt;
-        &lt;h2&gt;대시보드&lt;/h2&gt;
-        &lt;ul&gt;
-          &lt;li&gt;&lt;Link href="/dashboard"&gt;개요&lt;/Link&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;Link href="/dashboard/settings"&gt;설정&lt;/Link&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;Link href="/dashboard/analytics"&gt;분석&lt;/Link&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/aside&gt;
-      &lt;section className="flex-1 p-6"&gt;{children}&lt;/section&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-
-<p><code>/dashboard/settings</code>에 접근하면 렌더링 순서는 다음과 같습니다:</p>
-<pre><code class="language-text">루트 레이아웃 (헤더, 푸터)
-  └── 대시보드 레이아웃 (사이드바)
-       └── 설정 페이지 (page.tsx)</code></pre>
-<p>레이아웃이 자동으로 감싸지므로, 별도 설정 없이도 <strong>일관된 UI 구조</strong>를 만들 수 있습니다.</p>
-
-<h2 id="key-layout-characteristics"><a href="#key-layout-characteristics" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>레이아웃의 핵심 특성</a></h2>
-
-<h3>상태 유지 — 리렌더링되지 않음</h3>
-<p>레이아웃은 하위 페이지가 전환되어도 <strong>리렌더링되지 않습니다</strong>. 대시보드 사이드바의 스크롤 위치, 입력 중인 검색어 등의 상태가 유지됩니다.</p>
-<pre><code class="language-text">/dashboard → /dashboard/settings 이동 시:
-  ✅ 대시보드 레이아웃: 리렌더링 없음 (상태 유지)
-  🔄 페이지 컴포넌트만 교체됨</code></pre>
-
-<p><code>template.tsx</code>라는 별도 파일을 사용하면 페이지 전환 시마다 새로 마운트할 수도 있지만, 이는 <a href="https://nextjs.org/docs/app/api-reference/file-conventions/template" target="_blank" rel="noopener noreferrer">공식 문서</a>에서 자세히 확인할 수 있습니다.</p>
-
-<h2 id="practice-blog-layout"><a href="#practice-blog-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>실습: 블로그 프로젝트 레이아웃 구성</a></h2>
-<p>지금까지 배운 내용을 종합하여 블로그 프로젝트의 레이아웃을 구성해 봅시다.</p>
-<pre><code class="language-text">app/
-├── layout.tsx          # 루트 레이아웃: 헤더(내비게이션) + 푸터
-├── page.tsx            # 홈 페이지
-├── about/
-│   └── page.tsx        # /about
-└── blog/
-    ├── layout.tsx      # 블로그 레이아웃: 사이드바(카테고리)
-    ├── page.tsx        # /blog (글 목록)
-    └── [slug]/
-        └── page.tsx    # /blog/:slug (글 상세)</code></pre>
-
-<pre><code class="language-tsx">// app/layout.tsx — 루트 레이아웃
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Link from 'next/link';
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Create Next App",
-  description: "Generated by create next app",
-};
-
-export default function RootLayout({
-  children,
 }: Readonly&lt;{
   children: React.ReactNode;
 }&gt;) {
   return (
-    &lt;html lang="ko"&gt;
-      &lt;body className={&#96;&#36;{geistSans.variable} &#36;{geistMono.variable}&#96;}&gt;
+    &lt;html lang='ko'&gt;
+      &lt;body
+        className={&#96;&#36;{geistSans.variable} &#36;{geistMono.variable} antialiased&#96;}
+      &gt;
         &lt;header&gt;
           &lt;nav&gt;
-            &lt;Link href="/"&gt;My Blog&lt;/Link&gt;
-            &lt;Link href="/blog"&gt;글 목록&lt;/Link&gt;
-            &lt;Link href="/about"&gt;소개&lt;/Link&gt;
+            &lt;Link href='/'&gt;홈&lt;/Link&gt;
+            &lt;Link href='/blog'&gt;글 목록&lt;/Link&gt;
+            &lt;Link href='/about'&gt;소개&lt;/Link&gt;
           &lt;/nav&gt;
         &lt;/header&gt;
-        {children}
-        &lt;footer&gt;© 2025 My Blog. All rights reserved.&lt;/footer&gt;
+        &lt;main&gt; {children}&lt;/main&gt;
+        &lt;footer&gt;Copyright 2026 My Blog&lt;/footer&gt;
       &lt;/body&gt;
     &lt;/html&gt;
   );
@@ -642,51 +621,12 @@ export default function Home() {
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/blog/page.tsx — 글 목록
-import Link from 'next/link';
-
-const posts = [
-  { slug: 'nextjs-routing', title: 'Next.js 라우팅 이해하기' },
-  { slug: 'react-server-components', title: 'React 서버 컴포넌트란?' },
-];
-
-export default function Blog() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;글 목록&lt;/h1&gt;
-      &lt;ul&gt;
-        {posts.map((post) =&gt; (
-          &lt;li key={post.slug}&gt;
-            &lt;Link href={&#96;/blog/&#36;{post.slug}&#96;}&gt;{post.title}&lt;/Link&gt;
-          &lt;/li&gt;
-        ))}
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-
 <pre><code class="language-tsx">// app/about/page.tsx — 소개 페이지
 export default function About() {
   return (
     &lt;div&gt;
       &lt;h1&gt;소개&lt;/h1&gt;
-      &lt;p&gt;프론트엔드 개발을 기록하는 블로그입니다.&lt;/p&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-
-<pre><code class="language-tsx">// app/blog/[slug]/page.tsx — 글 상세
-export default async function Post({
-  params,
-}: {
-  params: Promise&lt;{ slug: string }&gt;;
-}) {
-  const { slug } = await params;
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;{slug}&lt;/h1&gt;
-      &lt;p&gt;이 글의 내용이 여기에 표시됩니다.&lt;/p&gt;
+      &lt;p&gt;안녕하세요. 저만의 개발 블로그입니다.&lt;/p&gt;
     &lt;/div&gt;
   );
 }</code></pre>
@@ -704,10 +644,10 @@ export default function BlogLayout({
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    &lt;div className="flex"&gt;
-      &lt;aside className="w-60 p-4 border-r"&gt;
+    &lt;&gt;
+      &lt;aside&gt;
         &lt;button onClick={() =&gt; setIsOpen(!isOpen)}&gt;
-          카테고리 {isOpen ? '▲' : '▼'}
+          카테고리 {isOpen ? '닫기' : '열기'}
         &lt;/button&gt;
         {isOpen &amp;&amp; (
           &lt;ul&gt;
@@ -717,7 +657,46 @@ export default function BlogLayout({
           &lt;/ul&gt;
         )}
       &lt;/aside&gt;
-      &lt;main className="flex-1 p-6"&gt;{children}&lt;/main&gt;
+      {children}
+    &lt;/&gt;
+  );
+}</code></pre>
+
+<pre><code class="language-tsx">// app/blog/page.tsx — 글 목록 페이지
+import Link from 'next/link';
+
+const posts = [
+  { id: 1, slug: 'nextjs-routing', title: 'Next.js 라우팅 이해하기' },
+  { id: 2, slug: 'react-server-components', title: 'React 서버 컴포넌트란?' },
+];
+
+export default function Blog() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;글 목록&lt;/h1&gt;
+      &lt;ul&gt;
+        {posts.map((post) =&gt; (
+          &lt;li key={post.id}&gt;
+            &lt;Link href={&#96;/blog/&#36;{post.slug}&#96;}&gt;{post.title}&lt;/Link&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<pre><code class="language-tsx">// app/blog/[slug]/page.tsx — 글 상세 페이지
+export default async function Post({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;;
+}) {
+  const { slug } = await params;
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{slug}&lt;/h1&gt;
+      &lt;p&gt;이 글의 내용이 여기에 표시됩니다.&lt;/p&gt;
     &lt;/div&gt;
   );
 }</code></pre>
@@ -728,13 +707,32 @@ export default function BlogLayout({
 <p>결과적으로 <code>/blog/nextjs-routing</code>에 접근하면 다음과 같이 렌더링됩니다:</p>
 <img src="${ch1MyBlogPracticeImg}" alt="블로그 중첩 레이아웃 실행 결과" style="max-width:100%;border-radius:8px;margin:1rem 0;border:1px solid #e5e7eb;" />
 <ul style="margin-top:0.5rem;">
-<li><strong>헤더</strong> (<code>app/layout.tsx</code>) — "My Blog · 글 목록 · 소개" 내비게이션이 모든 페이지에 공통 적용됩니다.</li>
-<li><strong>사이드바</strong> (<code>app/blog/layout.tsx</code>) — 카테고리 목록은 블로그 하위 경로에서만 표시되며, 페이지를 이동해도 레이아웃이 리렌더링되지 않아, 펼침/접힘 상태가 유지됩니다.</li>
-<li><strong>본문</strong> (<code>app/blog/[slug]/page.tsx</code>) — URL의 <code>slug</code> 값(<code>nextjs-routing</code>)이 동적으로 주입되어 해당 글의 내용을 렌더링합니다.</li>
-<li><strong>푸터</strong> (<code>app/layout.tsx</code>) — 루트 레이아웃에 속하므로 모든 페이지 하단에 표시됩니다.</li>
+<li><strong>헤더</strong> (<code>app/layout.tsx</code>) - "홈 · 글 목록 · 소개" 내비게이션이 모든 페이지에 공통 적용됩니다.</li>
+<li><strong>사이드바</strong> (<code>app/blog/layout.tsx</code>) - 카테고리 목록은 블로그 하위 경로에서만 표시되며, 페이지를 이동해도 레이아웃이 리렌더링되지 않아, 열기/닫기 상태가 유지됩니다.</li>
+<li><strong>본문</strong> (<code>app/blog/[slug]/page.tsx</code>) - URL의 <code>slug</code> 값(<code>nextjs-routing</code>)이 동적으로 주입되어 해당 글의 내용을 렌더링합니다.</li>
+<li><strong>푸터</strong> (<code>app/layout.tsx</code>) - 루트 레이아웃에 속하므로 모든 페이지 하단에 표시됩니다.</li>
 </ul>
 
-<p>이것으로 Chapter 1을 마칩니다. 다음 챕터에서는 <strong>서버 컴포넌트와 클라이언트 컴포넌트</strong>를 학습합니다.</p>
+<p>지금까지 배운 내용을 정리해 보겠습니다.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1.5rem 0;">
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>CSR의 동작 원리와 한계</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">클라이언트에서 모든 렌더링을 처리하는 방식의 장단점을 살펴보았습니다.</p>
+</div>
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>Next.js 프로젝트 생성</strong>
+<p style="margin-top:0.5rem;color:#6b7280;"><code>create-next-app</code>으로 프로젝트를 만들고 기본 구조를 확인했습니다.</p>
+</div>
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>App Router와 파일 기반 라우팅</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">폴더와 파일만으로 라우트를 정의하는 방식을 배웠습니다.</p>
+</div>
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>레이아웃 시스템과 중첩 라우팅</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">공통 UI를 레이아웃으로 분리하고, 중첩 레이아웃으로 확장하는 방법을 배웠습니다.</p>
+</div>
+</div>
+<p>다음 챕터에서는 <strong>서버 컴포넌트와 클라이언트 컴포넌트</strong>를 학습합니다.</p>
           `,
         },
       ],
@@ -883,10 +881,10 @@ export default function BlogLayout({
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    &lt;div className="flex"&gt;
-      &lt;aside className="w-60 p-4 border-r"&gt;
+    &lt;&gt;
+      &lt;aside&gt;
         &lt;button onClick={() =&gt; setIsOpen(!isOpen)}&gt;
-          카테고리 {isOpen ? '▲' : '▼'}
+          카테고리 {isOpen ? '닫기' : '열기'}
         &lt;/button&gt;
         {isOpen &amp;&amp; (
           &lt;ul&gt;
@@ -896,8 +894,8 @@ export default function BlogLayout({
           &lt;/ul&gt;
         )}
       &lt;/aside&gt;
-      &lt;main className="flex-1 p-6"&gt;{children}&lt;/main&gt;
-    &lt;/div&gt;
+      {children}
+    &lt;/&gt;
   );
 }</code></pre>
 <p>이 코드의 문제는 무엇일까요? <code>useState</code>가 필요한 것은 카테고리 토글 버튼뿐인데, <strong>레이아웃 전체</strong>에 <code>'use client'</code>를 붙였습니다. 이렇게 하면 레이아웃의 코드 전부가 클라이언트 번들에 포함됩니다.</p>
@@ -1655,119 +1653,269 @@ components/
     },
     {
       title: 'Data Fetching & 렌더링',
-      locked: true,
+      locked: false,
       sessions: [
         {
-          title: '데이터 가져오기',
+          title: '데이터 소스와 서버 fetching',
           content: `
-<h2>데이터 가져오기 (Data Fetching)</h2>
-<p>App Router에서는 서버 컴포넌트 안에서 직접 <code>async/await</code>를 사용하여 데이터를 가져올 수 있습니다.</p>
-<h3>서버 컴포넌트에서 fetch</h3>
-<pre><code class="language-tsx">// app/posts/page.tsx
-export default async function Posts() {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
-    next: { revalidate: 3600 }, // 1시간마다 재검증
-  });
+<h2 id="hardcoded-data-limit"><a href="#hardcoded-data-limit" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>지금까지의 블로그: 하드코딩의 한계</a></h2>
+
+<p>지난 챕터에서는 블로그 프로젝트를 서버/클라이언트 컴포넌트 관점에서 정리했습니다. 레이아웃은 서버 컴포넌트로 유지하고, 좋아요 버튼과 검색처럼 인터랙션이 필요한 부분만 클라이언트 컴포넌트로 분리했죠. 또 서버 페이지가 <code>posts</code> 배열을 준비해서 <code>SearchablePostList</code>에 넘기는 흐름도 만들었습니다.</p>
+
+<p>문제는 그 구조 안의 데이터가 현재 <strong>하드코딩 배열</strong>이라는 점입니다. 화면 구조는 좋아졌지만, 실제 서비스처럼 데이터를 추가하거나 수정하고 재사용하기에는 한계가 있죠. 이번 세션에서는 바로 이 문제를 해결합니다. 먼저 지금 코드가 어떤 상태였는지 다시 보겠습니다:</p>
+
+<pre><code class="language-tsx">// app/blog/page.tsx — Ch.2에서 만든 블로그
+import { SearchablePostList } from './components/SearchablePostList';
+
+const posts = [
+  { slug: 'nextjs-routing', title: 'Next.js 라우팅 이해하기', category: 'Next.js' },
+  { slug: 'react-server-components', title: 'React 서버 컴포넌트란?', category: 'React' },
+  { slug: 'typescript-tips', title: 'TypeScript 실전 팁', category: 'TypeScript' },
+  { slug: 'tailwind-basics', title: 'Tailwind CSS 시작하기', category: 'CSS' },
+];
+
+export default function Blog() {
+  return (
+    &lt;div&gt;
+      &lt;h1 className="text-2xl font-bold mb-4"&gt;블로그&lt;/h1&gt;
+      &lt;SearchablePostList posts={posts} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<p>문제는 이 데이터가 화면을 그리는 <strong>코드 파일 안에 직접 붙어 있다</strong>는 점입니다. 블로그 글은 버튼의 열림 상태처럼 한 사람의 브라우저 안에서만 쓰이는 값이 아닙니다. 여러 사용자가 함께 보고, 여러 페이지가 함께 참조하는 <strong>공유 데이터</strong>입니다. 이런 데이터는 각 컴포넌트가 따로 들고 있을 것이 아니라, <strong>서버가 하나의 원본(source of truth)으로 관리하고 필요할 때 읽어 와야</strong> 합니다. 그래야 누가 접속하든 같은 글을 보고, 어느 화면에서 보든 같은 내용을 기준으로 렌더링할 수 있습니다. 지금 구조에서는 그 공유 데이터의 원본이 코드 안에 섞여 있어서 한계가 분명합니다:</p>
+
+<ul>
+<li><strong>새 글이나 수정 사항이 모든 사용자에게 같은 기준으로 반영되지 않습니다.</strong> 글 하나를 추가하려면 코드를 수정하고 다시 배포해야 하므로, 콘텐츠 변경과 코드 배포가 불필요하게 묶입니다.</li>
+<li><strong>같은 글을 여러 화면이 함께 바라보기가 어렵습니다.</strong> 목록 페이지, 상세 페이지, 검색 결과, 홈 추천 영역이 같은 게시글 데이터를 써야 하는데, 코드 안에 배열이 흩어지면 화면마다 서로 다른 값을 갖기 쉽습니다.</li>
+<li><strong>공유 데이터의 기준점이 서버가 아니라 컴포넌트가 됩니다.</strong> 서비스가 커질수록 "이 글의 최신 제목이 무엇인가?"를 판정해야 하는 곳은 화면 코드가 아니라 서버가 읽는 데이터 저장소여야 합니다.</li>
+</ul>
+
+<div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
+공유되는 서비스 데이터의 원본은 <strong>컴포넌트 코드가 아니라 서버가 읽고 관리할 수 있는 곳</strong>에 있어야 합니다 — 파일, 데이터베이스, 또는 API 서버에.
+</div>
+
+<p>즉, 이번 세션의 질문은 이것입니다. <strong>"여러 사용자가 함께 볼 <code>posts</code>의 원본을, 서버는 어디에서 읽어 와야 할까?"</strong></p>
+
+<h2 id="useeffect-fetch"><a href="#useeffect-fetch" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>React에서 익숙한 방법: useEffect + fetch</a></h2>
+
+<p>React를 배운 분이라면 자연스럽게 떠오르는 패턴이 있습니다:</p>
+
+<pre><code class="language-tsx">'use client';
+
+import { useState, useEffect } from 'react';
+import { SearchablePostList } from './components/SearchablePostList';
+
+export default function Blog() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    fetch('/api/posts')
+      .then(res =&gt; res.json())
+      .then(data =&gt; {
+        setPosts(data);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return &lt;p&gt;로딩 중...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h1 className="text-2xl font-bold mb-4"&gt;블로그&lt;/h1&gt;
+      &lt;SearchablePostList posts={posts} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<p>이 코드는 <strong>동작합니다</strong>. 하지만 사용자가 페이지를 방문하면, 빈 HTML을 받고 → JS를 다운로드하고 → <code>fetch</code>를 보내고 → 응답을 받은 뒤에야 콘텐츠를 볼 수 있습니다. 이 방식의 구조적 한계를 하나씩 짚어 보겠습니다.</p>
+
+<div style="background:#f9fafb;border-left:4px solid #6b7280;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
+<strong style="display:block;margin-bottom:0.35rem;"><code>useEffect + fetch</code>가 항상 나쁜 것은 아닙니다</strong>
+<span>사용자 클릭 이후에만 필요한 요청, 실시간 검색, 무한 스크롤, 폴링처럼 <strong>초기 화면 이후</strong>에 일어나는 데이터 요청은 여전히 클라이언트 fetching이 적절할 수 있습니다. 다만 <strong>첫 화면에 꼭 필요한 데이터</strong>라면 서버에서 먼저 가져오는 쪽이 보통 더 유리합니다.</span>
+</div>
+
+<h2 id="why-server-is-default"><a href="#why-server-is-default" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>왜 서버가 기본값인가</a></h2>
+
+<p><code>useEffect + fetch</code> 방식에는 세 가지 구조적 문제가 있습니다:</p>
+
+<h3>1. 요청 워터폴</h3>
+<p>HTML 다운로드 → JS 다운로드 및 실행 → <code>fetch</code> 요청 → 응답 → 렌더링. 모든 단계가 <strong>직렬</strong>로 이어집니다. 앞 단계가 끝나야 다음 단계가 시작되므로, 각 단계의 지연이 그대로 누적됩니다. 이 연쇄적인 지연을 <strong>요청 워터폴(Request Waterfall)</strong>이라 부릅니다.</p>
+
+<h3>2. 빈 초기 HTML</h3>
+<p>서버가 보내는 HTML에는 실제 콘텐츠가 없습니다. 검색 엔진 크롤러는 JavaScript를 실행하지 않거나 제한적으로만 실행하기 때문에, <strong>콘텐츠를 인식하지 못합니다</strong>. Ch.1에서 배운 SEO 문제가 바로 이것입니다.</p>
+
+<h3>3. 보안 위험</h3>
+<p>모든 클라이언트 <code>fetch</code>가 위험한 것은 아닙니다. 공개되어도 괜찮은 API를 브라우저에서 호출하는 것은 흔한 패턴입니다. 문제는 <strong>비밀 키, DB 접속 정보, 관리자 권한 토큰</strong>처럼 숨겨야 하는 정보를 클라이언트 코드에 넣는 경우입니다. 이런 값은 브라우저 개발자 도구에서 노출될 수 있으므로, 서버에서만 다뤄야 합니다.</p>
+
+<p>서버 컴포넌트는 이 문제들을 <strong>크게 줄여 줍니다</strong>:</p>
+
+<pre><code class="language-text">[useEffect + fetch 방식]
+서버 ─── 빈 HTML ──────────────────────────────▶
+브라우저      ─── JS 다운로드 ─── 마운트 ────────▶
+                                    ─── fetch ────▶
+                                             응답 ─── 렌더링 ▶
+
+[서버 컴포넌트 방식]
+서버 ─── fetch ─── 완성된 HTML ────────────▶
+브라우저                  ─── 콘텐츠 표시 ▶
+                              ↑ 훨씬 빠름!</code></pre>
+
+<ul>
+<li><strong>클라이언트-서버 워터폴 감소</strong>: 서버에서 데이터를 가져오고 HTML을 완성한 뒤 전송하므로, 브라우저가 마운트된 뒤 다시 첫 요청을 시작하는 구조를 줄일 수 있습니다.</li>
+<li><strong>SEO 해결</strong>: 완성된 HTML이 전송되므로, 검색 엔진이 콘텐츠를 바로 인식합니다.</li>
+<li><strong>서버 자원 보호</strong>: API 키, DB 접속 정보 등이 서버에만 존재하고 클라이언트에 노출되지 않습니다.</li>
+</ul>
+
+<div style="background:#f9fafb;border-left:4px solid #6b7280;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
+<strong style="display:block;margin-bottom:0.35rem;">주의: 서버라고 해서 워터폴이 완전히 사라지지는 않습니다</strong>
+<span>서버 컴포넌트 안에서도 여러 <code>await</code>를 순차로 실행하면 서버 쪽 워터폴이 생길 수 있고, 느린 요청이 있으면 해당 경로 렌더링이 잠시 막힐 수 있습니다. Next.js는 이런 상황을 위해 병렬 fetching, <code>loading.tsx</code>, <code>Suspense</code>, 스트리밍 패턴을 제공합니다. 이 부분은 다음 세션들에서 이어서 다룹니다.</span>
+</div>
+
+<div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
+<strong style="display:block;margin-bottom:0.35rem;">데이터 fetching은 렌더링의 일부</strong>
+<span>데이터 fetching은 렌더링 이후의 부가 작업이 아니라, <strong>렌더링 자체의 일부</strong>입니다. 서버 컴포넌트에서는 데이터를 가져오는 것과 UI를 그리는 것이 하나의 흐름 안에서 일어납니다.</span>
+</div>
+
+<h2 id="server-component-data-fetching"><a href="#server-component-data-fetching" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>서버 컴포넌트에서 데이터 가져오기</a></h2>
+
+<p>Ch.2에서 만든 <code>Blog</code> 컴포넌트는 데이터가 코드 안에 있었기 때문에 일반 함수로 충분했습니다. 하지만 외부에서 데이터를 가져오려면 응답을 <strong>기다려야</strong> 합니다. 서버 컴포넌트는 <code>async</code> 함수로 만들 수 있어서, <code>await</code>로 데이터를 기다린 뒤 바로 렌더링할 수 있습니다.</p>
+
+<p>데이터 소스에 따라 세 가지 방식을 살펴보겠습니다:</p>
+
+<div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
+<strong style="display:block;margin-bottom:0.35rem;">무엇을 선택하면 될까요?</strong>
+<span><strong>외부 서비스나 별도 백엔드</strong>에서 읽어 오면 <code>fetch</code>, <strong>우리 앱의 핵심 데이터</strong>가 데이터베이스에 있으면 ORM/쿼리로 직접 접근, <strong>정적 문서나 샘플 콘텐츠</strong>를 읽으면 파일 시스템이 보통 가장 단순합니다.</span>
+</div>
+
+<h3>fetch API — 외부/내부 REST API 호출</h3>
+<p>가장 보편적인 방식입니다. 외부 API나 별도의 백엔드 서비스에서 데이터를 가져올 때 사용합니다. 다만 같은 프로젝트 안의 데이터를 다시 우리 API 라우트로 한 번 더 우회할 필요는 없는 경우가 많습니다. 그럴 때는 아래의 DB 직접 접근 방식이 더 단순합니다.</p>
+
+<pre><code class="language-tsx">// app/blog/page.tsx — 서버 컴포넌트 (async 함수)
+import { SearchablePostList } from './components/SearchablePostList';
+
+export default async function Blog() {
+  const res = await fetch('http://localhost:4000/posts');
   const posts = await res.json();
 
   return (
-    &lt;ul&gt;
-      {posts.map((post) =&gt; (
-        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
-      ))}
-    &lt;/ul&gt;
+    &lt;div&gt;
+      &lt;h1 className="text-2xl font-bold mb-4"&gt;블로그&lt;/h1&gt;
+      &lt;SearchablePostList posts={posts} /&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
-<h3>캐싱 전략</h3>
-<pre><code class="language-typescript">// 기본값: 캐시하지 않음 (매 요청마다 fetch)
-fetch('https://api.example.com/data');
 
-// 명시적으로 캐시 활성화
-fetch('https://api.example.com/data', {
-  cache: 'force-cache',
-});
+<p><code>useState</code>도, <code>useEffect</code>도 필요 없습니다. 서버에서 데이터를 읽고 바로 렌더링에 사용할 수 있기 때문입니다. Ch.2에서 만든 <code>SearchablePostList</code>를 그대로 재사용하되, 데이터만 외부에서 가져오는 것이 달라졌습니다.</p>
 
-// 재검증 주기 설정 (ISR)
-fetch('https://api.example.com/data', {
-  next: { revalidate: 60 }, // 60초
-});</code></pre>
-<h3>Server Actions</h3>
-<p>폼 제출이나 데이터 변경에는 Server Actions를 사용합니다:</p>
-<pre><code class="language-tsx">'use server';
+<h3>DB 직접 쿼리 — Prisma, Drizzle 등</h3>
+<p>서버 컴포넌트는 서버에서 실행되므로, <strong>데이터베이스에 직접 접근</strong>할 수 있습니다. API 라우트를 따로 만들 필요가 없습니다.</p>
 
-export async function createPost(formData: FormData) {
-  const title = formData.get('title') as string;
-  const content = formData.get('content') as string;
+<pre><code class="language-tsx">// app/blog/page.tsx
+import { db } from '@/lib/database';
+import { SearchablePostList } from './components/SearchablePostList';
 
-  await db.post.create({
-    data: { title, content },
+export default async function Blog() {
+  const posts = await db.post.findMany({
+    orderBy: { createdAt: 'desc' },
   });
-}</code></pre>
-<pre><code class="language-tsx">// app/posts/new/page.tsx
-import { createPost } from './actions';
 
-export default function NewPost() {
   return (
-    &lt;form action={createPost}&gt;
-      &lt;input name="title" placeholder="제목" /&gt;
-      &lt;textarea name="content" placeholder="내용" /&gt;
-      &lt;button type="submit"&gt;작성&lt;/button&gt;
-    &lt;/form&gt;
+    &lt;div&gt;
+      &lt;h1 className="text-2xl font-bold mb-4"&gt;블로그&lt;/h1&gt;
+      &lt;SearchablePostList posts={posts} /&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
+
+<p>이 코드의 <code>db</code> 객체(예: Prisma Client)는 <strong>서버에서만 실행</strong>되므로, DB 접속 정보가 클라이언트에 노출되지 않습니다.</p>
+
+<h3>파일 시스템 — fs/promises로 JSON 파일 읽기</h3>
+<p>마크다운 블로그나 정적 데이터를 관리할 때 유용합니다. Node.js의 파일 시스템 API를 그대로 사용할 수 있습니다.</p>
+
+<pre><code class="language-tsx">// app/blog/page.tsx
+import { readFile } from 'fs/promises';
+import path from 'path';
+import { SearchablePostList } from './components/SearchablePostList';
+
+export default async function Blog() {
+  const filePath = path.join(process.cwd(), 'data', 'posts.json');
+  const raw = await readFile(filePath, 'utf-8');
+  const posts = JSON.parse(raw);
+
+  return (
+    &lt;div&gt;
+      &lt;h1 className="text-2xl font-bold mb-4"&gt;블로그&lt;/h1&gt;
+      &lt;SearchablePostList posts={posts} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h3>비교표: useEffect + fetch vs 서버 컴포넌트</h3>
+
+<table>
+<thead>
+<tr><th></th><th>useEffect + fetch</th><th>서버 컴포넌트</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>실행 위치</strong></td><td>브라우저</td><td>서버</td></tr>
+<tr><td><strong>초기 HTML</strong></td><td>빈 HTML (로딩 스피너)</td><td>완성된 HTML</td></tr>
+<tr><td><strong>보안</strong></td><td>비밀 값은 둘 수 없음</td><td>비밀 값을 서버에만 둘 수 있음</td></tr>
+<tr><td><strong>워터폴</strong></td><td>HTML→JS→fetch→렌더링</td><td>첫 요청을 서버에서 시작해 클라이언트 워터폴 감소</td></tr>
+<tr><td><strong>async 함수</strong></td><td>컴포넌트에 직접 사용 불가</td><td>가능</td></tr>
+<tr><td><strong>DB 접근</strong></td><td>불가 (API 필요)</td><td>직접 가능</td></tr>
+</tbody>
+</table>
+
+<div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
+캐싱 동작 — <code>fetch</code>에 캐싱 옵션을 줄 수 있다는 걸 들어본 분도 있을 겁니다. 이 부분은 <strong>세션 4</strong>에서 자세히 다룹니다.
+</div>
+
+<h2 id="data-fetching-summary"><a href="#data-fetching-summary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정리</a></h2>
+
+<table>
+<thead>
+<tr><th>개념</th><th>핵심 내용</th></tr>
+</thead>
+<tbody>
+<tr><td>하드코딩의 한계</td><td>데이터는 코드 밖(API, DB, 파일)에 있어야 한다</td></tr>
+<tr><td>useEffect + fetch</td><td>동작하지만 초기 화면 데이터에는 워터폴과 빈 HTML 문제가 생기기 쉽다</td></tr>
+<tr><td>서버 컴포넌트</td><td>async/await으로 데이터를 직접 가져오고, 첫 화면용 데이터를 서버에서 준비하기 좋다</td></tr>
+<tr><td>데이터 소스</td><td>fetch API, DB 직접 쿼리, 파일 시스템 모두 가능</td></tr>
+<tr><td>기본값</td><td>App Router에서 데이터 fetching의 기본 위치는 서버</td></tr>
+</tbody>
+</table>
+
+<p>다음 세션에서는 서버에서 데이터를 가져온 뒤 화면을 <strong>언제</strong> 만들어 둘 것인지 — 빌드 시점에 미리 만드는 정적 렌더링과, 요청마다 만드는 동적 렌더링을 학습합니다.</p>
           `,
         },
         {
-          title: '동적 라우트와 메타데이터',
+          title: '렌더링 전략과 SSG/SSR',
           content: `
-<h2>동적 라우트</h2>
-<p>URL의 일부를 변수로 사용할 때 동적 라우트를 활용합니다.</p>
-<h3>기본 동적 라우트</h3>
-<pre><code class="language-tsx">// app/blog/[slug]/page.tsx
-type Props = {
-  params: Promise&lt;{ slug: string }&gt;;
-};
-
-export default async function BlogPost({ params }: Props) {
-  const { slug } = await params;
-  const post = await getPost(slug);
-
-  return (
-    &lt;article&gt;
-      &lt;h1&gt;{post.title}&lt;/h1&gt;
-      &lt;p&gt;{post.content}&lt;/p&gt;
-    &lt;/article&gt;
-  );
-}</code></pre>
-<h3>generateStaticParams</h3>
-<p>빌드 시점에 정적으로 생성할 페이지를 지정할 수 있습니다:</p>
-<pre><code class="language-tsx">export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map((post) =&gt; ({
-    slug: post.slug,
-  }));
-}</code></pre>
-<h3>메타데이터</h3>
-<p>SEO를 위한 메타데이터를 설정합니다:</p>
-<pre><code class="language-tsx">// 정적 메타데이터
-export const metadata = {
-  title: '블로그',
-  description: '최신 기술 블로그 글',
-};
-
-// 동적 메타데이터
-export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
-  const post = await getPost(slug);
-  return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      images: [post.coverImage],
-    },
-  };
-}</code></pre>
+<h2>렌더링 전략과 SSG/SSR</h2>
+<p>이 세션은 준비 중입니다.</p>
+          `,
+        },
+        {
+          title: 'Streaming과 Suspense',
+          content: `
+<h2>Streaming과 Suspense</h2>
+<p>이 세션은 준비 중입니다.</p>
+          `,
+        },
+        {
+          title: '캐싱 전략과 revalidation',
+          content: `
+<h2>캐싱 전략과 revalidation</h2>
+<p>이 세션은 준비 중입니다.</p>
+          `,
+        },
+        {
+          title: 'Server Actions와 화면 갱신',
+          content: `
+<h2>Server Actions와 화면 갱신</h2>
+<p>이 세션은 준비 중입니다.</p>
           `,
         },
       ],
