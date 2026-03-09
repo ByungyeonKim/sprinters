@@ -1644,8 +1644,19 @@ components/
 </tbody>
 </table>
 
+<h2 id="ch2-summary"><a href="#ch2-summary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Ch.2 학습 정리</a></h2>
+
+<p>이번 챕터에서는 서버 컴포넌트와 클라이언트 컴포넌트를 <strong>언제, 왜 구분해서 쓰는지</strong>를 집중적으로 다뤘습니다.</p>
+
+<ul>
+<li><strong>서버 vs 클라이언트 컴포넌트의 역할 차이</strong> - 서버 컴포넌트는 데이터 표시와 레이아웃을, 클라이언트 컴포넌트는 인터랙션(<code>useState</code>, <code>onClick</code> 등)을 담당합니다.</li>
+<li><strong><code>'use client'</code> 경계는 트리 끝에 배치</strong> - 클라이언트 경계를 최대한 작게 만들어서, 서버에서 처리할 수 있는 부분을 최대화하는 설계 원칙을 배웠습니다.</li>
+<li><strong>children 합성 패턴</strong> - Provider 래핑이나 인터랙티브 래퍼에서 <code>children</code>을 활용해 서버 컴포넌트를 클라이언트 컴포넌트 안에 배치하는 패턴을 익혔습니다.</li>
+<li><strong>실습</strong> - BlogLayout 리팩터링, LikeButton, SearchablePostList를 직접 만들며 경계 설계를 연습했습니다.</li>
+</ul>
+
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
-<strong>다음 챕터 예고:</strong> Ch.2에서는 하드코딩된 배열로 데이터를 다뤘습니다. Ch.3에서는 서버 컴포넌트에서 <strong>실제 API와 데이터베이스</strong>를 연동하는 Data Fetching 패턴을 학습합니다.
+<strong>다음 챕터 예고:</strong> 지금까지는 하드코딩된 배열로 데이터를 다뤘습니다. Ch.3에서는 데이터를 외부 소스에서 가져오는 <strong>Data Fetching</strong> 패턴을 학습합니다.
 </div>
           `,
         },
