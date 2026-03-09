@@ -21,9 +21,9 @@ export default {
 <h2>왜 Next.js를 배워야 하나요?</h2>
 <p>React만으로도 멋진 UI를 만들 수 있습니다. 하지만 실제 서비스를 배포하려고 하면 몇 가지 벽에 부딪힙니다.</p>
 <ul>
-<li><strong>검색 엔진이 내 페이지를 못 찾는다</strong> — React SPA는 빈 HTML을 내려주기 때문에 네이버, 구글 등의 검색에 잘 노출되지 않습니다.</li>
-<li><strong>첫 화면이 느리다</strong> — 브라우저가 큰 JavaScript 번들을 전부 다운로드하고 실행할 때까지 사용자는 빈 화면을 봅니다.</li>
-<li><strong>API 키가 노출된다</strong> — 클라이언트 코드에서 외부 API를 호출하면 민감한 정보가 브라우저에 그대로 드러납니다.</li>
+<li><strong>검색 엔진이 내 페이지를 못 찾는다</strong> - React SPA는 빈 HTML을 내려주기 때문에 네이버, 구글 등의 검색에 잘 노출되지 않습니다.</li>
+<li><strong>첫 화면이 느리다</strong> - 브라우저가 큰 JavaScript 번들을 전부 다운로드하고 실행할 때까지 사용자는 빈 화면을 봅니다.</li>
+<li><strong>API 키가 노출된다</strong> - 클라이언트 코드에서 외부 API를 호출하면 민감한 정보가 브라우저에 그대로 드러납니다.</li>
 </ul>
 <p>Next.js는 이런 문제를 <strong>서버 렌더링, 자동 코드 분할, 서버 컴포넌트</strong> 같은 기능으로 깔끔하게 해결합니다. React 생태계에서 가장 널리 쓰이는 프레임워크인 만큼, 배워두면 실무에서 바로 활용할 수 있습니다.</p>
 
@@ -51,9 +51,9 @@ export default {
 <h2>선수 지식</h2>
 <p>아래 내용을 이미 알고 있다면 바로 시작할 수 있습니다.</p>
 <ul>
-<li><strong>React 기본 문법</strong> — JSX, 컴포넌트, Hook (<code>useState</code>, <code>useEffect</code>)</li>
-<li><strong>JavaScript ES6+</strong> — <code>async/await</code>, 구조 분해, 모듈 시스템</li>
-<li><strong>HTML/CSS 기초</strong> — 기본적인 마크업과 스타일링</li>
+<li><strong>React 기본 문법</strong> - JSX, 컴포넌트, Hook (<code>useState</code>, <code>useEffect</code>)</li>
+<li><strong>JavaScript ES6+</strong> - <code>async/await</code>, 구조 분해, 모듈 시스템</li>
+<li><strong>HTML/CSS 기초</strong> - 기본적인 마크업과 스타일링</li>
 </ul>
           `,
         },
@@ -125,10 +125,10 @@ export default {
 <p>CSR은 기본적으로 빈 HTML이 내려오므로 검색 인덱싱에 불리할 수 있습니다. 일부 크롤러는 JavaScript를 실행해 콘텐츠를 인식하기도 합니다. 하지만, 일반적으로 서버에서 HTML을 완성해 보내주는 SSR 방식이 더 안정적인 것이 사실입니다.</p>
 
 <h3>2. 초기 로딩 성능 문제</h3>
-<p>CSR에서는 화면을 그리기 전에 JavaScript 번들을 먼저 다운로드하고 실행해야 합니다. 앱이 커질수록 초기 번들의 크기가 커질 수 있고, 그만큼 <strong>사용자가 첫 콘텐츠를 보기까지(FCP — First Contentful Paint)의 시간이 지연</strong>될 수 있습니다. 이를 완화하기 위해 React가 제공하는 코드 분할 기능을 사용할 수 있습니다:</p>
+<p>CSR에서는 화면을 그리기 전에 JavaScript 번들을 먼저 다운로드하고 실행해야 합니다. 앱이 커질수록 초기 번들의 크기가 커질 수 있고, 그만큼 <strong>사용자가 첫 콘텐츠를 보기까지(FCP - First Contentful Paint)의 시간이 지연</strong>될 수 있습니다. 이를 완화하기 위해 React가 제공하는 코드 분할 기능을 사용할 수 있습니다:</p>
 <ul>
-<li><code>React.lazy</code> — 컴포넌트를 <strong>동적으로 import</strong>하여, 해당 컴포넌트가 실제로 렌더링될 때만 번들을 다운로드합니다.</li>
-<li><code>Suspense</code> — lazy 컴포넌트가 로드되는 동안 보여줄 <strong>대체 UI(fallback)</strong>를 지정합니다.</li>
+<li><code>React.lazy</code> - 컴포넌트를 <strong>동적으로 import</strong>하여, 해당 컴포넌트가 실제로 렌더링될 때만 번들을 다운로드합니다.</li>
+<li><code>Suspense</code> - lazy 컴포넌트가 로드되는 동안 보여줄 <strong>대체 UI(fallback)</strong>를 지정합니다.</li>
 </ul>
 <p>하지만 코드 분할을 사용해도 CSR의 구조 자체는 변하지 않습니다. 여전히 초기 화면을 렌더링하려면 JavaScript 번들을 먼저 다운로드하고 실행해야 합니다.</p>
 <pre><code class="language-jsx">import { lazy, Suspense } from 'react';
@@ -151,9 +151,9 @@ function App() {
 export default App;</code></pre>
 <p>이 방법은 라우트 단위로 번들을 나눌 수 있지만 한계가 분명합니다:</p>
 <ul>
-<li><strong>수동 관리 부담</strong> — 어떤 컴포넌트를 lazy로 분리할지 개발자가 직접 판단하고 설정해야 합니다. 분할 지점이 많아질수록 관리가 복잡해집니다.</li>
-<li><strong>공통(초기) 번들은 남습니다</strong> — 라우트를 나눠도 앱이 시작되려면 리액트 런타임, 라우터, 공통 레이아웃/유틸, 공유 라이브러리 같은 "기본 실행 코드"는 초기 로딩에 포함되는 경우가 많습니다. 그래서 페이지를 분리해도 공통 의존성이 커지면 초기 로딩 비용이 함께 커질 수 있습니다.</li>
-<li><strong>로딩 상태가 UX로 드러납니다</strong> — 라우트로 이동할 때 필요한 청크를 추가로 받아오는 동안 Suspense의 fallback(<code>"로딩 중…"</code>)이 노출됩니다. 네트워크가 느리면 이 상태가 길어져 전환이 끊기거나 깜빡이는 것처럼 느껴질 수 있고, 결국 "JS를 받아 실행해야 화면이 완성되는 CSR 구조" 자체는 그대로입니다.</li>
+<li><strong>수동 관리 부담</strong> - 어떤 컴포넌트를 lazy로 분리할지 개발자가 직접 판단하고 설정해야 합니다. 분할 지점이 많아질수록 관리가 복잡해집니다.</li>
+<li><strong>공통(초기) 번들은 남습니다</strong> - 라우트를 나눠도 앱이 시작되려면 리액트 런타임, 라우터, 공통 레이아웃/유틸, 공유 라이브러리 같은 "기본 실행 코드"는 초기 로딩에 포함되는 경우가 많습니다. 그래서 페이지를 분리해도 공통 의존성이 커지면 초기 로딩 비용이 함께 커질 수 있습니다.</li>
+<li><strong>로딩 상태가 UX로 드러납니다</strong> - 라우트로 이동할 때 필요한 청크를 추가로 받아오는 동안 Suspense의 fallback(<code>"로딩 중…"</code>)이 노출됩니다. 네트워크가 느리면 이 상태가 길어져 전환이 끊기거나 깜빡이는 것처럼 느껴질 수 있고, 결국 "JS를 받아 실행해야 화면이 완성되는 CSR 구조" 자체는 그대로입니다.</li>
 </ul>
 
 <h3>3. 서버 없는 구조의 한계</h3>
@@ -240,7 +240,7 @@ JS 다운로드       ████████
 <thead><tr><th>CSR 문제</th><th>Next.js 해결책</th></tr></thead>
 <tbody>
 <tr><td>빈 HTML (SEO 불가)</td><td>서버에서 HTML을 미리 렌더링 (SSR/SSG)</td></tr>
-<tr><td>대용량 번들 (느린 로딩)</td><td>자동 코드 분할 — 페이지별 필요한 코드만 전송</td></tr>
+<tr><td>대용량 번들 (느린 로딩)</td><td>자동 코드 분할 - 페이지별 필요한 코드만 전송</td></tr>
 <tr><td>API 키 노출</td><td>서버 컴포넌트에서 민감 정보 처리</td></tr>
 <tr><td>데이터 워터폴</td><td>서버에서 병렬로 데이터 수집 후 완성된 HTML 전송</td></tr>
 </tbody>
@@ -251,7 +251,7 @@ JS 다운로드       ████████
 <p>React SPA(CSR)에서는 앱의 모든 코드가 <strong>하나의 커다란 번들</strong>로 묶여 전송됩니다. 홈 페이지에 접속했을 뿐인데, 관리자 페이지·설정 페이지·대시보드 코드까지 전부 다운로드해야 하는 것이죠.</p>
 <p>Next.js의 자동 코드 분할은 이 방식을 뒤집습니다. <strong>한 덩어리가 아니라 페이지마다 따로 포장</strong>해서, 사용자가 방문한 페이지에 필요한 코드만 전송합니다.</p>
 
-<h4>이점 1 — 초기 로딩 속도 향상</h4>
+<h4>이점 1 - 초기 로딩 속도 향상</h4>
 <p>다운로드할 JavaScript 양이 줄어들고, 브라우저가 파싱·컴파일해야 하는 코드도 줄어듭니다. 특히 모바일 환경에서 체감 차이가 큽니다.</p>
 <pre><code class="language-text">CSR (코드 분할 없음)
   사용자 → 홈 페이지 접속 → bundle.js (500 KB) 전체 다운로드
@@ -259,7 +259,7 @@ JS 다운로드       ████████
 Next.js (자동 코드 분할)
   사용자 → 홈 페이지 접속 → 홈 전용 코드 (5 KB) + 공유 코드 (84 KB)만 다운로드</code></pre>
 
-<h4>이점 2 — 장애 격리</h4>
+<h4>이점 2 - 장애 격리</h4>
 <p>대시보드 페이지의 코드에서 에러가 발생하더라도, 홈 페이지나 소개 페이지는 영향을 받지 않습니다. 코드가 페이지별로 분리되어 있기 때문입니다.</p>
 <p>단, <strong>공통 레이아웃이나 공유 컴포넌트</strong>에서 에러가 발생하면 여러 페이지에 영향이 퍼질 수 있습니다. 이런 경우에는 다음 세션에서 살펴볼 <code>error.tsx</code> 에러 경계를 활용하여 에러 범위를 격리할 수 있습니다.</p>
 
@@ -286,10 +286,10 @@ Next.js (자동 코드 분할)
 ✔ Would you like to customize the import alias? … No</code></pre>
 
 <ul>
-<li><strong>TypeScript</strong> — 타입 안정성으로 런타임 에러를 줄여줍니다.</li>
-<li><strong>ESLint</strong> — 코드 품질과 일관성을 유지해줍니다. Biome도 선택 가능하지만, 생태계가 더 넓은 ESLint를 권장합니다.</li>
-<li><strong>Tailwind CSS</strong> — 별도 CSS 파일 없이 <code>className="text-lg font-bold"</code>처럼 HTML에 직접 스타일을 적용하는 유틸리티 퍼스트 방식의 CSS 프레임워크입니다.</li>
-<li><strong>App Router</strong> — Next.js의 최신 라우팅 시스템입니다. 반드시 선택하세요.</li>
+<li><strong>TypeScript</strong> - 타입 안정성으로 런타임 에러를 줄여줍니다.</li>
+<li><strong>ESLint</strong> - 코드 품질과 일관성을 유지해줍니다. Biome도 선택 가능하지만, 생태계가 더 넓은 ESLint를 권장합니다.</li>
+<li><strong>Tailwind CSS</strong> - 별도 CSS 파일 없이 <code>className="text-lg font-bold"</code>처럼 HTML에 직접 스타일을 적용하는 유틸리티 퍼스트 방식의 CSS 프레임워크입니다.</li>
+<li><strong>App Router</strong> - Next.js의 최신 라우팅 시스템입니다. 반드시 선택하세요.</li>
 </ul>
 
 <h2 id="understand-project-structure"><a href="#understand-project-structure" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>프로젝트 구조 이해</a></h2>
@@ -366,7 +366,7 @@ export default function Home() {
 <h2 id="file-conventions"><a href="#file-conventions" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>핵심 파일 규칙</a></h2>
 <p>App Router에서는 특정 이름을 가진 파일들이 <strong>특별한 역할</strong>을 합니다:</p>
 
-<h3><code>page.tsx</code> — 페이지 UI</h3>
+<h3><code>page.tsx</code> - 페이지 UI</h3>
 <p>해당 경로에서 보여줄 UI를 정의합니다. 이 파일이 있어야 해당 경로에 접근할 수 있습니다.</p>
 <pre><code class="language-tsx">// app/about/page.tsx → /about 경로
 export default function About() {
@@ -378,7 +378,7 @@ export default function About() {
 <span>Next.js는 <code>page.tsx</code>의 <strong>default export</strong>를 해당 경로의 UI로 사용합니다. named export(<code>export function About</code>)로 작성하면 페이지를 인식하지 못합니다. <code>layout.tsx</code>, <code>loading.tsx</code> 등 다른 특수 파일도 동일한 규칙입니다.</span>
 </div>
 
-<h3><code>layout.tsx</code> — 공유 레이아웃</h3>
+<h3><code>layout.tsx</code> - 공유 레이아웃</h3>
 <p>하위 페이지들이 공유하는 UI를 정의합니다. 내비게이션, 사이드바 등에 사용합니다.</p>
 <pre><code class="language-tsx">// app/layout.tsx → 모든 페이지가 공유
 export default function RootLayout({
@@ -393,14 +393,14 @@ export default function RootLayout({
   );
 }</code></pre>
 
-<h3><code>loading.tsx</code> — 로딩 UI</h3>
+<h3><code>loading.tsx</code> - 로딩 UI</h3>
 <p>React Suspense를 기반으로 자동 로딩 UI를 제공합니다.</p>
 <pre><code class="language-tsx">// app/dashboard/loading.tsx
 export default function Loading() {
   return &lt;div&gt;대시보드 로딩 중...&lt;/div&gt;;
 }</code></pre>
 
-<h3><code>error.tsx</code> — 에러 UI</h3>
+<h3><code>error.tsx</code> - 에러 UI</h3>
 <p>React Error Boundary를 기반으로 에러 발생 시 보여줄 UI를 정의합니다. Error Boundary는 반드시 <strong>클라이언트 컴포넌트</strong>여야 합니다.</p>
 <pre><code class="language-tsx">// app/dashboard/error.tsx
 'use client' // Error Boundary는 반드시 클라이언트 컴포넌트여야 합니다
@@ -427,7 +427,7 @@ export default function Error({
   )
 }</code></pre>
 
-<h3><code>not-found.tsx</code> — 404 페이지</h3>
+<h3><code>not-found.tsx</code> - 404 페이지</h3>
 <pre><code class="language-tsx">// app/not-found.tsx
 export default function NotFound() {
   return &lt;h1&gt;페이지를 찾을 수 없습니다&lt;/h1&gt;;
@@ -468,7 +468,7 @@ export default function Blog() {
 <h2 id="create-dynamic-routes"><a href="#create-dynamic-routes" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>동적 라우트</a></h2>
 <p>URL의 일부를 변수로 사용해야 할 때 대괄호로 폴더명을 감쌉니다:</p>
 
-<h3><code>[slug]</code> — 단일 동적 세그먼트</h3>
+<h3><code>[slug]</code> - 단일 동적 세그먼트</h3>
 <pre><code class="language-text">app/blog/[slug]/page.tsx → /blog/hello-world, /blog/my-first-post 등</code></pre>
 <pre><code class="language-tsx">// app/blog/[slug]/page.tsx
 type Props = {
@@ -482,7 +482,7 @@ export default async function BlogPost({ params }: Props) {
 
 <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
 <strong style="display:block;margin-bottom:0.35rem;">폴더명 = params 키</strong>
-<span>대괄호 안의 이름이 <code>params</code> 객체의 키가 됩니다. <code>[slug]</code>이면 <code>params.slug</code>, <code>[id]</code>이면 <code>params.id</code>로 접근합니다. 프로젝트 맥락에 맞는 이름을 자유롭게 사용하세요 — 예를 들어, 상품 상세 페이지라면 <code>[productId]</code>가 더 직관적입니다.</span>
+<span>대괄호 안의 이름이 <code>params</code> 객체의 키가 됩니다. <code>[slug]</code>이면 <code>params.slug</code>, <code>[id]</code>이면 <code>params.id</code>로 접근합니다. 프로젝트 맥락에 맞는 이름을 자유롭게 사용하세요 - 예를 들어, 상품 상세 페이지라면 <code>[productId]</code>가 더 직관적입니다.</span>
 </div>
 
 <p>다음 세션에서는 이 라우팅 시스템 위에 구축되는 <strong>레이아웃 시스템과 중첩 라우팅</strong>을 학습합니다.</p>
@@ -545,7 +545,7 @@ export default function DashboardLayout({
 
 <h2 id="key-layout-characteristics"><a href="#key-layout-characteristics" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>레이아웃의 핵심 특성</a></h2>
 
-<h3>상태 유지 — 리렌더링되지 않음</h3>
+<h3>상태 유지 - 리렌더링되지 않음</h3>
 <p>레이아웃은 하위 페이지가 전환되어도 <strong>리렌더링되지 않습니다</strong>. 예를 들어, 대시보드 레이아웃 사이드바의 스크롤 위치는 페이지 이동 시에도 유지가 됩니다. 또한, 입력 필드의 사용자값처럼, UI 상태(State)도 유지가 됩니다.</p>
 <pre><code class="language-text">/dashboard → /dashboard/settings 이동 시:
   ✅ 대시보드 레이아웃: 리렌더링 없음 (상태 유지)
@@ -566,7 +566,7 @@ export default function DashboardLayout({
     └── [slug]/
         └── page.tsx    # /blog/:slug (글 상세)</code></pre>
 
-<pre><code class="language-tsx">// app/layout.tsx — 루트 레이아웃
+<pre><code class="language-tsx">// app/layout.tsx - 루트 레이아웃
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
@@ -611,7 +611,7 @@ export default function RootLayout({
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/page.tsx — 홈 페이지
+<pre><code class="language-tsx">// app/page.tsx - 홈 페이지
 export default function Home() {
   return (
     &lt;div&gt;
@@ -621,7 +621,7 @@ export default function Home() {
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/about/page.tsx — 소개 페이지
+<pre><code class="language-tsx">// app/about/page.tsx - 소개 페이지
 export default function About() {
   return (
     &lt;div&gt;
@@ -635,7 +635,7 @@ export default function About() {
 
 import { useState } from 'react';
 
-// app/blog/layout.tsx — 블로그 레이아웃
+// app/blog/layout.tsx - 블로그 레이아웃
 export default function BlogLayout({
   children,
 }: Readonly&lt;{
@@ -662,7 +662,7 @@ export default function BlogLayout({
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/blog/page.tsx — 글 목록 페이지
+<pre><code class="language-tsx">// app/blog/page.tsx - 글 목록 페이지
 import Link from 'next/link';
 
 const posts = [
@@ -685,7 +685,7 @@ export default function Blog() {
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/blog/[slug]/page.tsx — 글 상세 페이지
+<pre><code class="language-tsx">// app/blog/[slug]/page.tsx - 글 상세 페이지
 export default async function Post({
   params,
 }: {
@@ -770,7 +770,7 @@ export default async function Post({
 
 <h4>1. 브라우저에 JavaScript를 보내지 않는다</h4>
 <p>서버 컴포넌트의 코드는 <strong>클라이언트 번들에 포함되지 않습니다</strong>. 서버에서 실행된 뒤 결과만 클라이언트에 전달되며, 브라우저에서 다시 실행되지 않습니다. (React 자체가 사라지는 것이 아니라, <strong>이 컴포넌트의 코드</strong>가 번들에서 빠지는 것입니다.) 브라우저가 파싱하고 실행할 JS가 줄어들수록 초기 인터랙션은 빨라집니다. 그래서 "기본은 서버 컴포넌트"라는 설계가 성능 관점에서 합리적입니다.</p>
-<pre><code class="language-tsx">// app/blog/page.tsx — 서버 컴포넌트 (기본값)
+<pre><code class="language-tsx">// app/blog/page.tsx - 서버 컴포넌트 (기본값)
 // 이 코드는 서버에서만 실행됩니다. 브라우저에 JS가 전송되지 않습니다.
 import { marked } from 'marked'; // 서버 컴포넌트에서만 쓰이면 번들에 포함되지 않음
 
@@ -828,13 +828,13 @@ export default async function Page() {
 <p>서버 컴포넌트는 서버에서 렌더링될 때만 실행되며, 그 실행 결과가 브라우저로 전달됩니다. 즉 서버 컴포넌트의 코드는 <strong>브라우저에서 동작하지 않으므로</strong>, 브라우저에서 유지되는 상태(useState 등)나 클릭 같은 DOM 이벤트에 직접 반응할 수 없습니다. 사용자 인터랙션이 필요한 UI는 클라이언트 컴포넌트로 분리해야 하며, 이를 명시적으로 표시하기 위해 <code>'use client'</code> 지시어가 존재합니다.</p>
 <pre><code class="language-tsx">// ❌ 서버 컴포넌트에서 이것들은 동작하지 않습니다
 export default function ServerComponent() {
-  // ❌ useState — 클라이언트 상태
+  // ❌ useState - 클라이언트 상태
   const [count, setCount] = useState(0);
 
-  // ❌ useEffect — 브라우저에서 실행되는 사이드이펙트
+  // ❌ useEffect - 브라우저에서 실행되는 사이드이펙트
   useEffect(() =&gt; { /* ... */ }, []);
 
-  // ❌ onClick — 브라우저 이벤트
+  // ❌ onClick - 브라우저 이벤트
   return &lt;button onClick={() =&gt; alert('클릭!')}&gt;버튼&lt;/button&gt;;
 }</code></pre>
 
@@ -857,7 +857,7 @@ export default function Counter() {
 
 <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
 <strong style="display:block;margin-bottom:0.35rem;">클라이언트 컴포넌트 ≠ "나쁜 것"</strong>
-<span>클라이언트 컴포넌트가 없으면 사용자와의 상호작용이 불가능합니다. 버튼, 폼, 토글, 모달 — 모두 클라이언트 컴포넌트가 필요합니다. "서버가 좋고 클라이언트가 나쁜 것"이 아니라, <strong>각자의 역할이 다를 뿐</strong>입니다.</span>
+<span>클라이언트 컴포넌트가 없으면 사용자와의 상호작용이 불가능합니다. 버튼, 폼, 토글, 모달 - 모두 클라이언트 컴포넌트가 필요합니다. "서버가 좋고 클라이언트가 나쁜 것"이 아니라, <strong>각자의 역할이 다를 뿐</strong>입니다.</span>
 </div>
 
 <h2 id="server-first-mental-model"><a href="#server-first-mental-model" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>멘탈 모델: 서버가 기본, 클라이언트는 필요할 때만</a></h2>
@@ -937,17 +937,17 @@ export default function BlogLayout({
 
 서버 컴포넌트
   ├── import 서버 컴포넌트  ✅ (당연히 가능)
-  ├── import 클라이언트 컴포넌트  ✅ (가능 — 경계 생성)
+  ├── import 클라이언트 컴포넌트  ✅ (가능 - 경계 생성)
   └── 서버 → 클라이언트 혼합 가능
 
 클라이언트 컴포넌트 ('use client' 경계 아래)
   ├── import 클라이언트 컴포넌트  ✅ (당연히 가능)
-  └── import 서버 컴포넌트  ❌ (불가능 — 이미 클라이언트 영역)</code></pre>
+  └── import 서버 컴포넌트  ❌ (불가능 - 이미 클라이언트 영역)</code></pre>
 
 <p>핵심 규칙은 하나입니다: <strong>클라이언트 컴포넌트가 import한 것은 모두 클라이언트가 된다.</strong></p>
 
 <p>예시로 살펴봅시다:</p>
-<pre><code class="language-tsx">// utils/format.ts — 'use client' 없음
+<pre><code class="language-tsx">// utils/format.ts - 'use client' 없음
 export function formatDate(date: string) {
   return new Date(date).toLocaleDateString('ko-KR');
 }</code></pre>
@@ -1011,7 +1011,7 @@ export default function CategorySidebar() {
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/blog/layout.tsx — 서버 컴포넌트로 유지!
+<pre><code class="language-tsx">// app/blog/layout.tsx - 서버 컴포넌트로 유지!
 import CategorySidebar from '@/components/CategorySidebar';
 
 export default function BlogLayout({
@@ -1129,7 +1129,7 @@ export function InteractiveWrapper({
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/page.tsx — 서버 컴포넌트
+<pre><code class="language-tsx">// app/page.tsx - 서버 컴포넌트
 import { InteractiveWrapper } from './components/InteractiveWrapper';
 import HeavyContent from './components/HeavyContent'; // 서버 컴포넌트
 
@@ -1174,7 +1174,7 @@ export function ThemeProvider({
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/layout.tsx — 서버 컴포넌트
+<pre><code class="language-tsx">// app/layout.tsx - 서버 컴포넌트
 import { ThemeProvider } from './providers/ThemeProvider';
 
 export default function RootLayout({
@@ -1228,7 +1228,7 @@ export function Accordion({
   );
 }</code></pre>
 
-<pre><code class="language-tsx">// app/faq/page.tsx — 서버 컴포넌트
+<pre><code class="language-tsx">// app/faq/page.tsx - 서버 컴포넌트
 import { Accordion } from './components/Accordion';
 
 // 서버에서만 사용하는 데이터
@@ -1362,10 +1362,10 @@ It should only be used from a Server Component.</code></pre>
 <h2 id="what-we-will-build"><a href="#what-we-will-build" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>이번 세션에서 할 일</a></h2>
 <p>Ch.1에서 만든 블로그 프로젝트에 서버/클라이언트 컴포넌트 설계를 적용합니다. 구체적으로:</p>
 <ol>
-<li><strong>BlogLayout 리팩터링</strong> — 전체 클라이언트 → 서버 컴포넌트 + CategorySidebar 분리</li>
-<li><strong>좋아요 버튼 추가</strong> — 서버 페이지에 클라이언트 컴포넌트 배치</li>
-<li><strong>검색 기능 추가</strong> — SearchablePostList 클라이언트 컴포넌트</li>
-<li><strong>최종 구조 점검</strong> — 서버/클라이언트 경계 확인</li>
+<li><strong>BlogLayout 리팩터링</strong> - 전체 클라이언트 → 서버 컴포넌트 + CategorySidebar 분리</li>
+<li><strong>좋아요 버튼 추가</strong> - 서버 페이지에 클라이언트 컴포넌트 배치</li>
+<li><strong>검색 기능 추가</strong> - SearchablePostList 클라이언트 컴포넌트</li>
+<li><strong>최종 구조 점검</strong> - 서버/클라이언트 경계 확인</li>
 </ol>
 
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
@@ -1415,7 +1415,7 @@ export function CategorySidebar() {
 }</code></pre>
 
 <h3>BlogLayout을 서버 컴포넌트로 전환</h3>
-<pre><code class="language-tsx">// app/blog/layout.tsx — 이제 서버 컴포넌트!
+<pre><code class="language-tsx">// app/blog/layout.tsx - 이제 서버 컴포넌트!
 import { CategorySidebar } from './components/CategorySidebar';
 
 export default function BlogLayout({
@@ -1475,7 +1475,7 @@ export function LikeButton() {
 }</code></pre>
 
 <h3>서버 컴포넌트 페이지에서 사용</h3>
-<pre><code class="language-tsx">// app/blog/[slug]/page.tsx — 서버 컴포넌트
+<pre><code class="language-tsx">// app/blog/[slug]/page.tsx - 서버 컴포넌트
 import { LikeButton } from './components/LikeButton';
 
 const posts = [
@@ -1573,7 +1573,7 @@ export function SearchablePostList({ posts }: { posts: Post[] }) {
 }</code></pre>
 
 <h3>서버 컴포넌트 페이지에서 데이터 전달</h3>
-<pre><code class="language-tsx">// app/blog/page.tsx — 서버 컴포넌트
+<pre><code class="language-tsx">// app/blog/page.tsx - 서버 컴포넌트
 import { SearchablePostList } from './components/SearchablePostList';
 
 // 하드코딩 데이터 (Ch.3에서 DB/API로 교체 예정)
@@ -1614,9 +1614,9 @@ export default function Blog() {
         └── page.tsx              [서버] 글 상세
 
 components/
-├── CategorySidebar.tsx           [클라이언트] 'use client' — 카테고리 토글
-├── LikeButton.tsx                [클라이언트] 'use client' — 좋아요 상태
-└── SearchablePostList.tsx        [클라이언트] 'use client' — 검색 입력</code></pre>
+├── CategorySidebar.tsx           [클라이언트] 'use client' - 카테고리 토글
+├── LikeButton.tsx                [클라이언트] 'use client' - 좋아요 상태
+└── SearchablePostList.tsx        [클라이언트] 'use client' - 검색 입력</code></pre>
 
 <p>컴포넌트 트리로 보면:</p>
 <pre><code class="language-text">RootLayout [서버]
@@ -1664,7 +1664,7 @@ components/
 
 <p>문제는 그 구조 안의 데이터가 현재 <strong>하드코딩 배열</strong>이라는 점입니다. 화면 구조는 좋아졌지만, 실제 서비스처럼 데이터를 추가하거나 수정하고 재사용하기에는 한계가 있죠. 이번 세션에서는 바로 이 문제를 해결합니다. 먼저 지금 코드가 어떤 상태였는지 다시 보겠습니다:</p>
 
-<pre><code class="language-tsx">// app/blog/page.tsx — Ch.2에서 만든 블로그
+<pre><code class="language-tsx">// app/blog/page.tsx - Ch.2에서 만든 블로그
 import { SearchablePostList } from './components/SearchablePostList';
 
 const posts = [
@@ -1692,7 +1692,7 @@ export default function Blog() {
 </ul>
 
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
-공유되는 서비스 데이터의 원본은 <strong>컴포넌트 코드가 아니라 서버가 읽고 관리할 수 있는 곳</strong>에 있어야 합니다 — 파일, 데이터베이스, 또는 API 서버에.
+공유되는 서비스 데이터의 원본은 <strong>컴포넌트 코드가 아니라 서버가 읽고 관리할 수 있는 곳</strong>에 있어야 합니다 - 파일, 데이터베이스, 또는 API 서버에.
 </div>
 
 <p>즉, 이번 세션의 질문은 이것입니다. <strong>"여러 사용자가 함께 볼 <code>posts</code>의 원본을, 서버는 어디에서 읽어 와야 할까?"</strong></p>
@@ -1789,10 +1789,10 @@ export default function Blog() {
 <span><strong>외부 서비스나 별도 백엔드</strong>에서 읽어 오면 <code>fetch</code>, <strong>우리 앱의 핵심 데이터</strong>가 데이터베이스에 있으면 ORM/쿼리로 직접 접근, <strong>정적 문서나 샘플 콘텐츠</strong>를 읽으면 파일 시스템이 보통 가장 단순합니다.</span>
 </div>
 
-<h3>fetch API — 외부/내부 REST API 호출</h3>
+<h3>fetch API - 외부/내부 REST API 호출</h3>
 <p>가장 보편적인 방식입니다. 외부 API나 별도의 백엔드 서비스에서 데이터를 가져올 때 사용합니다. 다만 같은 프로젝트 안의 데이터를 다시 우리 API 라우트로 한 번 더 우회할 필요는 없는 경우가 많습니다. 그럴 때는 아래의 DB 직접 접근 방식이 더 단순합니다.</p>
 
-<pre><code class="language-tsx">// app/blog/page.tsx — 서버 컴포넌트 (async 함수)
+<pre><code class="language-tsx">// app/blog/page.tsx - 서버 컴포넌트 (async 함수)
 import { SearchablePostList } from './components/SearchablePostList';
 
 export default async function Blog() {
@@ -1809,7 +1809,7 @@ export default async function Blog() {
 
 <p><code>useState</code>도, <code>useEffect</code>도 필요 없습니다. 서버에서 데이터를 읽고 바로 렌더링에 사용할 수 있기 때문입니다. Ch.2에서 만든 <code>SearchablePostList</code>를 그대로 재사용하되, 데이터만 외부에서 가져오는 것이 달라졌습니다.</p>
 
-<h3>DB 직접 쿼리 — Prisma, Drizzle 등</h3>
+<h3>DB 직접 쿼리 - Prisma, Drizzle 등</h3>
 <p>서버 컴포넌트는 서버에서 실행되므로, <strong>데이터베이스에 직접 접근</strong>할 수 있습니다. API 라우트를 따로 만들 필요가 없습니다.</p>
 
 <pre><code class="language-tsx">// app/blog/page.tsx
@@ -1831,7 +1831,7 @@ export default async function Blog() {
 
 <p>이 코드의 <code>db</code> 객체(예: Prisma Client)는 <strong>서버에서만 실행</strong>되므로, DB 접속 정보가 클라이언트에 노출되지 않습니다.</p>
 
-<h3>파일 시스템 — fs/promises로 JSON 파일 읽기</h3>
+<h3>파일 시스템 - fs/promises로 JSON 파일 읽기</h3>
 <p>마크다운 블로그나 정적 데이터를 관리할 때 유용합니다. Node.js의 파일 시스템 API를 그대로 사용할 수 있습니다.</p>
 
 <pre><code class="language-tsx">// app/blog/page.tsx
@@ -1869,7 +1869,7 @@ export default async function Blog() {
 </table>
 
 <div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
-캐싱 동작 — <code>fetch</code>에 캐싱 옵션을 줄 수 있다는 걸 들어본 분도 있을 겁니다. 이 부분은 <strong>세션 4</strong>에서 자세히 다룹니다.
+캐싱 동작 - <code>fetch</code>에 캐싱 옵션을 줄 수 있다는 걸 들어본 분도 있을 겁니다. 이 부분은 <strong>세션 4</strong>에서 자세히 다룹니다.
 </div>
 
 <h2 id="data-fetching-summary"><a href="#data-fetching-summary" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정리</a></h2>
@@ -1887,7 +1887,7 @@ export default async function Blog() {
 </tbody>
 </table>
 
-<p>다음 세션에서는 서버에서 데이터를 가져온 뒤 화면을 <strong>언제</strong> 만들어 둘 것인지 — 빌드 시점에 미리 만드는 정적 렌더링과, 요청마다 만드는 동적 렌더링을 학습합니다.</p>
+<p>다음 세션에서는 서버에서 데이터를 가져온 뒤 화면을 <strong>언제</strong> 만들어 둘 것인지 - 빌드 시점에 미리 만드는 정적 렌더링과, 요청마다 만드는 동적 렌더링을 학습합니다.</p>
           `,
         },
         {
@@ -1946,8 +1946,8 @@ export default async function Blog() {
 </ul>
 <h3>실습 과제</h3>
 <ol>
-<li>블로그 프로젝트를 만들어 보세요 — 글 목록, 상세 페이지, 작성 폼</li>
-<li>대시보드 레이아웃을 구성해 보세요 — 사이드바와 중첩 라우팅 활용</li>
+<li>블로그 프로젝트를 만들어 보세요 - 글 목록, 상세 페이지, 작성 폼</li>
+<li>대시보드 레이아웃을 구성해 보세요 - 사이드바와 중첩 라우팅 활용</li>
 <li>Server Actions로 CRUD 기능을 구현해 보세요</li>
 </ol>
           `,
