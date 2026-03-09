@@ -65,16 +65,17 @@ export default {
 
 <h3>CSR의 동작 과정</h3>
 <p><a href="https://vite.dev/guide/" target="_blank" rel="noopener noreferrer">Vite</a>로 만든 React 앱의 <code>index.html</code>을 살펴봅시다:</p>
-<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<pre><code class="language-html">&lt;!doctype html&gt;
 &lt;html lang="ko"&gt;
   &lt;head&gt;
     &lt;meta charset="UTF-8" /&gt;
-    &lt;title&gt;My React App&lt;/title&gt;
+    &lt;link rel="icon" type="image/svg+xml" href="/vite.svg" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;vite-project&lt;/title&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id="root"&gt;&lt;/div&gt;
-    &lt;!-- 이 빈 div만 존재. 실제 콘텐츠는 JS가 렌더링 --&gt;
-    &lt;script type="module" src="/src/main.tsx"&gt;&lt;/script&gt;
+    &lt;div id="root"&gt;&lt;/div&gt; &lt;!-- 빈 div만 존재. 실제 콘텐츠는 JS가 렌더링 --&gt;
+    &lt;script type="module" src="/src/main.jsx"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
 
@@ -89,39 +90,47 @@ export default {
 <h2 id="problems-of-csr"><a href="#problems-of-csr" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>CSR의 문제점들</a></h2>
 
 <h3>1. SEO(검색 엔진 최적화) 문제</h3>
-<p>검색 엔진 크롤러가 CSR 앱을 방문하면 어떤 일이 벌어질까요? 브라우저에서 <strong>우클릭 → 페이지 소스 보기</strong>를 하면 서버가 보내주는 원본 HTML을 확인할 수 있습니다. 검색 엔진 크롤러도 바로 이 HTML을 수집합니다.</p>
+<p>검색 엔진 크롤러가 CSR 앱을 방문하면 어떤 일이 벌어질까요? 브라우저에서 <strong>우클릭 → 페이지 소스 보기</strong>를 하면 서버가 보내주는 원본 HTML을 확인할 수 있습니다. 검색 엔진 크롤러도 처음에는 이 HTML을 기준으로 페이지를 분석합니다.</p>
 
 <p><strong>CSR 앱</strong>의 소스 보기:</p>
-<pre><code class="language-html">&lt;!-- React(CSR) 앱의 페이지 소스 보기 결과 --&gt;
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang="ko"&gt;
+  &lt;head&gt;
+    ...
+  &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id="root"&gt;&lt;/div&gt;  &lt;!-- 빈 페이지! 콘텐츠가 없음 --&gt;
-    &lt;script src="/bundle.js"&gt;&lt;/script&gt;
+    &lt;div id="root"&gt;&lt;/div&gt; &lt;!-- 빈 페이지. 콘텐츠가 없음 --&gt;
+    &lt;script type="module" src="/src/main.jsx"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
 
 <p><strong>Next.js(SSR) 앱</strong>의 소스 보기:</p>
-<pre><code class="language-html">&lt;!-- Next.js(SSR) 앱의 페이지 소스 보기 결과 --&gt;
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang="ko"&gt;
+  &lt;head&gt;
+    ...
+  &lt;/head&gt;
   &lt;body&gt;
-    &lt;h1&gt;환영합니다&lt;/h1&gt;
-    &lt;p&gt;이 페이지의 모든 콘텐츠가 포함되어 있습니다.&lt;/p&gt;
-    &lt;article&gt;...실제 콘텐츠...&lt;/article&gt;
+    &lt;div&gt; &lt;!-- 실제 콘텐츠가 HTML에 담겨 있음 --&gt;
+      &lt;h1&gt;Learn, Write, Share.&lt;/h1&gt;
+      &lt;p&gt;
+        혼자 고민하던 호기심부터 오늘 배운 작은 깨달음까지 기록하고,
+        공유해보세요.
+      &lt;/p&gt;
+    &lt;/div&gt;
+    ...
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
 
-<p>CSR 앱은 빈 HTML만 내려줍니다. 구글은 JavaScript를 실행해 콘텐츠를 인식할 수 있지만, 렌더링까지 시간이 걸려 인덱싱이 지연되며 네이버 등 다른 검색 엔진은 JS 렌더링을 지원하지 않을 수 있습니다. 반면 SSR 앱은 서버에서 완성된 HTML을 반환하므로 크롤러가 모든 콘텐츠를 즉시 수집할 수 있습니다.</p>
+<p>CSR은 기본적으로 빈 HTML이 내려오므로 검색 인덱싱에 불리할 수 있습니다. 일부 크롤러는 JavaScript를 실행해 콘텐츠를 인식하기도 합니다. 하지만, 일반적으로 서버에서 HTML을 완성해 보내주는 SSR 방식이 더 안정적인 것이 사실입니다.</p>
 
 <h3>2. 초기 로딩 성능 문제</h3>
-<p>CSR에서는 <strong>전체 앱의 JavaScript를 한 번에 다운로드</strong>해야 합니다. 앱이 커질수록 번들 사이즈도 커지고, 사용자가 첫 콘텐츠를 보기까지(FCP — First Contentful Paint)의 시간이 길어집니다.</p>
-<p>이를 완화하기 위해 React가 제공하는 코드 분할 기능을 사용할 수 있습니다:</p>
+<p>CSR에서는 화면을 그리기 전에 JavaScript 번들을 먼저 다운로드하고 실행해야 합니다. 앱이 커질수록 초기 번들의 크기가 커질 수 있고, 그만큼 <strong>사용자가 첫 콘텐츠를 보기까지(FCP — First Contentful Paint)의 시간이 지연</strong>될 수 있습니다. 이를 완화하기 위해 React가 제공하는 코드 분할 기능을 사용할 수 있습니다:</p>
 <ul>
 <li><code>React.lazy</code> — 컴포넌트를 <strong>동적으로 import</strong>하여, 해당 컴포넌트가 실제로 렌더링될 때만 번들을 다운로드합니다.</li>
 <li><code>Suspense</code> — lazy 컴포넌트가 로드되는 동안 보여줄 <strong>대체 UI(fallback)</strong>를 지정합니다.</li>
 </ul>
-<p>하지만 근본적인 해결책은 아닙니다:</p>
+<p>하지만 코드 분할을 사용해도 CSR의 구조 자체는 변하지 않습니다. 여전히 초기 화면을 렌더링하려면 JavaScript 번들을 먼저 다운로드하고 실행해야 합니다.</p>
 <pre><code class="language-jsx">import { lazy, Suspense } from 'react';
 
 // 코드 분할: 해당 컴포넌트가 필요할 때만 로드
@@ -137,11 +146,13 @@ function App() {
       &lt;/Routes&gt;
     &lt;/Suspense&gt;
   );
-}</code></pre>
+}
+
+export default App;</code></pre>
 <p>이 방법은 라우트 단위로 번들을 나눌 수 있지만 한계가 분명합니다:</p>
 <ul>
 <li><strong>수동 관리 부담</strong> — 어떤 컴포넌트를 lazy로 분리할지 개발자가 직접 판단하고 설정해야 합니다. 분할 지점이 많아질수록 관리가 복잡해집니다.</li>
-<li><strong>공통(초기) 번들은 남습니다</strong> — 라우트를 나눠도 앱이 시작되려면 리액트 런타임, 라우터, 공통 레이아웃/유틸, 공유 라이브러리 같은 "기본 실행 코드"는 초기 로딩에 포함될 수밖에 없습니다. 그래서 페이지를 분리해도 공통 의존성이 커지면 초기 로딩 비용이 함께 커질 수 있습니다.</li>
+<li><strong>공통(초기) 번들은 남습니다</strong> — 라우트를 나눠도 앱이 시작되려면 리액트 런타임, 라우터, 공통 레이아웃/유틸, 공유 라이브러리 같은 "기본 실행 코드"는 초기 로딩에 포함되는 경우가 많습니다. 그래서 페이지를 분리해도 공통 의존성이 커지면 초기 로딩 비용이 함께 커질 수 있습니다.</li>
 <li><strong>로딩 상태가 UX로 드러납니다</strong> — 라우트로 이동할 때 필요한 청크를 추가로 받아오는 동안 Suspense의 fallback(<code>"로딩 중…"</code>)이 노출됩니다. 네트워크가 느리면 이 상태가 길어져 전환이 끊기거나 깜빡이는 것처럼 느껴질 수 있고, 결국 "JS를 받아 실행해야 화면이 완성되는 CSR 구조" 자체는 그대로입니다.</li>
 </ul>
 
@@ -156,10 +167,10 @@ const res = await fetch('https://api.openai.com/v1/chat', {
     'Authorization': \`Bearer \${import.meta.env.VITE_OPENAI_KEY}\`,
   },
 });</code></pre>
-<p>빌드 시점에 환경 변수가 번들에 포함되기 때문에 누구나 확인할 수 있습니다.</p>
+<p>빌드 시점에 환경 변수가 번들에 포함되기 때문에 누구나 확인할 수 있습니다. 따라서, 보안상 중요한 API 키는 클라이언트에서 절대 사용해서는 안 됩니다. 서버에서만 사용해야 합니다.</p>
 
 <h4>데이터 워터폴 문제</h4>
-<p>CSR에서 데이터를 가져오려면 컴포넌트가 <strong>마운트(화면에 렌더링)된 후에야</strong> fetch를 시작할 수 있습니다. 부모-자식 관계의 컴포넌트가 각각 데이터를 요청하면 <strong>워터폴(요청이 순차적으로 대기하는 현상)</strong>이 발생합니다:</p>
+<p>CSR에서는 보통 컴포넌트가 <strong>마운트(화면에 렌더링)된 이후</strong>에 데이터를 요청하게 되며, 이 구조 때문에 요청이 순차적으로 이어지는 <strong>워터폴</strong>이 발생할 수 있습니다:</p>
 <pre><code class="language-jsx">function Post({ postId }) {
   const [post, setPost] = useState(null);
 
@@ -203,6 +214,8 @@ JS 다운로드       ████████
 ──────────────────────────────────────────────────────
 → 각 요청이 순차적으로 실행 = 느린 사용자 경험</code></pre>
 
+<p>서버에서 데이터를 가져오면 렌더링 전에 데이터를 준비할 수 있기 때문에, CSR에서 흔히 발생하는 데이터 워터폴을 줄이거나 피하기가 훨씬 쉬워집니다.</p>
+
 <h2 id="why-we-need-server"><a href="#why-we-need-server" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>정리: 왜 서버가 필요한가?</a></h2>
 <p>CSR의 근본적인 한계를 정리하면:</p>
 <table>
@@ -214,7 +227,7 @@ JS 다운로드       ████████
 <tr><td>데이터 워터폴</td><td>컴포넌트 마운트 후에야 데이터 요청 가능</td></tr>
 </tbody>
 </table>
-<p>이 문제들을 해결하려면 <strong>서버에서 HTML을 미리 렌더링</strong>하고, <strong>서버에서 데이터를 가져와</strong> 클라이언트에 전달하는 방식이 필요합니다. 다음 세션에서 이 역할을 하는 <strong>Next.js</strong>를 알아봅니다.</p>
+<p>이러한 한계를 보완하기 위해, <strong>서버에서 HTML을 미리 렌더링</strong>하고 <strong>서버에서 데이터를 가져와</strong> 클라이언트에 전달하는 방식이 등장했습니다. 다음 세션에서는 이 역할을 하는 <strong>Next.js</strong>를 알아봅니다.</p>
           `,
         },
         {
