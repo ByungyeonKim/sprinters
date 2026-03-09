@@ -631,11 +631,11 @@ export default function About() {
   );
 }</code></pre>
 
-<pre><code class="language-tsx">'use client';
+<pre><code class="language-tsx">// app/blog/layout.tsx - 블로그 레이아웃
+'use client';
 
 import { useState } from 'react';
 
-// app/blog/layout.tsx - 블로그 레이아웃
 export default function BlogLayout({
   children,
 }: Readonly&lt;{
@@ -975,7 +975,7 @@ export default function PostDate({ date }: { date: string }) {
   ├── 사이드바 (카테고리 목록)      → 클라이언트 번들에 포함
   ├── 토글 버튼 (useState)       → 클라이언트 번들에 포함
   └── children (하위 페이지)     → props로 전달되므로 서버 컴포넌트 유지 가능</code></pre>
-<p>Ch.1에서 만든 BlogLayout은 <code>useState</code> 하나 때문에 전체가 클라이언트 컴포넌트가 되었습니다.</p>
+<p>Ch.1에서 만든 블로그 레이아웃은 <code>useState</code> 하나 때문에 전체가 클라이언트 컴포넌트가 되었습니다.</p>
 
 <h3>After: 인터랙션 부분만 분리</h3>
 <pre><code class="language-text">BlogLayout (서버 컴포넌트)              ← 서버에서 실행
@@ -1362,70 +1362,75 @@ It should only be used from a Server Component.</code></pre>
 <h2 id="what-we-will-build"><a href="#what-we-will-build" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>이번 세션에서 할 일</a></h2>
 <p>Ch.1에서 만든 블로그 프로젝트에 서버/클라이언트 컴포넌트 설계를 적용합니다. 구체적으로:</p>
 <ol>
-<li><strong>BlogLayout 리팩터링</strong> - 전체 클라이언트 → 서버 컴포넌트 + CategorySidebar 분리</li>
+<li><strong><code>BlogLayout</code> 리팩터링</strong> - 전체 클라이언트 → 서버 컴포넌트 + CategorySidebar 분리</li>
 <li><strong>좋아요 버튼 추가</strong> - 서버 페이지에 클라이언트 컴포넌트 배치</li>
 <li><strong>검색 기능 추가</strong> - SearchablePostList 클라이언트 컴포넌트</li>
 <li><strong>최종 구조 점검</strong> - 서버/클라이언트 경계 확인</li>
 </ol>
 
-<div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
-<strong>참고:</strong> 이 실습에서는 데이터를 하드코딩된 배열로 사용합니다. 실제 API나 DB 연동은 Ch.3에서 다룹니다.
-</div>
-
 <h2 id="step1-refactor-blog-layout"><a href="#step1-refactor-blog-layout" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 1: BlogLayout 리팩터링</a></h2>
-<p>Ch.1의 BlogLayout은 <code>useState</code> 하나 때문에 전체가 클라이언트 컴포넌트였습니다. 인터랙션이 필요한 사이드바만 분리합시다.</p>
+<p>Ch.1의 블로그 레이아웃은 <code>useState</code> 하나 때문에 전체가 클라이언트 컴포넌트였습니다. 인터랙션이 필요한 사이드바만 분리합니다.</p>
 
 <h3>CategorySidebar 클라이언트 컴포넌트 생성</h3>
-<pre><code class="language-tsx">// components/CategorySidebar.tsx
+<pre><code class="language-tsx">// app/components/CategorySidebar.tsx
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-
-const categories = [
-  { name: 'React', slug: 'react' },
-  { name: 'Next.js', slug: 'nextjs' },
-  { name: 'TypeScript', slug: 'typescript' },
-];
 
 export function CategorySidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    &lt;aside className="w-60 p-4 border-r"&gt;
-      &lt;button
-        onClick={() =&gt; setIsOpen(!isOpen)}
-        className="font-bold w-full text-left"
-      &gt;
-        카테고리 {isOpen ? '▲' : '▼'}
+    &lt;&gt;
+      &lt;button onClick={() =&gt; setIsOpen(!isOpen)}&gt;
+        카테고리 {isOpen ? '닫기' : '열기'}
       &lt;/button&gt;
       {isOpen &amp;&amp; (
-        &lt;ul className="mt-2 space-y-1"&gt;
-          {categories.map(cat =&gt; (
-            &lt;li key={cat.slug}&gt;
-              &lt;Link href={\`/blog?category=\${cat.slug}\`}&gt;
-                {cat.name}
-              &lt;/Link&gt;
-            &lt;/li&gt;
-          ))}
+        &lt;ul&gt;
+          &lt;li&gt;React&lt;/li&gt;
+          &lt;li&gt;Next.js&lt;/li&gt;
+          &lt;li&gt;TypeScript&lt;/li&gt;
         &lt;/ul&gt;
       )}
-    &lt;/aside&gt;
+    &lt;/&gt;
   );
 }</code></pre>
 
 <h3>BlogLayout을 서버 컴포넌트로 전환</h3>
-<pre><code class="language-tsx">// app/blog/layout.tsx - 이제 서버 컴포넌트!
-import { CategorySidebar } from './components/CategorySidebar';
+<pre><code class="language-tsx">// app/blog/layout.tsx - 블로그 레이아웃(이제 서버 컴포넌트)
+import { CategorySidebar } from '../components/CategorySidebar';
 
 export default function BlogLayout({
   children,
-}: Readonly&lt;{ children: React.ReactNode }&gt;) {
+}: Readonly&lt;{
+  children: React.ReactNode;
+}&gt;) {
   return (
-    &lt;div className="flex"&gt;
-      &lt;CategorySidebar /&gt;
-      &lt;main className="flex-1 p-6"&gt;{children}&lt;/main&gt;
-    &lt;/div&gt;
+    &lt;&gt;
+      &lt;aside&gt;
+        &lt;CategorySidebar /&gt;
+      &lt;/aside&gt;
+      {children}
+    &lt;/&gt;
+  );
+}</code></pre>
+
+<p>사이드바와 본문의 구분감을 위해 약간의 스타일링을 추가하겠습니다.</p>
+<pre><code class="language-tsx" data-line="10-11,15">// app/blog/layout.tsx - 블로그 레이아웃(이제 서버 컴포넌트)
+import { CategorySidebar } from '../components/CategorySidebar';
+
+export default function BlogLayout({
+  children,
+}: Readonly&lt;{
+  children: React.ReactNode;
+}&gt;) {
+  return (
+    &lt;section className='flex'&gt;
+      &lt;aside className='pr-8 mr-8 border-r'&gt;
+        &lt;CategorySidebar /&gt;
+      &lt;/aside&gt;
+      {children}
+    &lt;/section&gt;
   );
 }</code></pre>
 
@@ -1433,65 +1438,33 @@ export default function BlogLayout({
 <table>
 <thead><tr><th></th><th>Before</th><th>After</th></tr></thead>
 <tbody>
-<tr><td><code>BlogLayout</code></td><td>클라이언트 컴포넌트</td><td>서버 컴포넌트 ✅</td></tr>
+<tr><td><code>BlogLayout</code></td><td>클라이언트 컴포넌트</td><td>서버 컴포넌트</td></tr>
 <tr><td><code>CategorySidebar</code></td><td>레이아웃에 인라인</td><td>별도 클라이언트 컴포넌트</td></tr>
-<tr><td>children (하위 페이지)</td><td>클라이언트 영역</td><td>서버 컴포넌트 유지 가능 ✅</td></tr>
 </tbody>
 </table>
 
 <h2 id="step2-add-like-button"><a href="#step2-add-like-button" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 2: 좋아요 버튼 추가</a></h2>
-<p>블로그 글 상세 페이지에 좋아요 버튼을 추가합니다. 이것은 전형적인 "서버 페이지 + 클라이언트 끝단 컴포넌트" 패턴입니다.</p>
+<p>블로그 글 상세 페이지에 좋아요 버튼을 추가합니다. 페이지는 서버 컴포넌트로 유지하고, 인터랙션이 필요한 작은 컴포넌트만 클라이언트로 분리하는 구조입니다.</p>
 
 <h3>LikeButton 클라이언트 컴포넌트</h3>
-<pre><code class="language-tsx">// components/LikeButton.tsx
+<pre><code class="language-tsx">// app/components/LikeButton.tsx
 'use client';
 
 import { useState } from 'react';
 
 export function LikeButton() {
-  const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleClick = () =&gt; {
-    if (isLiked) {
-      setLikes(likes - 1);
-      setIsLiked(false);
-    } else {
-      setLikes(likes + 1);
-      setIsLiked(true);
-    }
-  };
-
   return (
-    &lt;button
-      onClick={handleClick}
-      className={\`px-4 py-2 rounded border \${
-        isLiked ? 'bg-red-50 border-red-300 text-red-600' : 'border-gray-300'
-      }\`}
-    &gt;
-      {isLiked ? '❤️' : '🤍'} 좋아요 {likes &gt; 0 &amp;&amp; likes}
+    &lt;button onClick={() =&gt; setIsLiked(!isLiked)}&gt;
+      {isLiked ? '❤️' : '🤍'}
     &lt;/button&gt;
   );
 }</code></pre>
 
 <h3>서버 컴포넌트 페이지에서 사용</h3>
-<pre><code class="language-tsx">// app/blog/[slug]/page.tsx - 서버 컴포넌트
-import { LikeButton } from './components/LikeButton';
-
-const posts = [
-  {
-    slug: 'nextjs-routing',
-    title: 'Next.js 라우팅 이해하기',
-    content: 'App Router는 파일 시스템 기반의 라우팅을 제공합니다...',
-    date: '2025-01-15',
-  },
-  {
-    slug: 'react-server-components',
-    title: 'React 서버 컴포넌트란?',
-    content: '서버 컴포넌트는 서버에서만 실행되는 새로운 유형의 컴포넌트입니다...',
-    date: '2025-01-20',
-  },
-];
+<pre><code class="language-tsx">// app/blog/[slug]/page.tsx - 글 상세 페이지(서버 컴포넌트)
+import { LikeButton } from '@/app/components/LikeButton';
 
 export default async function Post({
   params,
@@ -1499,108 +1472,85 @@ export default async function Post({
   params: Promise&lt;{ slug: string }&gt;;
 }) {
   const { slug } = await params;
-  const post = posts.find(p =&gt; p.slug === slug);
-
-  if (!post) {
-    return &lt;div&gt;글을 찾을 수 없습니다.&lt;/div&gt;;
-  }
 
   return (
-    &lt;article&gt;
-      &lt;h1&gt;{post.title}&lt;/h1&gt;
-      &lt;time className="text-gray-500"&gt;{post.date}&lt;/time&gt;
-      &lt;p className="mt-4"&gt;{post.content}&lt;/p&gt;
-      &lt;div className="mt-6"&gt;
-        &lt;LikeButton /&gt;
-        {/* ↑ 클라이언트 컴포넌트: 이 부분만 JS 번들에 포함 */}
-      &lt;/div&gt;
-    &lt;/article&gt;
+    &lt;div&gt;
+      &lt;h1&gt;{slug}&lt;/h1&gt;
+      &lt;p&gt;이 글의 내용이 여기에 표시됩니다.&lt;/p&gt;
+      &lt;LikeButton /&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
 
-<p>페이지 전체는 서버 컴포넌트이므로 <code>posts</code> 배열이나 페이지 렌더링 코드는 클라이언트 JavaScript 번들에 포함되지 않습니다. 브라우저에서 실행되는 코드는 <code>LikeButton</code> 컴포넌트뿐입니다.</p>
+<p>페이지 자체는 서버 컴포넌트로 렌더링되고, 브라우저에서 실행되는 인터랙션 코드는 <code>LikeButton</code> 컴포넌트뿐입니다.</p>
 
 <h2 id="step3-add-search"><a href="#step3-add-search" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 3: 검색 기능 추가</a></h2>
 <p>글 목록을 실시간으로 필터링하는 검색 기능을 추가합니다. 검색은 사용자 입력에 반응해야 하므로 클라이언트 컴포넌트가 필요합니다.</p>
 
 <h3>SearchablePostList 클라이언트 컴포넌트</h3>
-<pre><code class="language-tsx">// components/SearchablePostList.tsx
+<pre><code class="language-tsx">// app/components/SearchablePostList.tsx
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 
 type Post = {
+  id: number;
   slug: string;
   title: string;
-  category: string;
 };
 
 export function SearchablePostList({ posts }: { posts: Post[] }) {
   const [query, setQuery] = useState('');
 
-  const filtered = posts.filter(post =&gt;
-    post.title.toLowerCase().includes(query.toLowerCase())
+  const filtered = posts.filter((post) =&gt;
+    post.title.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
-    &lt;div&gt;
+    &lt;&gt;
       &lt;input
-        type="text"
+        type='text'
         value={query}
         onChange={(e) =&gt; setQuery(e.target.value)}
-        placeholder="글 검색..."
-        className="w-full p-2 border rounded mb-4"
+        placeholder='글 검색...'
       /&gt;
-      &lt;ul className="space-y-2"&gt;
-        {filtered.map(post =&gt; (
-          &lt;li key={post.slug}&gt;
-            &lt;Link
-              href={\`/blog/\${post.slug}\`}
-              className="text-blue-600 hover:underline"
-            &gt;
-              {post.title}
-            &lt;/Link&gt;
-            &lt;span className="ml-2 text-sm text-gray-500"&gt;{post.category}&lt;/span&gt;
+      &lt;ul&gt;
+        {filtered.map((post) =&gt; (
+          &lt;li key={post.id}&gt;
+            &lt;Link href={\`/blog/\${post.slug}\`}&gt;{post.title}&lt;/Link&gt;
           &lt;/li&gt;
         ))}
-        {filtered.length === 0 &amp;&amp; (
-          &lt;li className="text-gray-500"&gt;검색 결과가 없습니다.&lt;/li&gt;
-        )}
       &lt;/ul&gt;
-    &lt;/div&gt;
+    &lt;/&gt;
   );
 }</code></pre>
 
 <h3>서버 컴포넌트 페이지에서 데이터 전달</h3>
-<pre><code class="language-tsx">// app/blog/page.tsx - 서버 컴포넌트
-import { SearchablePostList } from './components/SearchablePostList';
+<pre><code class="language-tsx">// app/blog/page.tsx - 글 목록 페이지(서버 컴포넌트)
+import { SearchablePostList } from '../components/SearchablePostList';
 
-// 하드코딩 데이터 (Ch.3에서 DB/API로 교체 예정)
 const posts = [
-  { slug: 'nextjs-routing', title: 'Next.js 라우팅 이해하기', category: 'Next.js' },
-  { slug: 'react-server-components', title: 'React 서버 컴포넌트란?', category: 'React' },
-  { slug: 'typescript-tips', title: 'TypeScript 실전 팁', category: 'TypeScript' },
-  { slug: 'tailwind-basics', title: 'Tailwind CSS 시작하기', category: 'CSS' },
+  { id: 1, slug: 'nextjs-routing', title: 'Next.js 라우팅 이해하기' },
+  { id: 2, slug: 'react-server-components', title: 'React 서버 컴포넌트란?' },
 ];
 
 export default function Blog() {
   return (
     &lt;div&gt;
-      &lt;h1 className="text-2xl font-bold mb-4"&gt;블로그&lt;/h1&gt;
+      &lt;h1&gt;글 목록&lt;/h1&gt;
       &lt;SearchablePostList posts={posts} /&gt;
-      {/* ↑ posts 배열은 React가 직렬화 가능한 데이터 → prop 전달 OK */}
     &lt;/div&gt;
   );
 }</code></pre>
 
 <div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:0.75rem 1rem;border-radius:6px;margin:1rem 0;">
 <strong style="display:block;margin-bottom:0.35rem;">왜 posts를 서버에서 클라이언트로 전달하나요?</strong>
-<span>검색 필터링은 사용자 입력에 반응해야 하므로 클라이언트에서 실행되어야 합니다. 데이터(<code>posts</code>)를 서버에서 준비하고 React가 직렬화 가능한 형태로 클라이언트 컴포넌트에 전달합니다. 이렇게 하면 데이터 조회는 서버에서, 인터랙션은 클라이언트에서 분담할 수 있습니다.</span>
+<span>검색 필터링은 사용자 입력에 반응해야 하므로 클라이언트에서 실행되어야 합니다. 따라서, 글 목록 데이터(<code>posts</code>)는 서버에서 준비한 뒤, React가 전달할 수 있는 형태로 클라이언트 컴포넌트에 props로 넘겨줍니다. 이렇게 하면 데이터 조회는 서버에서 처리하고, 검색 같은 인터랙션은 클라이언트에서 처리하는 구조로 역할을 나눌 수 있습니다.</span>
 </div>
 
 <h2 id="step4-review-project-structure"><a href="#step4-review-project-structure" class="heading-anchor" aria-label="링크"><svg class="heading-anchor-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>Step 4: 최종 프로젝트 구조 점검</a></h2>
-<p>완성된 프로젝트의 서버/클라이언트 경계를 확인합시다:</p>
+<p>완성된 프로젝트의 서버/클라이언트 경계를 확인해볼까요?</p>
 
 <pre><code class="language-text">app/
 ├── layout.tsx                    [서버] 루트 레이아웃
@@ -1608,26 +1558,23 @@ export default function Blog() {
 ├── about/
 │   └── page.tsx                  [서버] 소개 페이지
 └── blog/
+    ├── [slug]/
+    │   └── page.tsx              [서버] 글 상세 페이지
     ├── layout.tsx                [서버] 블로그 레이아웃 ✅ (리팩터링 결과)
-    ├── page.tsx                  [서버] 글 목록 (데이터 준비)
-    └── [slug]/
-        └── page.tsx              [서버] 글 상세
-
-components/
-├── CategorySidebar.tsx           [클라이언트] 'use client' - 카테고리 토글
-├── LikeButton.tsx                [클라이언트] 'use client' - 좋아요 상태
-└── SearchablePostList.tsx        [클라이언트] 'use client' - 검색 입력</code></pre>
+    └── page.tsx                  [서버] 글 목록 페이지 (데이터 준비)
+├── components/
+│   ├── CategorySidebar.tsx       [클라이언트] 'use client' - 카테고리 토글
+│   ├── LikeButton.tsx            [클라이언트] 'use client' - 좋아요 상태
+│   └── SearchablePostList.tsx    [클라이언트] 'use client' - 검색 입력</code></pre>
 
 <p>컴포넌트 트리로 보면:</p>
 <pre><code class="language-text">RootLayout [서버]
-  ├── Header / Footer
   └── BlogLayout [서버]
         ├── CategorySidebar [클라이언트] ← 'use client' 경계
-        └── &lt;main&gt;
-              ├── Blog [서버]
-              │     └── SearchablePostList [클라이언트] ← 'use client' 경계
-              └── Post [서버]
-                    └── LikeButton [클라이언트] ← 'use client' 경계</code></pre>
+        └── Blog [서버] 글 목록 페이지
+        │     └── SearchablePostList [클라이언트] ← 'use client' 경계
+        └── Post [서버] 글 상세 페이지
+              └── LikeButton [클라이언트] ← 'use client' 경계</code></pre>
 
 <p><code>'use client'</code> 경계가 모두 <strong>트리의 끝 가까이</strong> 위치한 것을 확인할 수 있습니다.</p>
 
@@ -1640,7 +1587,7 @@ components/
 <tr><td>LikeButton → 클라이언트</td><td><code>useState</code> + <code>onClick</code> → 클라이언트 필수</td></tr>
 <tr><td>SearchablePostList → 클라이언트</td><td><code>useState</code> + <code>onChange</code>로 실시간 필터링 → 클라이언트 필수</td></tr>
 <tr><td>Post → 서버 컴포넌트</td><td>데이터를 표시할 뿐 인터랙션 없음 → 서버 유지</td></tr>
-<tr><td>posts 데이터를 prop으로 전달</td><td>React가 직렬화 가능한 데이터 → 서버에서 준비, 클라이언트에서 사용</td></tr>
+<tr><td><code>posts</code> 데이터를 props로 전달</td><td>검색 필터링이 클라이언트에서 실행되기 때문</td></tr>
 </tbody>
 </table>
 
