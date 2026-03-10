@@ -1,16 +1,7 @@
 import { useMemo } from 'react';
 import { deleteTilComment } from './til-service';
 import { AlertDialogDestructive } from '../../components/AlertDialogDestructive';
-
-function getCommentDeleteToken() {
-  const key = 'sprintersCommentDeleteToken';
-  let token = localStorage.getItem(key);
-  if (!token) {
-    token = crypto.randomUUID();
-    localStorage.setItem(key, token);
-  }
-  return token;
-}
+import { getCommentDeleteToken } from '../../utils/comment';
 
 function CommentList({ comments, ownedCommentIds, onCommentDeleted }) {
   const ownedCommentIdSet = useMemo(

@@ -1,3 +1,14 @@
+const DELETE_TOKEN_KEY = 'sprintersCommentDeleteToken';
+
+export function getCommentDeleteToken() {
+  let token = localStorage.getItem(DELETE_TOKEN_KEY);
+  if (!token) {
+    token = crypto.randomUUID();
+    localStorage.setItem(DELETE_TOKEN_KEY, token);
+  }
+  return token;
+}
+
 const OWN_COMMENT_IDS_KEY = 'sprintersOwnedCommentIds';
 
 let listeners = [];

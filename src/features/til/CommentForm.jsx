@@ -6,16 +6,7 @@ import {
   generateSprinterAvatar,
   generateRandomSeed,
 } from '../../utils/sprinter';
-
-function getCommentDeleteToken() {
-  const key = 'sprintersCommentDeleteToken';
-  let token = localStorage.getItem(key);
-  if (!token) {
-    token = crypto.randomUUID();
-    localStorage.setItem(key, token);
-  }
-  return token;
-}
+import { getCommentDeleteToken } from '../../utils/comment';
 
 function CommentForm({ tilId, onCommentCreated }) {
   const [seed, setSeed] = useState(generateRandomSeed);
