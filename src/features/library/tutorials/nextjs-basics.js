@@ -1611,7 +1611,7 @@ export default function Blog() {
     },
     {
       title: 'Data Fetching & 렌더링',
-      locked: import.meta.env.PROD,
+      locked: false,
       sessions: [
         {
           title: '데이터 소스와 서버 fetching',
