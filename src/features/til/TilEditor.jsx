@@ -69,86 +69,35 @@ function ToolbarButton({ onClick, active, tooltip, children }) {
   );
 }
 
+const TOOLBAR_ITEMS = [
+  { icon: Heading2Icon, run: (e) => e.chain().focus().toggleHeading({ level: 2 }).run(), isActive: (e) => e.isActive('heading', { level: 2 }), tooltip: '제목 2' },
+  { icon: Heading3Icon, run: (e) => e.chain().focus().toggleHeading({ level: 3 }).run(), isActive: (e) => e.isActive('heading', { level: 3 }), tooltip: '제목 3' },
+  { icon: BoldIcon, run: (e) => e.chain().focus().toggleBold().run(), isActive: (e) => e.isActive('bold'), tooltip: '굵게' },
+  { icon: ItalicIcon, run: (e) => e.chain().focus().toggleItalic().run(), isActive: (e) => e.isActive('italic'), tooltip: '기울임' },
+  { icon: StrikethroughIcon, run: (e) => e.chain().focus().toggleStrike().run(), isActive: (e) => e.isActive('strike'), tooltip: '취소선' },
+  { icon: ListIcon, run: (e) => e.chain().focus().toggleBulletList().run(), isActive: (e) => e.isActive('bulletList'), tooltip: '글머리 기호' },
+  { icon: ListOrderedIcon, run: (e) => e.chain().focus().toggleOrderedList().run(), isActive: (e) => e.isActive('orderedList'), tooltip: '번호 매기기' },
+  { icon: QuoteIcon, run: (e) => e.chain().focus().toggleBlockquote().run(), isActive: (e) => e.isActive('blockquote'), tooltip: '인용' },
+  { icon: CodeXmlIcon, run: (e) => e.chain().focus().toggleCodeBlock().run(), isActive: (e) => e.isActive('codeBlock'), tooltip: '코드 블록' },
+  { icon: MinusIcon, run: (e) => e.chain().focus().setHorizontalRule().run(), isActive: () => false, tooltip: '구분선' },
+];
+
 function EditorToolbar({ editor }) {
   if (!editor) return null;
 
   return (
     <TooltipProvider>
       <div className='flex flex-wrap gap-1 border-b border-gray-100 pb-3'>
-        <ToolbarButton
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          active={editor.isActive('heading', { level: 2 })}
-          tooltip='제목 2'
-        >
-          <Heading2Icon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          active={editor.isActive('heading', { level: 3 })}
-          tooltip='제목 3'
-        >
-          <Heading3Icon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          active={editor.isActive('bold')}
-          tooltip='굵게'
-        >
-          <BoldIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          active={editor.isActive('italic')}
-          tooltip='기울임'
-        >
-          <ItalicIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          active={editor.isActive('strike')}
-          tooltip='취소선'
-        >
-          <StrikethroughIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          active={editor.isActive('bulletList')}
-          tooltip='글머리 기호'
-        >
-          <ListIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          active={editor.isActive('orderedList')}
-          tooltip='번호 매기기'
-        >
-          <ListOrderedIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          active={editor.isActive('blockquote')}
-          tooltip='인용'
-        >
-          <QuoteIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          active={editor.isActive('codeBlock')}
-          tooltip='코드 블록'
-        >
-          <CodeXmlIcon className='size-4' />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          active={false}
-          tooltip='구분선'
-        >
-          <MinusIcon className='size-4' />
-        </ToolbarButton>
+        {TOOLBAR_ITEMS.map(({ icon: Icon, run, isActive, tooltip }) => (
+          <ToolbarButton
+            key={tooltip}
+            onClick={() => run(editor)}
+            active={isActive(editor)}
+            tooltip={tooltip}
+          >
+            <Icon className='size-4' />
+          </ToolbarButton>
+        ))}
       </div>
     </TooltipProvider>
   );
