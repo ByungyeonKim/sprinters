@@ -120,6 +120,14 @@ export const terms = [
     categoryLabel: '렌더링과 성능',
   },
   {
+    term: 'CDN',
+    termEn: 'Content Delivery Network',
+    description:
+      '전 세계 여러 지역에 서버(엣지 서버)를 배치해서, 사용자와 가장 가까운 서버에서 콘텐츠를 제공하는 시스템입니다. 원본 서버가 멀리 있어도 가까운 CDN 서버에서 캐싱된 파일을 받으므로 응답 속도가 빨라집니다. 정적 파일(HTML, CSS, JS, 이미지)을 제공하는 데 주로 사용됩니다.',
+    category: '0',
+    categoryLabel: '렌더링과 성능',
+  },
+  {
     term: 'App Router',
     termEn: null,
     description:
