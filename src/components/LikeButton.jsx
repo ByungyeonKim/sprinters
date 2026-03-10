@@ -1,36 +1,40 @@
 import { useState } from 'react';
-import { useAuth } from '../../hooks/use-auth';
-import { addTilLike, removeTilLike } from './til-service';
-import { HeartIcon } from '../../components/icons';
+import { useAuth } from '../hooks/use-auth';
+import { HeartIcon } from './icons';
 
-function LikeButton({ tilId, initialCount, initialHasLiked = false }) {
+export function LikeButton({ onLike, onUnlike, initialCount, initialHasLiked = false }) {
   const { user } = useAuth();
   const [hasLiked, setHasLiked] = useState(initialHasLiked);
   const [likesCount, setLikesCount] = useState(initialCount);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const displayHasLiked = user ? hasLiked : false;
 
   const handleToggleLike = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       if (hasLiked) {
-        await removeTilLike({ tilId, userId: user.id });
+        await onUnlike(user.id);
         setHasLiked(false);
         setLikesCount((prev) => Math.max(0, prev - 1));
       } else {
-        await addTilLike({ tilId, userId: user.id });
+        await onLike(user.id);
         setHasLiked(true);
         setLikesCount((prev) => prev + 1);
       }
     } catch (error) {
       console.error('좋아요 처리 실패:', error);
       alert('좋아요 처리에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <button
       onClick={handleToggleLike}
-      disabled={!user}
+      disabled={!user || isSubmitting}
       className={`flex items-center gap-1 transition-colors ${
         displayHasLiked
           ? 'text-red-500'
@@ -43,5 +47,3 @@ function LikeButton({ tilId, initialCount, initialHasLiked = false }) {
     </button>
   );
 }
-
-export { LikeButton };

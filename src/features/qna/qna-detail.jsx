@@ -10,12 +10,14 @@ import {
   fetchQnaDetail,
   deleteQnaQuestion,
   formatQnaComment,
+  addQnaLike,
+  removeQnaLike,
 } from './qna-service';
 import { parseQnaContentToHtml, extractPlainText } from './qna-content';
 import { highlightCodeBlocks } from '../../utils/shiki.server';
 import { useAuth } from '../../hooks/use-auth';
 import { useCodeCopy } from '../../hooks/use-code-copy';
-import { QnaLikeButton } from './QnaLikeButton';
+import { LikeButton } from '../../components/LikeButton';
 import { QnaCommentForm } from './QnaCommentForm';
 import { QnaCommentList } from './QnaCommentList';
 import { DeleteButton } from '../til/DeleteButton';
@@ -223,8 +225,9 @@ export default function QnaDetail() {
         </article>
 
         <div className='mb-10 flex items-center gap-4 border-t border-b border-gray-200 py-4'>
-          <QnaLikeButton
-            questionId={question.id}
+          <LikeButton
+            onLike={(userId) => addQnaLike({ questionId: question.id, userId })}
+            onUnlike={(userId) => removeQnaLike({ questionId: question.id, userId })}
             initialCount={question.likes}
             initialHasLiked={hasLiked}
           />

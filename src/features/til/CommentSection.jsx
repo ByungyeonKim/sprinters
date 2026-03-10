@@ -1,8 +1,9 @@
 import { useSyncExternalStore } from 'react';
 import { useRevalidator } from 'react-router';
-import { LikeButton } from './LikeButton';
+import { LikeButton } from '../../components/LikeButton';
 import { CommentForm } from './CommentForm';
 import { CommentList } from './CommentList';
+import { addTilLike, removeTilLike } from './til-service';
 import {
   subscribeOwnedCommentIds,
   getOwnedCommentIds,
@@ -32,7 +33,13 @@ function CommentSection({ tilId, comments, likes, hasLiked }) {
   return (
     <section className='mt-10 border-t border-gray-200 pt-10'>
       <div className='mb-6 flex items-center justify-between'>
-        <LikeButton key={`${tilId}-${hasLiked}`} tilId={tilId} initialCount={likes} initialHasLiked={hasLiked} />
+        <LikeButton
+          key={`${tilId}-${hasLiked}`}
+          onLike={(userId) => addTilLike({ tilId, userId })}
+          onUnlike={(userId) => removeTilLike({ tilId, userId })}
+          initialCount={likes}
+          initialHasLiked={hasLiked}
+        />
         <h2 className='text-lg font-bold'>
           댓글({comments?.length || 0})
         </h2>
