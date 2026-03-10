@@ -16,6 +16,14 @@ export const terms = [
     categoryLabel: '렌더링과 성능',
   },
   {
+    term: 'SSG',
+    termEn: 'Static Site Generation',
+    description:
+      '빌드 시점에 HTML을 미리 생성해 두는 렌더링 방식입니다. 사용자가 요청하면 이미 만들어진 HTML을 바로 전달하므로 응답이 빠르고, CDN에 캐싱하기 좋습니다. 블로그 글이나 문서처럼 자주 바뀌지 않는 콘텐츠에 적합합니다.',
+    category: '0',
+    categoryLabel: '렌더링과 성능',
+  },
+  {
     term: 'SPA',
     termEn: 'Single Page Application',
     description:
