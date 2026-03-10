@@ -8,7 +8,6 @@ export default {
   async prerender() {
     return [
       '/library',
-      '/library/nextjs-basics',
       '/library/sprinter-dictionary',
     ];
   },
