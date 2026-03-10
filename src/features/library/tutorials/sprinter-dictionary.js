@@ -96,6 +96,14 @@ export const terms = [
     categoryLabel: '렌더링과 성능',
   },
   {
+    term: '마운트',
+    termEn: 'Mount',
+    description:
+      '컴포넌트가 처음으로 DOM에 삽입되어 화면에 나타나는 시점을 말합니다. React에서 useEffect(() => {}, [])가 실행되는 시점이 마운트 직후입니다.',
+    category: '0',
+    categoryLabel: '렌더링과 성능',
+  },
+  {
     term: '폴링',
     termEn: 'Polling',
     description:
