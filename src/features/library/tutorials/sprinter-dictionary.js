@@ -96,6 +96,14 @@ export const terms = [
     categoryLabel: '렌더링과 성능',
   },
   {
+    term: 'ORM',
+    termEn: 'Object-Relational Mapping',
+    description:
+      '데이터베이스 테이블을 프로그래밍 언어의 객체로 매핑해 SQL 대신 코드로 데이터를 다룰 수 있게 해주는 도구입니다. 예를 들어 db.post.findMany() 같은 코드가 내부적으로 SQL 쿼리로 변환됩니다. Prisma, Drizzle 등이 대표적입니다.',
+    category: '0',
+    categoryLabel: '렌더링과 성능',
+  },
+  {
     term: '마운트',
     termEn: 'Mount',
     description:
