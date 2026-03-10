@@ -18,54 +18,26 @@ export default function DefaultLayout() {
             <NavLink to='/' className='text-[26px] font-bold tracking-tight'>
               Sprinters
             </NavLink>
-            <NavLink
-              to='/mission'
-              className={({ isActive }) =>
-                `hidden text-sm transition-colors sm:block ${
-                  isActive
-                    ? 'text-gray-900'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`
-              }
-            >
-              스프린트 미션
-            </NavLink>
-            <NavLink
-              to='/til'
-              className={({ isActive }) =>
-                `hidden text-sm transition-colors sm:block ${
-                  isActive
-                    ? 'text-gray-900'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`
-              }
-            >
-              TIL
-            </NavLink>
-            <NavLink
-              to='/qna'
-              className={({ isActive }) =>
-                `hidden text-sm transition-colors sm:block ${
-                  isActive
-                    ? 'text-gray-900'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`
-              }
-            >
-              Q&A
-            </NavLink>
-            <NavLink
-              to='/library'
-              className={({ isActive }) =>
-                `hidden text-sm transition-colors sm:block ${
-                  isActive
-                    ? 'text-gray-900'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`
-              }
-            >
-              라이브러리
-            </NavLink>
+            {[
+              { to: '/mission', label: '스프린트 미션' },
+              { to: '/til', label: 'TIL' },
+              { to: '/qna', label: 'Q&A' },
+              { to: '/library', label: '라이브러리' },
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `hidden text-sm transition-colors sm:block ${
+                    isActive
+                      ? 'text-gray-900'
+                      : 'text-gray-500 hover:text-gray-900'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
           </div>
           <nav className='flex items-center gap-6'>
             {user ? (
