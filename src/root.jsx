@@ -74,6 +74,23 @@ export function meta() {
   ];
 }
 
+export function shouldRevalidate({
+  currentUrl,
+  defaultShouldRevalidate,
+  formMethod,
+  nextUrl,
+}) {
+  if (formMethod && formMethod !== 'GET') {
+    return defaultShouldRevalidate;
+  }
+
+  if (currentUrl.pathname === nextUrl.pathname) {
+    return false;
+  }
+
+  return defaultShouldRevalidate;
+}
+
 export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const hasAuthError = searchParams.has('auth_error');
