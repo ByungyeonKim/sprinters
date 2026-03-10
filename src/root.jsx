@@ -76,14 +76,23 @@ export function meta() {
 
 export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const hasAuthError = searchParams.has('auth_error');
 
   useEffect(() => {
-    if (searchParams.has('auth_error')) {
-      toast.error('로그인에 실패했습니다. 다시 시도해주세요.');
-      searchParams.delete('auth_error');
-      setSearchParams(searchParams, { replace: true });
+    if (!hasAuthError) {
+      return;
     }
-  }, []);
+
+    toast.error('로그인에 실패했습니다. 다시 시도해주세요.');
+    setSearchParams(
+      (currentSearchParams) => {
+        const nextSearchParams = new URLSearchParams(currentSearchParams);
+        nextSearchParams.delete('auth_error');
+        return nextSearchParams;
+      },
+      { replace: true },
+    );
+  }, [hasAuthError, setSearchParams]);
 
   return (
     <div className='min-h-screen bg-white'>
