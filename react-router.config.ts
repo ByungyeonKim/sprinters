@@ -6,9 +6,6 @@ export default {
   ssr: true,
   presets: [vercelPreset()],
   async prerender() {
-    return [
-      '/library',
-      '/library/sprinter-dictionary',
-    ];
+    return ['/library/sprinter-dictionary'];
   },
 } satisfies Config;
