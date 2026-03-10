@@ -120,6 +120,14 @@ export const terms = [
     categoryLabel: '렌더링과 성능',
   },
   {
+    term: '스트리밍',
+    termEn: 'Streaming',
+    description:
+      '데이터를 한꺼번에 보내는 대신, 준비된 부분부터 나눠서 보내는 전송 방식입니다. Next.js에서는 Suspense를 사용하면 서버가 완성된 HTML 부분부터 브라우저로 전송하고, 나머지는 준비되는 대로 이어서 보냅니다. 사용자는 전체 페이지가 완성될 때까지 기다리지 않고 점진적으로 콘텐츠를 볼 수 있습니다.',
+    category: '0',
+    categoryLabel: '렌더링과 성능',
+  },
+  {
     term: 'CDN',
     termEn: 'Content Delivery Network',
     description:
