@@ -9,6 +9,7 @@ import {
 } from 'react-router';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Toaster } from './components/ui/sonner';
 import { createSupabaseServerClient } from './lib/supabase.server';
 import './index.css';
@@ -88,6 +89,7 @@ export default function App() {
     <div className='min-h-screen bg-white'>
       <Outlet />
       <Toaster />
+      <SpeedInsights />
     </div>
   );
 }
