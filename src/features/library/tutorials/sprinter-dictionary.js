@@ -96,6 +96,14 @@ export const terms = [
     categoryLabel: '렌더링과 성능',
   },
   {
+    term: '폴링',
+    termEn: 'Polling',
+    description:
+      '클라이언트가 서버에 일정 간격으로 반복 요청을 보내 새 데이터가 있는지 확인하는 방식입니다. 예를 들어 채팅 앱에서 5초마다 fetch(\'/api/messages\')를 호출해 새 메시지를 확인하는 것이 폴링입니다. WebSocket 같은 실시간 연결 대신 사용하는 단순한 대안입니다.',
+    category: '0',
+    categoryLabel: '렌더링과 성능',
+  },
+  {
     term: 'App Router',
     termEn: null,
     description:
