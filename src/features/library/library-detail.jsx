@@ -151,9 +151,26 @@ export async function loader({ params, request }) {
       await getHighlightedStepContent(slug, index, flatSessions[index].content),
     ]),
   );
+  const currentChapter = chapterMeta.find(
+    (ch) =>
+      !ch.locked &&
+      stepIndex >= ch.startIndex &&
+      stepIndex < ch.startIndex + ch.count,
+  );
+  const chapterStart = currentChapter?.startIndex ?? 0;
+  const chapterEnd = currentChapter
+    ? chapterStart + currentChapter.count
+    : flatSessions.length;
+
   const deferredStepIndices = flatSessions
     .map((_, index) => index)
-    .filter((index) => index <= maxStep && !eagerStepIndices.has(index));
+    .filter(
+      (index) =>
+        index <= maxStep &&
+        !eagerStepIndices.has(index) &&
+        index >= chapterStart &&
+        index < chapterEnd,
+    );
   const deferredHighlightedStepContentsPromise = deferredStepIndices.length
     ? Promise.all(
         deferredStepIndices.map(async (index) => [
@@ -168,7 +185,11 @@ export async function loader({ params, request }) {
     : null;
 
   return {
-    tutorial: { ...tutorial, steps: flatSessions, chapterMeta },
+    tutorial: {
+      ...tutorial,
+      steps: flatSessions.map(({ title }) => ({ title })),
+      chapterMeta,
+    },
     currentStep: stepIndex,
     eagerHighlightedStepContents: Object.fromEntries(
       eagerHighlightedStepEntries,
@@ -194,6 +215,7 @@ function LibraryDetailContent({
   const [searchParams, setSearchParams] = useSearchParams();
   const { highlightedStepContents, ensureHighlightedStepContent } =
     useHighlightedLibrarySteps({
+      slug: tutorial.slug,
       initialHighlightedStepContents: eagerHighlightedStepContents,
       deferredHighlightedStepContentsPromise,
     });
@@ -247,6 +269,7 @@ function LibraryDetailContent({
     displayedStep,
     handleStepChange,
     handleTransitionEnd,
+    isStepPending,
     pendingStep,
     transitionClass,
   } = useStepTransition({
@@ -259,7 +282,7 @@ function LibraryDetailContent({
 
   const step = tutorial.steps[displayedStep];
   const displayedStepContent =
-    highlightedStepContents[displayedStep] ?? step.content;
+    highlightedStepContents[displayedStep] ?? '';
   useCodeCopy(contentRef, [displayedStep, displayedStepContent]);
   const mobileStepSelect = useMemo(
     () => (
@@ -303,7 +326,9 @@ function LibraryDetailContent({
           >
             <article
               ref={contentRef}
-              className='prose library-content max-w-none'
+              className={`prose library-content max-w-none transition-opacity duration-150 ${
+                isStepPending ? 'opacity-60' : 'opacity-100'
+              }`}
             >
               <h1
                 className={

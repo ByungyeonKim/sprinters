@@ -17,6 +17,7 @@ export function useStepTransition({
   const [displayedStep, setDisplayedStep] = useState(currentStep);
   const [phase, setPhase] = useState('idle');
   const [direction, setDirection] = useState(null);
+  const [isStepPending, setIsStepPending] = useState(false);
 
   const pendingStepRef = useRef(currentStep);
   const phaseRef = useRef('idle');
@@ -136,27 +137,33 @@ export function useStepTransition({
       void (async () => {
         if (nextStep < 0 || nextStep > maxStep) return;
 
-        await ensureStepReady(nextStep);
-        if (requestId !== stepChangeRequestIdRef.current) return;
-
         const currentPendingStep = pendingStepRef.current;
         if (nextStep === currentPendingStep) return;
 
+        // 즉시 피드백: 사이드바 하이라이트 + URL 업데이트
         const nextDirection =
           nextStep > currentPendingStep ? 'forward' : 'backward';
-        const currentPhase = phaseRef.current;
-
         setDirection(nextDirection);
         updatePendingStep(nextStep);
+
+        if (syncUrl) {
+          onStepUrlChange(nextStep, { replace });
+        }
+
+        // 콘텐츠 로딩
+        setIsStepPending(true);
+        await ensureStepReady(nextStep);
+
+        if (requestId !== stepChangeRequestIdRef.current) return;
+        setIsStepPending(false);
+
+        // transition 시작
+        const currentPhase = phaseRef.current;
 
         if (currentPhase === 'entering-start') {
           setDisplayedStep(nextStep);
         } else if (currentPhase !== 'exiting') {
           startTimedPhase('exiting');
-        }
-
-        if (syncUrl) {
-          onStepUrlChange(nextStep, { replace });
         }
 
         scrollContainerRef.current?.scrollTo({ top: 0 });
@@ -234,6 +241,7 @@ export function useStepTransition({
     displayedStep,
     handleStepChange,
     handleTransitionEnd,
+    isStepPending,
     pendingStep,
     transitionClass,
   };
