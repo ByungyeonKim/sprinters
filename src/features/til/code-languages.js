@@ -5,6 +5,7 @@ export const SUPPORTED_CODE_LANGUAGES = [
   { value: 'tsx', label: 'TSX' },
   { value: 'html', label: 'HTML' },
   { value: 'css', label: 'CSS' },
+  { value: 'json', label: 'JSON' },
   { value: 'shellscript', label: 'Shell' },
 ];
 
