@@ -186,7 +186,8 @@ export async function loader({ params, request }) {
 
   return {
     tutorial: {
-      ...tutorial,
+      slug: tutorial.slug,
+      title: tutorial.title,
       steps: flatSessions.map(({ title }) => ({ title })),
       chapterMeta,
     },
