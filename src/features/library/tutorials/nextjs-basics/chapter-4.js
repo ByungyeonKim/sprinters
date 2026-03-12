@@ -690,9 +690,8 @@ ${h2('step4-not-found', 'Step 4: notFound 적용')}
 
 <h3>글 상세 페이지에 notFound() 추가</h3>
 
-<pre><code class="language-tsx" data-line="12-14">// app/blog/[slug]/page.tsx
-import { notFound } from 'next/navigation';
-import { LikeButton } from '@/app/components/LikeButton';
+<pre><code class="language-tsx" data-line="13-16">// app/blog/[slug]/page.tsx
+...
 
 export default async function Post({
   params,
