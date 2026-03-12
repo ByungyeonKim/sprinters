@@ -2,7 +2,7 @@ import { h2, titleBox } from '../shared/content-helpers';
 
 export default {
       title: 'Navigation + 실습 고도화',
-      locked: import.meta.env.PROD,
+      locked: false,
       sessions: [
         {
           title: 'Link 컴포넌트 심화와 usePathname',
