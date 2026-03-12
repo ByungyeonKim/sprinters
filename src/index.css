@@ -495,17 +495,25 @@
   opacity: 0.6;
 }
 
+.library-content .table-scroll-wrapper {
+  overflow-x: auto;
+}
+
 .library-content table {
   table-layout: fixed;
+  min-width: 480px;
 }
 
 .library-content th:first-child {
   width: 20%;
 }
 
-.library-content th:last-child {
-  width: 15%;
+.library-content th:first-child:nth-last-child(2),
+.library-content th:first-child:nth-last-child(2) ~ th {
+  width: 50%;
 }
+
+
 
 .qna-content p {
   white-space: pre-wrap;

@@ -282,8 +282,9 @@ function LibraryDetailContent({
   });
 
   const step = tutorial.steps[displayedStep];
-  const displayedStepContent =
-    highlightedStepContents[displayedStep] ?? '';
+  const displayedStepContent = (
+    highlightedStepContents[displayedStep] ?? ''
+  ).replace(/<table>/g, '<div class="table-scroll-wrapper"><table>').replace(/<\/table>/g, '</table></div>');
   useCodeCopy(contentRef, [displayedStep, displayedStepContent]);
   const mobileStepSelect = useMemo(
     () => (
