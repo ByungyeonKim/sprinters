@@ -32,10 +32,10 @@ ${h2('prefetching', 'Prefetching - 미리 로드하기')}
 <p><code>&lt;Link&gt;</code>에는 숨겨진 기능이 하나 더 있습니다. 링크가 뷰포트(화면)에 보이면, 해당 페이지의 데이터를 <strong>미리 가져옵니다</strong>. 사용자가 클릭하기 전에 이미 준비가 되어 있으므로, 이동이 거의 즉시 일어납니다.</p>
 
 <pre><code class="language-tsx">// 기본 동작: 뷰포트에 보이면 자동 prefetch
-&lt;Link href="/blog"&gt;블로그&lt;/Link&gt;
+&lt;Link href='/blog'&gt;블로그&lt;/Link&gt;
 
 // prefetch 끄기
-&lt;Link href="/blog" prefetch={false}&gt;블로그&lt;/Link&gt;</code></pre>
+&lt;Link href='/blog' prefetch={false}&gt;블로그&lt;/Link&gt;</code></pre>
 
 ${titleBox('neutral', 'DevTools에서 확인하기', 'Prefetching은 프로덕션 모드에서만 동작합니다. <code>npm run build && npm start</code>로 프로덕션 서버를 실행한 뒤, 개발자 도구의 네트워크 탭에서 확인해 보세요. 링크가 화면에 보이는 순간, 링크된 페이지의 데이터를 미리 가져오는 요청이 발생하는 것을 확인할 수 있습니다.')}
 
@@ -294,7 +294,7 @@ export default function NotFound() {
     &lt;div&gt;
       &lt;h2&gt;글을 찾을 수 없습니다&lt;/h2&gt;
       &lt;p&gt;요청한 글이 존재하지 않습니다.&lt;/p&gt;
-      &lt;Link href="/blog"&gt;글 목록으로 돌아가기&lt;/Link&gt;
+      &lt;Link href='/blog'&gt;글 목록으로 돌아가기&lt;/Link&gt;
     &lt;/div&gt;
   );
 }</code></pre>
@@ -518,7 +518,7 @@ ${titleBox('neutral', '테스트', 'json-server를 재시작한 뒤 <code>http:/
 
 ${h2('step2-navlink', 'Step 2: NavLink 적용')}
 
-<p>세션 1에서 배운 <code>NavLink</code> 컴포넌트를 적용해보겠습니다:</p>
+<p>세션 1에서 배운 <code>NavLink</code> 컴포넌트를 적용해보겠습니다.</p>
 
 <pre><code class="language-tsx">// app/components/NavLink.tsx
 'use client';
@@ -548,8 +548,8 @@ export function NavLink({
 
 <h3>루트 레이아웃에 적용</h3>
 
-<pre><code class="language-tsx">// app/layout.tsx
-import { NavLink } from './components/NavLink';
+<pre><code class="language-tsx" data-line="16-18">// app/layout.tsx
+...
 
 export default function RootLayout({
   children,
@@ -557,14 +557,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }&gt;) {
   return (
-    &lt;html lang="ko"&gt;
-      &lt;body&gt;
-        &lt;nav style={{ display: 'flex', gap: '1rem', padding: '1rem' }}&gt;
-          &lt;NavLink href="/"&gt;홈&lt;/NavLink&gt;
-          &lt;NavLink href="/blog"&gt;블로그&lt;/NavLink&gt;
-          &lt;NavLink href="/about"&gt;소개&lt;/NavLink&gt;
-        &lt;/nav&gt;
-        {children}
+    &lt;html lang='ko'&gt;
+      &lt;body
+        className={\`\${geistSans.variable} \${geistMono.variable} antialiased\`}
+      &gt;
+        &lt;header&gt;
+          &lt;nav&gt;
+            &lt;NavLink href='/'&gt;홈&lt;/NavLink&gt;
+            &lt;NavLink href='/blog'&gt;글 목록&lt;/NavLink&gt;
+            &lt;NavLink href='/about'&gt;소개&lt;/NavLink&gt;
+          &lt;/nav&gt;
+        &lt;/header&gt;
+        &lt;main&gt;{children}&lt;/main&gt;
+        &lt;footer&gt;Copyright 2026 My Blog&lt;/footer&gt;
       &lt;/body&gt;
     &lt;/html&gt;
   );
@@ -605,21 +610,19 @@ export function CategorySidebar() {
     &lt;ul&gt;
       &lt;li&gt;
         &lt;Link
-          href="/blog"
-          style={{ fontWeight: !current ? 'bold' : 'normal' }}
+          href='/blog'
+          className={!current ? 'font-bold' : undefined}
         &gt;
           전체
         &lt;/Link&gt;
       &lt;/li&gt;
-      {categories.map((cat) =&gt; (
-        &lt;li key={cat.key}&gt;
+      {categories.map((category) =&gt; (
+        &lt;li key={category.key}&gt;
           &lt;Link
-            href={\`/blog?category=\${cat.key}\`}
-            style={{
-              fontWeight: current === cat.key ? 'bold' : 'normal',
-            }}
+            href={\`/blog?category=\${category.key}\`}
+            className={current === category.key ? 'font-bold' : undefined}
           &gt;
-            {cat.label}
+            {category.label}
           &lt;/Link&gt;
         &lt;/li&gt;
       ))}
@@ -664,7 +667,7 @@ export default async function Blog({
     &lt;div&gt;
       &lt;h1&gt;글 목록&lt;/h1&gt;
       &lt;SearchablePostList posts={posts} /&gt;
-      &lt;Link href="/blog/new"&gt;새 글 작성&lt;/Link&gt;
+      &lt;Link href='/blog/new'&gt;새 글 작성&lt;/Link&gt;
     &lt;/div&gt;
   );
 }</code></pre>
@@ -725,7 +728,7 @@ export default function NotFound() {
     &lt;div&gt;
       &lt;h2&gt;글을 찾을 수 없습니다&lt;/h2&gt;
       &lt;p&gt;요청한 글이 존재하지 않습니다.&lt;/p&gt;
-      &lt;Link href="/blog"&gt;글 목록으로 돌아가기&lt;/Link&gt;
+      &lt;Link href='/blog'&gt;글 목록으로 돌아가기&lt;/Link&gt;
     &lt;/div&gt;
   );
 }</code></pre>
@@ -775,15 +778,15 @@ db.json                           json-server 데이터 (카테고리 포함)</c
 </tbody>
 </table>
 
-${h2('congratulations', '축하합니다!')}
+${h2('wrap-up', '학습을 마무리하며')}
 
-<p>Next.js의 핵심 개념들을 체계적으로 학습하고, 실제 동작하는 블로그 프로젝트를 완성했습니다. 이 프로젝트에서 다룬 패턴들은 실무에서 그대로 활용됩니다.</p>
+<p>Next.js의 핵심 개념들을 체계적으로 학습하고, 실제 동작하는 블로그 프로젝트를 완성했습니다.</p>
 
 <h3>추천 학습 자료</h3>
 <ul>
 <li><a href="https://nextjs.org/docs" target="_blank" rel="noopener noreferrer">Next.js 공식 문서</a> - 더 깊은 내용 탐색</li>
 <li><a href="https://nextjs.org/learn" target="_blank" rel="noopener noreferrer">Next.js Learn 코스</a> - 공식 대화형 튜토리얼</li>
-<li><a href="https://react.dev" target="_blank" rel="noopener noreferrer">React 공식 문서</a> - React 기초 복습</li>
+<li><a href="https://ko.react.dev" target="_blank" rel="noopener noreferrer">React 공식 문서</a> - React 기초 복습</li>
 </ul>
 
 <h3>확장 아이디어</h3>
