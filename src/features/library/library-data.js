@@ -13,7 +13,7 @@ export const tutorials = [
     title: '스프린터 사전',
     description:
       'IT 개발에 필요한 핵심 용어와 개념을 정리합니다.',
-    totalTerms: 37,
+    totalTerms: 38,
   },
 ];
 

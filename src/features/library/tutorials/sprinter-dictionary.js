@@ -295,6 +295,14 @@ export const terms = [
     category: '2',
     categoryLabel: '서버·클라이언트 컴포넌트',
   },
+  {
+    term: 'RSC Payload',
+    termEn: 'React Server Components Payload',
+    description:
+      '서버 컴포넌트의 렌더링 결과를 직렬화한 데이터입니다. 서버 컴포넌트의 렌더링된 React 엘리먼트 트리, 클라이언트 컴포넌트의 번들 참조(placeholder), 그리고 서버에서 클라이언트로 전달되는 props가 포함됩니다. 클라이언트는 이 데이터를 받아 클라이언트 컴포넌트 번들과 합쳐 최종 UI를 구성합니다.',
+    category: '2',
+    categoryLabel: '서버·클라이언트 컴포넌트',
+  },
 ];
 
 export default {
