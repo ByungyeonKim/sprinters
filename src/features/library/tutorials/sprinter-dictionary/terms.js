@@ -304,8 +304,3 @@ export const terms = [
     categoryLabel: '서버·클라이언트 컴포넌트',
   },
 ];
-
-export default {
-  slug: 'sprinter-dictionary',
-  title: '스프린터 사전',
-};

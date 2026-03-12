@@ -1,4 +1,4 @@
-import { terms } from './tutorials/sprinter-dictionary.js';
+import { terms } from './tutorials/sprinter-dictionary/terms';
 
 function buildDictionaryCategories(termItems) {
   const categoryMap = new Map();

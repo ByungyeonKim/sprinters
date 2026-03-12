@@ -2,6 +2,7 @@ import { useLoaderData, useSearchParams } from 'react-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { highlightCodeBlocks } from '../../utils/shiki.server';
 import { tutorialsBySlug } from './library-data';
+import { loadTutorial } from './load-tutorial';
 import { useCodeCopy } from '../../hooks/use-code-copy';
 import { MobileStepSelect } from './MobileStepSelect';
 import { StepSidebar } from './StepSidebar';
@@ -117,8 +118,10 @@ export async function loader({ params, request }) {
     throw new Response('Not Found', { status: 404 });
   }
 
-  const mod = await import(`./tutorials/${slug}.js`);
-  const tutorial = mod.default;
+  const tutorial = await loadTutorial(slug);
+  if (!tutorial) {
+    throw new Response('Not Found', { status: 404 });
+  }
 
   // chapters → 플랫 sessions 배열로 변환 + 챕터 메타데이터 구성
   const chapters = tutorial.chapters ?? [];
