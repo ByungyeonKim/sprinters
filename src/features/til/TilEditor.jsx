@@ -88,14 +88,14 @@ function EditorToolbar({ editor }) {
   return (
     <TooltipProvider>
       <div className='flex flex-wrap gap-1 border-b border-gray-100 pb-3'>
-        {TOOLBAR_ITEMS.map(({ icon: Icon, run, isActive, tooltip }) => (
+        {TOOLBAR_ITEMS.map((item) => (
           <ToolbarButton
-            key={tooltip}
-            onClick={() => run(editor)}
-            active={isActive(editor)}
-            tooltip={tooltip}
+            key={item.tooltip}
+            onClick={() => item.run(editor)}
+            active={item.isActive(editor)}
+            tooltip={item.tooltip}
           >
-            <Icon className='size-4' />
+            <item.icon className='size-4' />
           </ToolbarButton>
         ))}
       </div>
