@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export function useHighlightedLibrarySteps({
   slug,
   initialHighlightedStepContents,
+  deferredStepIndices,
   deferredHighlightedStepContentsPromise,
 }) {
   const [highlightedStepContents, setHighlightedStepContents] = useState(
@@ -10,6 +11,7 @@ export function useHighlightedLibrarySteps({
   );
   const highlightedStepContentsRef = useRef(initialHighlightedStepContents);
   const deferredPromiseRef = useRef(deferredHighlightedStepContentsPromise);
+  const deferredStepIndicesRef = useRef(deferredStepIndices ?? []);
 
   const mergeHighlightedStepContents = useCallback((nextContents) => {
     if (!nextContents) return;
@@ -36,6 +38,10 @@ export function useHighlightedLibrarySteps({
   useEffect(() => {
     highlightedStepContentsRef.current = highlightedStepContents;
   }, [highlightedStepContents]);
+
+  useEffect(() => {
+    deferredStepIndicesRef.current = deferredStepIndices ?? [];
+  }, [deferredStepIndices]);
 
   useEffect(() => {
     if (!deferredHighlightedStepContentsPromise) return;
@@ -74,7 +80,10 @@ export function useHighlightedLibrarySteps({
 
       // 2. deferred promise가 있으면 먼저 시도
       const deferredPromise = deferredPromiseRef.current;
-      if (deferredPromise) {
+      const shouldAwaitDeferred = deferredStepIndicesRef.current.includes(
+        stepIndex,
+      );
+      if (deferredPromise && shouldAwaitDeferred) {
         try {
           const resolvedContents = await deferredPromise;
           mergeHighlightedStepContents(resolvedContents);

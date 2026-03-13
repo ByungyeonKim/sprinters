@@ -19,7 +19,7 @@ export default function LibraryPage() {
           <Link
             key={tutorial.slug}
             to={`/library/${tutorial.slug}`}
-            prefetch='intent'
+            prefetch={tutorial.slug === 'nextjs-basics' ? 'render' : 'intent'}
             className='group flex flex-col rounded-xl border border-gray-200 p-6 transition-colors hover:border-gray-300 hover:bg-gray-50'
           >
             <h2 className='mb-2 text-lg font-semibold group-hover:text-black'>

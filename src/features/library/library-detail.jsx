@@ -54,34 +54,18 @@ function getHighlightedStepContent(slug, stepIndex, content) {
   return promise;
 }
 
-function getEagerStepIndices(chapterMeta, currentStep, maxStep) {
-  const eagerStepIndices = new Set([currentStep]);
-  const currentChapter = chapterMeta.find(
-    (chapter) =>
-      !chapter.locked &&
-      currentStep >= chapter.startIndex &&
-      currentStep < chapter.startIndex + chapter.count,
-  );
-
-  if (currentChapter) {
-    for (
-      let stepIndex = currentChapter.startIndex;
-      stepIndex < currentChapter.startIndex + currentChapter.count;
-      stepIndex += 1
-    ) {
-      eagerStepIndices.add(stepIndex);
-    }
-  }
+function getDeferredStepIndices(currentStep, maxStep) {
+  const deferredStepIndices = [];
 
   if (currentStep > 0) {
-    eagerStepIndices.add(currentStep - 1);
+    deferredStepIndices.push(currentStep - 1);
   }
 
   if (currentStep < maxStep) {
-    eagerStepIndices.add(currentStep + 1);
+    deferredStepIndices.push(currentStep + 1);
   }
 
-  return eagerStepIndices;
+  return deferredStepIndices;
 }
 
 export function meta({ data }) {
@@ -147,33 +131,12 @@ export async function loader({ params, request }) {
 
   const url = new URL(request.url);
   const stepIndex = clampStepIndex(url.searchParams.get('step') ?? '', maxStep);
-  const eagerStepIndices = getEagerStepIndices(chapterMeta, stepIndex, maxStep);
-  const eagerHighlightedStepEntries = await Promise.all(
-    [...eagerStepIndices].map(async (index) => [
-      index,
-      await getHighlightedStepContent(slug, index, flatSessions[index].content),
-    ]),
+  const eagerHighlightedStepContent = await getHighlightedStepContent(
+    slug,
+    stepIndex,
+    flatSessions[stepIndex].content,
   );
-  const currentChapter = chapterMeta.find(
-    (ch) =>
-      !ch.locked &&
-      stepIndex >= ch.startIndex &&
-      stepIndex < ch.startIndex + ch.count,
-  );
-  const chapterStart = currentChapter?.startIndex ?? 0;
-  const chapterEnd = currentChapter
-    ? chapterStart + currentChapter.count
-    : flatSessions.length;
-
-  const deferredStepIndices = flatSessions
-    .map((_, index) => index)
-    .filter(
-      (index) =>
-        index <= maxStep &&
-        !eagerStepIndices.has(index) &&
-        index >= chapterStart &&
-        index < chapterEnd,
-    );
+  const deferredStepIndices = getDeferredStepIndices(stepIndex, maxStep);
   const deferredHighlightedStepContentsPromise = deferredStepIndices.length
     ? Promise.all(
         deferredStepIndices.map(async (index) => [
@@ -195,9 +158,10 @@ export async function loader({ params, request }) {
       chapterMeta,
     },
     currentStep: stepIndex,
-    eagerHighlightedStepContents: Object.fromEntries(
-      eagerHighlightedStepEntries,
-    ),
+    eagerHighlightedStepContents: {
+      [stepIndex]: eagerHighlightedStepContent,
+    },
+    deferredStepIndices,
     deferredHighlightedStepContentsPromise,
   };
 }
@@ -211,6 +175,7 @@ export default function LibraryDetail() {
 function LibraryDetailContent({
   tutorial,
   eagerHighlightedStepContents,
+  deferredStepIndices,
   deferredHighlightedStepContentsPromise,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -221,6 +186,7 @@ function LibraryDetailContent({
     useHighlightedLibrarySteps({
       slug: tutorial.slug,
       initialHighlightedStepContents: eagerHighlightedStepContents,
+      deferredStepIndices,
       deferredHighlightedStepContentsPromise,
     });
   const maxStep = useMemo(() => {
@@ -285,9 +251,13 @@ function LibraryDetailContent({
   });
 
   const step = tutorial.steps[displayedStep];
-  const displayedStepContent = (
-    highlightedStepContents[displayedStep] ?? ''
-  ).replace(/<table>/g, '<div class="table-scroll-wrapper"><table>').replace(/<\/table>/g, '</table></div>');
+  const displayedStepContent = useMemo(
+    () =>
+      (highlightedStepContents[displayedStep] ?? '')
+        .replace(/<table>/g, '<div class="table-scroll-wrapper"><table>')
+        .replace(/<\/table>/g, '</table></div>'),
+    [highlightedStepContents, displayedStep],
+  );
   useCodeCopy(contentRef, [displayedStep, displayedStepContent]);
   const mobileStepSelect = useMemo(
     () => (
