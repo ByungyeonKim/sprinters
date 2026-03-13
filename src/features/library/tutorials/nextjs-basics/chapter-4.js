@@ -1,3 +1,4 @@
+import nextJsWrapUpImg from '../../../../assets/next-js-wrap-up.png';
 import { h2, titleBox } from '../shared/content-helpers';
 
 export default {
@@ -781,7 +782,11 @@ db.json                           json-server 데이터 (카테고리 포함)</c
 
 ${h2('wrap-up', '학습을 마무리하며')}
 
-<p>Next.js의 핵심 개념들을 체계적으로 학습하고, 실제 동작하는 블로그 프로젝트를 완성했습니다.</p>
+<img src="${nextJsWrapUpImg}" alt="Next.js 기초 튜토리얼 마무리" style="width:100%;aspect-ratio:2752/1536;border-radius:8px;margin:1rem 0;" />
+
+<p>빈 폴더에서 시작해서, 라우팅을 만들고, 서버와 클라이언트의 경계를 나누고, 데이터를 가져오고, URL로 상태를 관리하는 블로그를 완성했습니다. 4개 챕터 동안 만든 건 블로그지만, 진짜 얻은 건 <strong>Next.js 앱을 스스로 설계하고 만들어낼 수 있다는 자신감</strong>입니다.</p>
+
+<p>이제 공식 문서를 펼쳐도 "이게 무슨 말이지?" 대신 "아, 이건 그때 해본 거네"가 먼저 떠오를 겁니다. 여기까지 해낸 여러분, 진심으로 대단합니다!</p>
 
 <h3>추천 학습 자료</h3>
 <ul>
