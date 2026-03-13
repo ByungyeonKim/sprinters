@@ -11,6 +11,26 @@ const MISSION_RANK_COUNT = 10;
 
 import { SITE_URL, OG_IMAGE, SITE_NAME, DEFAULT_DESCRIPTION } from '../../root';
 
+type Student = {
+  id: string;
+  name: string;
+  github: string;
+  avatar: string;
+  mission: number;
+  currentTitle: string | null;
+};
+
+type PopularPost = {
+  id: string;
+  title: string;
+  postNumber: number;
+  author: string;
+  githubUsername: string;
+  likes: number;
+  comments: number;
+  createdAt: string;
+};
+
 export function meta() {
   return [
     { title: SITE_NAME },
@@ -31,7 +51,7 @@ export function loader() {
   };
 }
 
-function MissionRankList({ students }) {
+function MissionRankList({ students }: { students: Student[] }) {
   return (
     <div>
       <div className='mb-6 flex items-center justify-between'>
@@ -70,7 +90,7 @@ function MissionRankList({ students }) {
   );
 }
 
-function PopularTilList({ posts }) {
+function PopularTilList({ posts }: { posts: PopularPost[] }) {
   return (
     <div>
       <div className='mb-6 flex items-center justify-between'>

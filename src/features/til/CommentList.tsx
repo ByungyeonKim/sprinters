@@ -1,0 +1,82 @@
+import { useMemo } from 'react';
+import { deleteTilComment } from './til-service';
+import { AlertDialogDestructive } from '../../components/AlertDialogDestructive';
+import { getCommentDeleteToken } from '../../utils/comment';
+
+type TilComment = {
+  id: number;
+  author: string;
+  avatar: string;
+  content: string;
+  date: string;
+};
+
+type CommentListProps = {
+  comments: TilComment[];
+  ownedCommentIds: string[];
+  onCommentDeleted?: (commentId: number) => void;
+};
+
+function CommentList({ comments, ownedCommentIds, onCommentDeleted }: CommentListProps) {
+  const ownedCommentIdSet = useMemo(
+    () => new Set(ownedCommentIds),
+    [ownedCommentIds],
+  );
+
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      await deleteTilComment({
+        commentId,
+        deleteToken: getCommentDeleteToken(),
+      });
+      onCommentDeleted?.(commentId);
+    } catch (error) {
+      console.error('댓글 삭제 실패:', error);
+      alert('댓글 삭제에 실패했습니다.');
+    }
+  };
+
+  if (!comments?.length) {
+    return (
+      <p className='text-center text-gray-500'>
+        아직 댓글이 없습니다. 첫 번째 댓글을 작성해보세요!
+      </p>
+    );
+  }
+
+  return (
+    <div className='space-y-6'>
+      {comments.map((c: TilComment) => (
+        <div key={c.id} className='flex gap-3'>
+          <img
+            src={c.avatar}
+            alt={c.author}
+            className='h-10 w-10 shrink-0 rounded-full border border-gray-300 object-cover'
+          />
+          <div className='flex-1'>
+            <div className='mb-1 flex items-center gap-2'>
+              <span className='text-sm font-medium'>{c.author}</span>
+              <span className='text-sm text-gray-500'>{c.date}</span>
+              {ownedCommentIdSet.has(String(c.id)) && (
+                <AlertDialogDestructive
+                  onConfirm={() => handleDeleteComment(c.id)}
+                  title='댓글을 삭제하시겠어요?'
+                  description='삭제된 댓글은 복구할 수 없습니다.'
+                >
+                  <button
+                    className='text-sm text-gray-400 transition-colors hover:text-red-500'
+                  >
+                    삭제
+                  </button>
+                </AlertDialogDestructive>
+              )}
+            </div>
+            <p className='text-gray-600'>{c.content}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export { CommentList };
