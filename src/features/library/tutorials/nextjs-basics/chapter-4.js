@@ -1,12 +1,12 @@
 import { h2, titleBox } from '../shared/content-helpers';
 
 export default {
-      title: 'Navigation + 실습 고도화',
-      locked: false,
-      sessions: [
-        {
-          title: 'Link 컴포넌트 심화와 usePathname',
-          content: `
+  title: 'Navigation + 실습 고도화',
+  locked: false,
+  sessions: [
+    {
+      title: 'Link 컴포넌트 심화와 usePathname',
+      content: `
 ${h2('link-vs-a', '&lt;Link&gt; vs &lt;a&gt; - 클라이언트 사이드 내비게이션')}
 
 <p>Ch.1에서 <code>&lt;Link&gt;</code>를 처음 사용했습니다. HTML의 <code>&lt;a&gt;</code> 태그와 비슷해 보이지만, 동작 방식이 근본적으로 다릅니다.</p>
@@ -29,15 +29,17 @@ ${titleBox('info', '핵심 원리', 'Next.js의 <code>&lt;Link&gt;</code>는 클
 
 ${h2('prefetching', 'Prefetching - 미리 로드하기')}
 
-<p><code>&lt;Link&gt;</code>에는 숨겨진 기능이 하나 더 있습니다. 링크가 뷰포트(화면)에 보이면, 해당 페이지의 데이터를 <strong>미리 가져옵니다</strong>. 사용자가 클릭하기 전에 이미 준비가 되어 있으므로, 이동이 거의 즉시 일어납니다.</p>
+<p><code>&lt;Link&gt;</code>에는 숨겨진 기능이 하나 더 있습니다. 프로덕션에서 링크가 뷰포트(화면)에 보이면, Next.js가 백그라운드에서 해당 경로를 <strong>prefetch</strong>합니다. 사용자가 클릭하기 전에 이미 준비가 되어 있으므로, 이동이 거의 즉시 일어날 수 있습니다.</p>
 
-<pre><code class="language-tsx">// 기본 동작: 뷰포트에 보이면 자동 prefetch
+<pre><code class="language-tsx">// 기본 동작(auto): 정적 라우트는 전체, 동적 라우트는 loading.tsx 경계까지 부분 prefetch
 &lt;Link href='/blog'&gt;블로그&lt;/Link&gt;
 
 // prefetch 끄기
 &lt;Link href='/blog' prefetch={false}&gt;블로그&lt;/Link&gt;</code></pre>
 
-${titleBox('neutral', 'DevTools에서 확인하기', 'Prefetching은 프로덕션 모드에서만 동작합니다. <code>npm run build && npm start</code>로 프로덕션 서버를 실행한 뒤, 개발자 도구의 네트워크 탭에서 확인해 보세요. 링크가 화면에 보이는 순간, 링크된 페이지의 데이터를 미리 가져오는 요청이 발생하는 것을 확인할 수 있습니다.')}
+<p>기본값인 <code>prefetch="auto"</code>에서는 정적 라우트는 전체 경로를, 동적 라우트는 가장 가까운 <code>loading.tsx</code> 경계까지 부분적으로 prefetch합니다. 따라서 어떤 요청이 발생하는지는 라우트 성격에 따라 조금씩 달라질 수 있습니다.</p>
+
+${titleBox('neutral', 'DevTools에서 확인하기', 'Prefetching은 프로덕션 모드에서만 동작합니다. <code>npm run build && npm start</code>로 프로덕션 서버를 실행한 뒤, 개발자 도구의 네트워크 탭에서 확인해 보세요. 정적 라우트와 동적 라우트는 prefetch 요청 형태가 다를 수 있으므로, <code>loading.tsx</code> 유무와 함께 보면 더 잘 보입니다.')}
 
 ${h2('use-pathname', 'usePathname - 현재 경로 알아내기')}
 
@@ -92,10 +94,10 @@ export function NavLink({
 <p>참고로, <code>usePathname()</code>은 URL의 path 부분만 반환하며 쿼리 스트링은 포함하지 않습니다. 쿼리 스트링은 <a href="https://nextjs.org/docs/app/api-reference/functions/use-search-params" target="_blank" rel="noopener noreferrer">useSearchParams()</a>를 사용합니다.</p>
 
           `,
-        },
-        {
-          title: 'URL 상태 관리와 프로그래밍 방식 라우팅',
-          content: `
+    },
+    {
+      title: 'URL 상태 관리와 프로그래밍 방식 라우팅',
+      content: `
 ${h2('url-as-state', 'URL을 상태 저장소로 사용하기')}
 
 <p><strong>URL도 하나의 상태 저장소(state store)입니다.</strong></p>
@@ -284,7 +286,7 @@ export default async function Post({
   );
 }</code></pre>
 
-<p><code>notFound()</code>를 호출하면 가장 가까운 <code>not-found.tsx</code> 파일이 렌더링됩니다:</p>
+<p><code>notFound()</code>는 렌더링 흐름 안에서 현재 route segment의 렌더링을 중단하고, 가장 가까운 <code>not-found.tsx</code> 파일을 렌더링합니다:</p>
 
 <pre><code class="language-tsx">// app/blog/[slug]/not-found.tsx
 import Link from 'next/link';
@@ -336,19 +338,19 @@ ${h2('navigation-tools', '내비게이션 도구 정리')}
 <tr><td><code>useSearchParams()</code></td><td>URL 쿼리 스트링 읽기</td><td>클라이언트</td></tr>
 <tr><td><code>useRouter()</code></td><td>코드로 페이지 이동 (push, replace, back)</td><td>클라이언트</td></tr>
 <tr><td><code>searchParams</code> prop</td><td>페이지에서 URL 쿼리 읽기</td><td>페이지</td></tr>
-<tr><td><code>notFound()</code></td><td>404 페이지 표시</td><td>서버 / 클라이언트</td></tr>
+<tr><td><code>notFound()</code></td><td>404 페이지 표시</td><td>렌더링 중 route segment</td></tr>
 <tr><td><code>redirect()</code></td><td>렌더링 중 리다이렉트</td><td>서버 / 클라이언트(렌더링 중)</td></tr>
 </tbody>
 </table>
 
 ${titleBox('neutral', 'Link vs useRouter 언제 무엇을?', '일반적인 페이지 이동에는 항상 <code>&lt;Link&gt;</code>를 사용합니다. Prefetching, 접근성, SEO 등의 이점이 있기 때문입니다. <code>useRouter</code>는 폼 제출 후 리다이렉트, 조건부 이동처럼 <strong>사용자 클릭이 아닌 코드 로직에 의한 이동</strong>이 필요할 때만 사용합니다.')}
 
-${titleBox('neutral', 'redirect vs router.push', "<code>redirect()</code>는 서버 컴포넌트, Server Action, 그리고 클라이언트 컴포넌트의 렌더링 중에 사용할 수 있습니다. 반면 클릭 핸들러처럼 <strong>이벤트에서 이동</strong>해야 할 때는 <code>router.push()</code>나 <code>router.replace()</code>를 사용합니다. Ch.3 실습의 <code>createPost</code> 액션에서 <code>redirect('/blog')</code>를 사용한 것이 서버 리다이렉트의 예시입니다.")}
+${titleBox('neutral', 'redirect vs router.push', "<code>redirect()</code>는 서버 컴포넌트, Server Action, 그리고 클라이언트 컴포넌트의 렌더링 중에 사용할 수 있습니다. 반면 클릭 핸들러처럼 <strong>이벤트에서 이동</strong>해야 할 때는 <code>router.push()</code>나 <code>router.replace()</code>를 사용합니다. Ch.3 실습의 <code>createPost</code> action에서 <code>redirect('/blog')</code>를 사용한 것이 서버 리다이렉트의 예시입니다.")}
           `,
-        },
-        {
-          title: '전체 학습 정리',
-          content: `
+    },
+    {
+      title: '전체 학습 정리',
+      content: `
 ${h2('blog-growth', '블로그 프로젝트 구현 과정')}
 
 <p>4개의 챕터를 거치며 빈 프로젝트에 블로그 기능을 단계적으로 추가했습니다.</p>
@@ -360,8 +362,8 @@ ${h2('blog-growth', '블로그 프로젝트 구현 과정')}
 <tbody>
 <tr><td>Ch.1</td><td>App Router 기초</td><td>페이지 구조(홈, 블로그, 소개), 레이아웃, 동적 라우트</td></tr>
 <tr><td>Ch.2</td><td>서버/클라이언트 컴포넌트</td><td>CategorySidebar, LikeButton, SearchablePostList</td></tr>
-<tr><td>Ch.3</td><td>Data Fetching</td><td>json-server 연동, 서버 fetching, loading.tsx, 글 작성 폼</td></tr>
-<tr><td>Ch.4</td><td>Navigation</td><td>NavLink, URL 상태 관리, 404 처리</td></tr>
+<tr><td>Ch.3</td><td>Data Fetching & 렌더링</td><td>json-server 연동, 서버 fetching, loading.tsx, 글 작성 폼</td></tr>
+<tr><td>Ch.4</td><td>Navigation + 실습 고도화</td><td>NavLink, URL 상태 관리, 404 처리</td></tr>
 </tbody>
 </table>
 
@@ -386,9 +388,9 @@ ${h2('chapter-summary', '챕터별 핵심 개념 요약')}
 <tr><th>개념</th><th>한 줄 요약</th></tr>
 </thead>
 <tbody>
-<tr><td>서버 컴포넌트</td><td>기본값, 서버에서 실행, 번들에 포함 안 됨</td></tr>
-<tr><td>클라이언트 컴포넌트</td><td><code>'use client'</code> 선언, 인터랙션이 필요할 때만 사용</td></tr>
-<tr><td>컴포넌트 합성</td><td>서버 컴포넌트를 children으로 넘겨 클라이언트 경계 최소화</td></tr>
+<tr><td>서버 컴포넌트</td><td>기본값, 서버에서 렌더링되며 클라이언트 번들에 포함되지 않음</td></tr>
+<tr><td>클라이언트 컴포넌트</td><td><code>'use client'</code> 선언, 브라우저 인터랙션이 필요할 때 사용</td></tr>
+<tr><td>children/props 전달</td><td>서버 컴포넌트를 children이나 다른 prop으로 넘겨 클라이언트 경계 최소화</td></tr>
 <tr><td>직렬화 경계</td><td>서버 → 클라이언트로 넘기는 props는 React가 직렬화할 수 있어야 함</td></tr>
 </tbody>
 </table>
@@ -465,10 +467,10 @@ app/blog/page.tsx                searchParams로 필터링
 app/blog/[slug]/page.tsx         notFound() 추가
 app/blog/[slug]/not-found.tsx    새 파일</code></pre>
           `,
-        },
-        {
-          title: '블로그 고도화 실습',
-          content: `
+    },
+    {
+      title: '블로그 고도화 실습',
+      content: `
 ${h2('what-we-will-build', '이번 세션에서 할 일')}
 <p>Ch.1~4에서 배운 개념을 총동원하여 블로그를 고도화합니다. 구체적으로:</p>
 <ol>
@@ -771,7 +773,7 @@ db.json                           json-server 데이터 (카테고리 포함)</c
 </thead>
 <tbody>
 <tr><td>Ch.1</td><td>파일 기반 라우팅, 레이아웃 시스템</td><td>전체 폴더 구조, layout.tsx</td></tr>
-<tr><td>Ch.2</td><td>서버/클라이언트 경계, 컴포넌트 합성</td><td>CategorySidebar, NavLink (클라이언트) + 페이지 (서버)</td></tr>
+<tr><td>Ch.2</td><td>서버/클라이언트 경계, children/props 전달</td><td>CategorySidebar, NavLink (클라이언트) + 페이지 (서버)</td></tr>
 <tr><td>Ch.3</td><td>서버 fetching, Server Actions</td><td>blog/page.tsx의 fetch, actions.ts</td></tr>
 <tr><td>Ch.4</td><td>Link, usePathname, useSearchParams, notFound</td><td>NavLink, CategorySidebar, not-found.tsx</td></tr>
 </tbody>
@@ -798,6 +800,6 @@ ${h2('wrap-up', '학습을 마무리하며')}
 <li><strong>메타데이터</strong> - <code>generateMetadata</code>로 SEO 최적화</li>
 </ul>
           `,
-        },
-      ],
+    },
+  ],
 };

@@ -12,35 +12,53 @@ export default {
 <img src="${nextJsBasicImg}" alt="Next.js 기초 튜토리얼" style="max-width:480px;width:100%;aspect-ratio:1/1;border-radius:12px;margin-bottom:2rem;" />
 
 <h2>이 튜토리얼은 누구를 위한 건가요?</h2>
-<p>React로 컴포넌트를 만들고, <code>useState</code>와 <code>useEffect</code>로 상태를 다뤄본 적 있는 입문자를 위한 튜토리얼입니다. "React는 어느 정도 알겠는데, 실제 서비스는 어떻게 만들지?"라는 궁금증이 있다면 딱 맞습니다.</p>
+<p>React로 컴포넌트를 만들고, <code>useState</code>와 <code>useEffect</code>로 상태를 다뤄본 적 있는 입문자를 위한 튜토리얼입니다. "React 문법은 어느 정도 익혔는데, 실제 서비스 구조는 어떻게 잡아야 하지?"라는 궁금증이 있다면 이 코스가 정확히 그 다음 단계입니다.</p>
 
 <h2>왜 Next.js를 배워야 하나요?</h2>
-<p>React만으로도 멋진 UI를 만들 수 있습니다. 하지만 실제 서비스를 배포하려고 하면 몇 가지 벽에 부딪힙니다.</p>
-<ul>
-<li><strong>검색 엔진이 내 페이지를 못 찾는다</strong> - React SPA는 빈 HTML을 내려주기 때문에 네이버, 구글 등의 검색에 잘 노출되지 않습니다.</li>
-<li><strong>첫 화면이 느리다</strong> - 브라우저가 큰 JavaScript 번들을 전부 다운로드하고 실행할 때까지 사용자는 빈 화면을 봅니다.</li>
-<li><strong>API 키가 노출된다</strong> - 클라이언트 코드에서 외부 API를 호출하면 민감한 정보가 브라우저에 그대로 드러납니다.</li>
-</ul>
-<p>Next.js는 이런 문제를 <strong>서버 렌더링, 자동 코드 분할, 서버 컴포넌트</strong> 같은 기능으로 깔끔하게 해결합니다. React 생태계에서 가장 널리 쓰이는 프레임워크인 만큼, 배워두면 실무에서 바로 활용할 수 있습니다.</p>
+<p>React만으로도 UI는 충분히 만들 수 있습니다. 하지만 서비스를 만들기 시작하면 "페이지를 어떤 단위로 나눌지", "데이터를 어디서 읽고 언제 렌더링할지", "브라우저에 보낼 JavaScript를 어디까지 줄일지", "검색과 내비게이션을 어떻게 설계할지" 같은 문제가 한꺼번에 등장합니다.</p>
+<p>Next.js App Router는 라우팅, 서버/클라이언트 컴포넌트, 서버 fetching, Streaming, 캐싱, URL 기반 내비게이션을 하나의 흐름으로 묶어 줍니다. 이 코스의 목표는 기능 이름을 많이 외우는 것이 아니라, 이 흐름을 실제 블로그 프로젝트에 연결해 보는 것입니다.</p>
 
-<h2>무엇을 배우나요?</h2>
-<p>이 챕터는 이 로드맵을 포함하여 5개의 세션으로 구성되어 있습니다.</p>
+<h2>전체 학습 로드맵</h2>
+<p>이 코스는 총 <strong>4개 챕터, 19개 세션</strong>으로 구성됩니다. 큰 흐름은 <strong>구조 → 경계 → 데이터 → 이동</strong>입니다.</p>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1.5rem 0;">
 <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
-<strong>1. CSR의 동작 원리와 한계</strong>
-<p style="margin-top:0.5rem;color:#6b7280;">React SPA가 동작하는 방식을 이해하고, SEO·초기 로딩·데이터 워터폴 등 근본적인 문제점을 살펴봅니다.</p>
+<strong>Ch.1. 왜 Next.js일까? + App Router 기초</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">CSR의 한계를 이해한 뒤 <code>page.tsx</code>, <code>layout.tsx</code>, 동적 라우트를 배우며 블로그의 뼈대를 만듭니다. 학습 결과는 홈, 소개, 글 목록, 글 상세가 연결된 기본 구조입니다.</p>
 </div>
 <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
-<strong>2. Next.js의 등장과 프로젝트 시작</strong>
-<p style="margin-top:0.5rem;color:#6b7280;">Next.js가 CSR 문제를 어떻게 해결하는지 이해하고, <code>create-next-app</code>으로 첫 프로젝트를 만듭니다.</p>
+<strong>Ch.2. Server / Client Component</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">서버 컴포넌트 기본값, <code>'use client'</code> 경계, children/props 전달 방식, 직렬화 가능한 props를 배우며 인터랙션이 필요한 부분만 클라이언트로 분리합니다. 학습 결과는 작은 클라이언트 섬을 가진 구조입니다.</p>
 </div>
 <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
-<strong>3. App Router와 파일 기반 라우팅</strong>
-<p style="margin-top:0.5rem;color:#6b7280;">App Router의 파일 규칙(<code>page.tsx</code>, <code>layout.tsx</code> 등)과 정적·동적 라우트를 학습합니다.</p>
+<strong>Ch.3. Data Fetching & 렌더링</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">하드코딩 데이터를 외부 소스로 옮기고, 서버 fetching, 정적/동적 렌더링, Streaming, 캐싱, Server Actions를 배웁니다. 학습 결과는 실제 데이터 조회와 생성 흐름이 붙은 블로그입니다.</p>
 </div>
 <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
-<strong>4. 레이아웃 시스템과 중첩 라우팅</strong>
-<p style="margin-top:0.5rem;color:#6b7280;">루트 레이아웃부터 중첩 레이아웃까지 App Router의 레이아웃 시스템을 학습합니다.</p>
+<strong>Ch.4. Navigation + 실습 고도화</strong>
+<p style="margin-top:0.5rem;color:#6b7280;"><code>Link</code>, <code>usePathname</code>, <code>useSearchParams</code>, <code>useRouter</code>, <code>notFound</code>를 사용해 URL 자체를 상태로 다루고 내비게이션을 다듬습니다. 학습 결과는 활성 링크, URL 기반 필터링, 404 처리가 있는 완성형 블로그입니다.</p>
+</div>
+</div>
+
+<h2>왜 이 순서로 배우나요?</h2>
+<p>Ch.1에서 먼저 폴더 구조와 레이아웃을 이해해야 Ch.2에서 <code>'use client'</code>를 어디에 둘지 판단할 수 있습니다. Ch.2에서 서버와 클라이언트의 경계를 세워야 Ch.3의 데이터 fetching, 캐싱, Server Action이 자연스럽게 연결됩니다. 마지막 Ch.4는 앞에서 만든 구조와 데이터 흐름을 그대로 활용해 URL, 내비게이션, 상태 공유를 정리하는 단계입니다.</p>
+
+<h2>챕터별 핵심 질문</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin:1.5rem 0;">
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>Ch.1의 질문</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">페이지와 레이아웃은 어떤 파일 구조로 나눠야 할까?</p>
+</div>
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>Ch.2의 질문</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">어디까지 서버이고, 어디부터 클라이언트여야 할까?</p>
+</div>
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>Ch.3의 질문</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">데이터는 어디서 읽고, 화면은 언제 만들며, 변경 후에는 어떻게 갱신할까?</p>
+</div>
+<div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
+<strong>Ch.4의 질문</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">현재 상태를 URL과 이동 흐름에 어떻게 반영할까?</p>
 </div>
 </div>
 
@@ -342,7 +360,7 @@ export default function Home() {
           title: 'App Router와 파일 기반 라우팅',
           content: `
 ${h2('what-is-app-router', 'App Router란?')}
-<p><a href="https://github.com/vercel/next.js/discussions/41745" target="_blank" rel="noopener noreferrer">Next.js 13부터 도입</a>된 <strong>App Router</strong>는 <code>app/</code> 디렉토리 기반의 라우팅 시스템입니다. 이전의 Pages Router(<code>pages/</code> 디렉토리)를 대체하며, React Server Components, 중첩 레이아웃, 스트리밍 등 최신 기능을 지원합니다.</p>
+<p><a href="https://github.com/vercel/next.js/discussions/41745" target="_blank" rel="noopener noreferrer">Next.js 13부터 도입</a>된 <strong>App Router</strong>는 <code>app/</code> 디렉토리 기반의 라우팅 시스템입니다. 이전의 Pages Router(<code>pages/</code> 디렉토리)를 대체하며, React Server Components, 중첩 레이아웃, Streaming 등 최신 기능을 지원합니다.</p>
 
 ${box('info', '<strong>라우팅이란?</strong> 사용자가 입력한 URL에 따라 어떤 페이지를 보여줄지 결정하는 것을 말합니다. 예를 들어 <code>/about</code>에 접속하면 소개 페이지를, <code>/blog</code>에 접속하면 블로그 목록을 보여주는 규칙이 바로 라우팅입니다.')}
 
@@ -708,8 +726,8 @@ export default async function Post({
 <p style="margin-top:0.5rem;color:#6b7280;">클라이언트에서 모든 렌더링을 처리하는 방식의 장단점을 살펴보았습니다.</p>
 </div>
 <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
-<strong>Next.js 프로젝트 생성</strong>
-<p style="margin-top:0.5rem;color:#6b7280;"><code>create-next-app</code>으로 프로젝트를 만들고 기본 구조를 확인했습니다.</p>
+<strong>Next.js의 등장과 프로젝트 시작</strong>
+<p style="margin-top:0.5rem;color:#6b7280;">Next.js가 CSR의 한계를 어떻게 보완하는지 이해하고, <code>create-next-app</code>으로 프로젝트를 시작했습니다.</p>
 </div>
 <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;">
 <strong>App Router와 파일 기반 라우팅</strong>

@@ -112,7 +112,7 @@ ${h2('why-server-is-default', '왜 서버가 기본값인가')}
 <li><strong>서버 자원 보호</strong>: API 키, DB 접속 정보 등이 서버에만 존재하고 클라이언트에 노출되지 않습니다.</li>
 </ul>
 
-${titleBox('neutral', '주의: 서버라고 해서 워터폴이 완전히 사라지지는 않습니다', '서버 컴포넌트 안에서도 여러 <code>await</code>를 순차로 실행하면 서버 쪽 워터폴이 생길 수 있고, 느린 요청이 있으면 해당 경로 렌더링이 잠시 막힐 수 있습니다. Next.js는 서버 요청을 병렬로 처리할 수 있도록 하고, <code>loading.tsx</code>, <code>Suspense</code>, 스트리밍을 통해 느린 요청이 있어도 UI를 점진적으로 보여줄 수 있게 합니다. 이 부분은 다음 세션들에서 이어서 다룹니다.')}
+${titleBox('neutral', '주의: 서버라고 해서 워터폴이 완전히 사라지지는 않습니다', '서버 컴포넌트 안에서도 여러 <code>await</code>를 순차로 실행하면 서버 쪽 워터폴이 생길 수 있고, 느린 요청이 있으면 해당 경로 렌더링이 잠시 막힐 수 있습니다. Next.js는 서버 요청을 병렬로 처리할 수 있도록 하고, <code>loading.tsx</code>, <code>Suspense</code>, Streaming을 통해 느린 요청이 있어도 UI를 점진적으로 보여줄 수 있게 합니다. 이 부분은 다음 세션들에서 이어서 다룹니다.')}
 
 ${titleBox('warn', '데이터 fetching은 렌더링의 일부', '서버 컴포넌트에서는 데이터 fetching이 렌더링 이후의 부가 작업이 아니라, <strong>렌더링 과정의 일부</strong>입니다. 데이터를 가져오는 것과 UI를 그리는 것이 하나의 흐름 안에서 함께 일어납니다.')}
 
@@ -196,7 +196,7 @@ export default async function Blog() {
 <tbody>
 <tr><td><strong>실행 위치</strong></td><td>브라우저</td><td>서버</td></tr>
 <tr><td><strong>초기 HTML</strong></td><td>로딩 UI만 포함</td><td>데이터가 포함된 완성된 HTML</td></tr>
-<tr><td><strong>로딩 UI</strong></td><td>빠른 데이터에도 항상 필요</td><td>느린 데이터에만 선택적으로 적용</td></tr>
+<tr><td><strong>로딩 UI</strong></td><td>로딩 UI나 빈 상태 처리가 대개 필요</td><td>느린 데이터에만 선택적으로 적용</td></tr>
 <tr><td><strong>클라이언트 번들</strong></td><td>fetching·상태 관리 로직 포함</td><td>fetching 로직이 번들에 포함되지 않음</td></tr>
 <tr><td><strong>보안</strong></td><td>비밀 값은 둘 수 없음</td><td>비밀 값을 서버에만 둘 수 있음</td></tr>
 <tr><td><strong>DB 접근</strong></td><td>불가 (API 필요)</td><td>직접 가능</td></tr>
@@ -213,7 +213,7 @@ ${h2('data-fetching-summary', '정리')}
 </thead>
 <tbody>
 <tr><td>하드코딩의 한계</td><td>데이터는 코드 밖(API, DB, 파일)에 있어야 한다</td></tr>
-<tr><td>useEffect + fetch</td><td>동작하지만 fetching 로직이 클라이언트로 이동하고, 빠른 데이터에도 로딩 UI가 필요하다</td></tr>
+<tr><td>useEffect + fetch</td><td>동작하지만 fetching 로직이 클라이언트로 이동하고, 로딩 UI나 빈 상태 처리가 필요하다</td></tr>
 <tr><td>서버 컴포넌트</td><td>async/await으로 서버에서 데이터를 가져와 완성된 HTML을 바로 전달할 수 있다</td></tr>
 <tr><td>데이터 소스</td><td>fetch API, DB 직접 쿼리, 파일 시스템 모두 가능</td></tr>
 <tr><td>기본값</td><td>App Router에서 데이터 fetching의 기본 위치는 서버</td></tr>
@@ -544,7 +544,7 @@ ${h2('streaming-summary', '정리')}
 <tbody>
 <tr><td><code>loading.tsx</code></td><td>페이지 전체의 로딩 UI. 파일 하나로 간단하게 적용</td></tr>
 <tr><td><code>Suspense</code></td><td>컴포넌트 단위 로딩. 느린 부분만 골라서 로딩 처리</td></tr>
-<tr><td>Streaming</td><td>완성된 부분부터 브라우저로 전송. Suspense가 자동으로 활성화</td></tr>
+<tr><td>Streaming</td><td>Suspense 경계를 기준으로 완성된 부분부터 브라우저로 전송</td></tr>
 <tr><td>병렬 fetching</td><td><code>Promise.all</code>로 독립적인 데이터를 동시에 요청</td></tr>
 </tbody>
 </table>
@@ -677,7 +677,7 @@ ${h2('caching-summary', '정리')}
 </thead>
 <tbody>
 <tr><td>기본값</td><td>Next.js 16에서 <code>fetch</code>는 기본적으로 캐싱하지 않음</td></tr>
-<tr><td><code>force-cache</code></td><td>한 번 가져오면 계속 재사용. 거의 안 바뀌는 데이터에 적합</td></tr>
+<tr><td><code>force-cache</code></td><td>캐시된 응답을 재사용. 거의 안 바뀌는 데이터에 적합</td></tr>
 <tr><td>시간 기반 재검증</td><td><code>next: { revalidate: 초 }</code>로 주기적 갱신</td></tr>
 <tr><td>요청 기반 재검증</td><td><code>revalidatePath</code>로 데이터 변경 시 즉시 무효화</td></tr>
 <tr><td><code>"use cache"</code></td><td>Next.js 16의 새 지시어. 페이지/컴포넌트/함수 단위 캐싱</td></tr>
@@ -708,6 +708,8 @@ const handleSubmit = async (data: FormData) =&gt; {
 
 ${h2('what-are-server-actions', 'Server Actions란?')}
 
+<p>Next.js 공식 문서와 React 문서는 더 넓은 개념을 <strong>Server Function</strong>이라고 부르고, 폼 제출이나 데이터 변경처럼 action 맥락에서 사용할 때 흔히 <strong>Server Action</strong>이라고 부릅니다. 이 세션에서는 폼 예제를 다루므로 편의상 Server Action이라고 부르겠습니다.</p>
+
 <p>Server Action은 <code>'use server'</code> 지시어로 표시된 <strong>서버에서 실행되는 함수</strong>입니다. Ch.2에서 배운 <code>'use client'</code>의 대칭이라고 생각하면 됩니다.</p>
 
 <ul>
@@ -732,7 +734,7 @@ export async function createPost(formData: FormData) {
   });
 }</code></pre>
 
-<p>이것이 가능한 이유는 <code>'use server'</code> 지시어 때문입니다. 파일 맨 위에 <code>'use server'</code>를 선언하면 Next.js는 이 파일의 export된 함수들을 서버에서 실행되는 함수(Server Action)로 처리합니다.</p>
+<p>이것이 가능한 이유는 <code>'use server'</code> 지시어 때문입니다. 파일 맨 위에 <code>'use server'</code>를 선언하면 Next.js는 이 파일의 export된 함수들을 서버에서 실행되는 함수(Server Function)로 처리하고, 이를 폼 action이나 데이터 변경 흐름에 연결해 사용할 수 있게 합니다.</p>
 
 <p>그래서 클라이언트에서 이 함수를 호출하면 실제로는 브라우저에서 실행되는 것이 아니라, 요청이 서버로 전달되어 서버에서 함수가 실행됩니다. 즉 브라우저에서는 함수 호출처럼 보이지만, 내부적으로는 서버에 요청을 보내고 결과를 받아오는 구조입니다.</p>
 

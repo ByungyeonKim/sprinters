@@ -2,11 +2,11 @@ import nextJsBasicModuleImg from '../../../../assets/next-js-basic-module.png';
 import { box, h2, titleBox } from '../shared/content-helpers';
 
 export default {
-      title: 'Server / Client Component',
-      sessions: [
-        {
-          title: '서버 컴포넌트와 클라이언트 컴포넌트',
-          content: `
+  title: 'Server / Client Component',
+  sessions: [
+    {
+      title: '서버 컴포넌트와 클라이언트 컴포넌트',
+      content: `
 ${h2('why-split-into-server-and-client', '왜 컴포넌트를 서버와 클라이언트로 나눌까?')}
 <p>Ch.1에서 우리는 CSR의 문제를 살펴보았습니다. 빈 HTML, 큰 번들, API 키 노출... 이 문제들을 해결하려면 <strong>서버가 필요</strong>하다는 결론에 도달했죠. 서버가 해결책이라면, 극단적으로 모든 것을 서버에서 처리하는 게 최선처럼 보일 수도 있습니다:</p>
 
@@ -26,7 +26,7 @@ ${h2('what-are-server-components', '서버 컴포넌트')}
 ${box(
   `info`,
   `<strong>SSR과 서버 컴포넌트는 다릅니다</strong><br/>
-<strong>SSR</strong>(Server-Side Rendering)은 HTML을 서버에서 미리 만들어 보내는 렌더링 전략입니다. <strong>서버 컴포넌트</strong>(RSC)는 특정 컴포넌트의 코드를 아예 클라이언트 번들에서 제외하는 컴포넌트 실행 모델입니다. 실제로 Next.js에서는 클라이언트 컴포넌트도 초기 HTML 생성을 위해 서버에서 한 번 실행됩니다. 렌더링 전략에 대한 자세한 내용은 Ch.3에서 다룹니다.`,
+<strong>SSR</strong>(Server-Side Rendering)은 HTML을 서버에서 미리 만들어 보내는 렌더링 전략입니다. <strong>서버 컴포넌트</strong>(RSC)는 특정 컴포넌트의 코드를 아예 클라이언트 번들에서 제외할 수 있는 컴포넌트 실행 모델입니다. 실제로 Next.js에서는 클라이언트 컴포넌트도 초기 요청은 서버에서 prerender되어 HTML에 포함될 수 있고, 이후 브라우저가 hydrate와 리렌더링을 담당합니다. 렌더링 전략에 대한 자세한 내용은 Ch.3에서 다룹니다.`,
 )}
 
 <h3>핵심 특성 3가지</h3>
@@ -163,7 +163,7 @@ ${h2('server-vs-client-comparison', '비교 테이블: 서버 vs 클라이언트
 <thead><tr><th></th><th>서버 컴포넌트</th><th>클라이언트 컴포넌트</th></tr></thead>
 <tbody>
 <tr><td><strong>지시어</strong></td><td>없음 (기본값)</td><td><code>'use client'</code></td></tr>
-<tr><td><strong>실행 위치</strong></td><td>서버에서만</td><td>서버(초기 HTML) + 브라우저(hydration)</td></tr>
+<tr><td><strong>실행 위치</strong></td><td>서버 렌더링에서만</td><td>초기 요청 시 prerender + 브라우저(hydration/재렌더)</td></tr>
 <tr><td><strong>JS 번들</strong></td><td>포함 안 됨</td><td>포함됨</td></tr>
 <tr><td><strong>상태 (useState)</strong></td><td>❌</td><td>✅</td></tr>
 <tr><td><strong>이벤트 (onClick)</strong></td><td>❌</td><td>✅</td></tr>
@@ -176,10 +176,10 @@ ${h2('server-vs-client-comparison', '비교 테이블: 서버 vs 클라이언트
 
 <p>다음 세션에서는 <code>'use client'</code>가 만드는 <strong>경계</strong>가 무엇이고, 이 경계를 컴포넌트 트리에서 어디에 배치해야 하는지 학습합니다.</p>
           `,
-        },
-        {
-          title: "'use client' 경계와 컴포넌트 설계",
-          content: `
+    },
+    {
+      title: "'use client' 경계와 컴포넌트 설계",
+      content: `
 ${h2(`use-client-creates-boundary`, `'use client'는 "경계"를 만든다`)}
 <img src="${nextJsBasicModuleImg}" alt="use client 경계와 모듈 의존성 트리" style="width:100%;aspect-ratio:2752/1536;border-radius:8px;margin:1rem 0;" />
 <p><code>'use client'</code>를 단순히 "이 파일을 클라이언트에서 실행해라"로 이해하면 절반만 맞습니다. 정확한 의미는 이렇습니다:</p>
@@ -316,12 +316,12 @@ ${h2('use-client-summary', '정리')}
 </tbody>
 </table>
 
-<p>그런데 서버 컴포넌트와 클라이언트 컴포넌트를 함께 쓸 때 주의해야 할 제약이 있습니다. 다음 세션에서는 <strong>합성 패턴</strong>과 <strong>직렬화 경계</strong>를 학습합니다.</p>
+<p>그런데 서버 컴포넌트와 클라이언트 컴포넌트를 함께 쓸 때 주의해야 할 제약이 있습니다. 다음 세션에서는 <strong>children/props로 서버 컴포넌트를 전달하는 방법</strong>과 <strong>직렬화 경계</strong>를 학습합니다.</p>
           `,
-        },
-        {
-          title: '합성 패턴과 직렬화 경계',
-          content: `
+    },
+    {
+      title: 'children/props 전달과 직렬화 경계',
+      content: `
 ${h2('cannot-import-server-in-client', '클라이언트에서 서버 컴포넌트를 import할 수 없다')}
 <p>이전 세션에서 배운 규칙을 다시 떠올려 봅시다: <strong>클라이언트 컴포넌트가 import한 것은 모두 클라이언트가 된다.</strong></p>
 <p>그렇다면 클라이언트 컴포넌트 파일에서 서버 컴포넌트를 import하면 어떻게 될까요?</p>
@@ -344,7 +344,7 @@ export function ClientWrapper() {
 
 <p>그렇다면 "서버 컴포넌트에서 생성된 콘텐츠를 클라이언트 컴포넌트 안에 넣고 싶을 때"는 어떻게 해야 할까요?</p>
 
-${h2('children-composition-pattern', 'children 합성(composition) 패턴')}
+${h2('children-composition-pattern', 'children이나 props로 서버 컴포넌트 전달하기')}
 <p>해답은 <strong>import 대신 children(또는 다른 prop)으로 전달</strong>하는 것입니다.</p>
 
 <pre><code class="language-text">import vs children 차이:
@@ -505,16 +505,16 @@ export default function FAQ() {
 }</code></pre>
 
 ${h2('serialization-boundary', '직렬화 경계: 서버 → 클라이언트 props 제약')}
-<p>서버 컴포넌트에서 클라이언트 컴포넌트로 props를 전달할 때, <strong>React가 직렬화 가능한 값</strong>만 전달할 수 있습니다.</p>
+<p>서버 컴포넌트에서 클라이언트 컴포넌트로 props를 전달할 때, <strong>React가 직렬화 가능한 값</strong>만 전달할 수 있습니다. 다만 <code>'use server'</code>로 선언한 Server Action(Server Function)은 함수 형태라도 예외적으로 전달할 수 있습니다.</p>
 
 <table>
 <thead><tr><th>전달 가능 ✅</th><th>전달 불가 ❌</th></tr></thead>
 <tbody>
-<tr><td>문자열, 숫자, 불리언</td><td>함수 (콜백, 이벤트 핸들러)</td></tr>
-<tr><td>배열, 일반 객체</td><td>클래스 인스턴스</td></tr>
-<tr><td>null, undefined</td><td>Symbol</td></tr>
+<tr><td>문자열, 숫자, bigint, 불리언</td><td>일반 함수 (콜백, 이벤트 핸들러)</td></tr>
+<tr><td>배열, 일반 객체, Promise</td><td>클래스 인스턴스</td></tr>
+<tr><td>null, undefined, 전역 Symbol(<code>Symbol.for</code>)</td><td>임의로 만든 Symbol</td></tr>
 <tr><td>Date, Map, Set</td><td></td></tr>
-<tr><td>JSX (React 엘리먼트)</td><td></td></tr>
+<tr><td>JSX (React 엘리먼트), Server Action</td><td></td></tr>
 </tbody>
 </table>
 
@@ -524,10 +524,10 @@ import { ClientButton } from './components/ClientButton';
 
 export default function Home() {
   const handleClick = () =&gt; console.log('클릭!');
-  //                    ↑ 함수는 직렬화 불가능
+  //                    ↑ 일반 함수는 직렬화 불가능
 
   return &lt;ClientButton onClick={handleClick} /&gt;;
-  //                    ↑ ❌ 에러: 함수를 서버→클라이언트로 전달 불가
+  //                    ↑ ❌ 에러: 일반 함수를 서버→클라이언트로 전달 불가
 }</code></pre>
 
 <pre><code class="language-tsx">// ✅ 해결: 클라이언트 컴포넌트 내부에서 함수를 정의
@@ -597,7 +597,7 @@ ${h2('composition-summary', '정리')}
 <table>
 <thead><tr><th>패턴</th><th>핵심 아이디어</th></tr></thead>
 <tbody>
-<tr><td>children 합성</td><td>import 대신 children slot으로 서버 콘텐츠를 클라이언트 안에 배치</td></tr>
+<tr><td>children/props 전달</td><td>import 대신 children slot이나 다른 prop으로 서버 콘텐츠를 클라이언트 안에 배치</td></tr>
 <tr><td>Provider 패턴</td><td>Provider는 클라이언트, children(페이지)은 서버 유지</td></tr>
 <tr><td>인터랙티브 래퍼</td><td>인터랙션 셸은 클라이언트, 내부 콘텐츠는 서버</td></tr>
 <tr><td>직렬화 제약</td><td>서버→클라이언트 props는 React가 직렬화 가능해야 함</td></tr>
@@ -607,10 +607,10 @@ ${h2('composition-summary', '정리')}
 
 <p>다음 세션에서는 이 모든 개념을 종합하여 Ch.1의 블로그 프로젝트를 <strong>리팩터링하고 새 기능을 추가</strong>하는 실습을 진행합니다.</p>
           `,
-        },
-        {
-          title: '블로그 인터랙션 추가 실습',
-          content: `
+    },
+    {
+      title: '블로그 인터랙션 추가 실습',
+      content: `
 ${h2('what-we-will-build', '이번 세션에서 할 일')}
 <p>Ch.1에서 만든 블로그 프로젝트에 서버/클라이언트 컴포넌트 설계를 적용합니다. 구체적으로:</p>
 <ol>
@@ -847,12 +847,12 @@ ${h2('ch2-summary', 'Ch.2 학습 정리')}
 <ul>
 <li><strong>서버 vs 클라이언트 컴포넌트의 역할 차이</strong> - 서버 컴포넌트는 데이터 표시와 레이아웃을, 클라이언트 컴포넌트는 인터랙션(<code>useState</code>, <code>onClick</code> 등)을 담당합니다.</li>
 <li><strong><code>'use client'</code> 경계는 트리 끝에 배치</strong> - 클라이언트 경계를 최대한 작게 만들어서, 서버에서 처리할 수 있는 부분을 최대화하는 설계 원칙을 배웠습니다.</li>
-<li><strong>children 합성 패턴</strong> - Provider 래핑이나 인터랙티브 래퍼에서 <code>children</code>을 활용해 서버 컴포넌트를 클라이언트 컴포넌트 안에 배치하는 패턴을 익혔습니다.</li>
+<li><strong>children/props 전달</strong> - Provider 래핑이나 인터랙티브 래퍼에서 <code>children</code>이나 다른 prop을 활용해 서버 컴포넌트를 클라이언트 컴포넌트 안에 배치하는 방법을 익혔습니다.</li>
 <li><strong>실습</strong> - BlogLayout 리팩터링, LikeButton, SearchablePostList를 직접 만들며 경계 설계를 연습했습니다.</li>
 </ul>
 
 ${box('info', '<strong>다음 챕터 예고:</strong> 지금까지는 하드코딩된 배열로 데이터를 다뤘습니다. Ch.3에서는 데이터를 외부 소스에서 가져오는 <strong>Data Fetching</strong> 패턴을 학습합니다.')}
           `,
-        },
-      ],
-    };
+    },
+  ],
+};
