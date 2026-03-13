@@ -2,10 +2,9 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx",
     ".react-router/types/**/*"
   ],
+  "exclude": ["build", "dist", "node_modules"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "target": "ES2022",
@@ -13,10 +12,11 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "rootDirs": [".", "./.react-router/types"],
-    "strict": false,
+    "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
     "isolatedModules": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["vite/client"]
   }
 }
