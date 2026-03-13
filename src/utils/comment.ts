@@ -11,16 +11,18 @@ export function getCommentDeleteToken() {
 
 const OWN_COMMENT_IDS_KEY = 'sprintersOwnedCommentIds';
 
-let listeners = [];
-let cachedRaw = null;
-let cachedIds = [];
+type Listener = () => void;
+
+let listeners: Listener[] = [];
+let cachedRaw: string | null = null;
+let cachedIds: string[] = [];
 
 function emitChange() {
   cachedRaw = null;
   listeners.forEach((l) => l());
 }
 
-export function subscribeOwnedCommentIds(listener) {
+export function subscribeOwnedCommentIds(listener: Listener) {
   listeners = [...listeners, listener];
   return () => {
     listeners = listeners.filter((l) => l !== listener);
@@ -50,7 +52,7 @@ export function getOwnedCommentIds() {
 
   try {
     const parsed = JSON.parse(raw);
-    cachedIds = Array.isArray(parsed) ? parsed.map((id) => String(id)) : [];
+    cachedIds = Array.isArray(parsed) ? parsed.map((id: unknown) => String(id)) : [];
   } catch {
     cachedIds = [];
   }
@@ -58,12 +60,12 @@ export function getOwnedCommentIds() {
   return cachedIds;
 }
 
-const SERVER_SNAPSHOT = [];
+const SERVER_SNAPSHOT: string[] = [];
 export function getOwnedCommentIdsServerSnapshot() {
   return SERVER_SNAPSHOT;
 }
 
-export function addOwnedCommentId(commentId) {
+export function addOwnedCommentId(commentId: string | number) {
   const normalizedId = String(commentId);
   const ids = getOwnedCommentIds();
 
@@ -77,7 +79,7 @@ export function addOwnedCommentId(commentId) {
   emitChange();
 }
 
-export function removeOwnedCommentId(commentId) {
+export function removeOwnedCommentId(commentId: string | number) {
   const normalizedId = String(commentId);
   const ids = getOwnedCommentIds().filter((id) => id !== normalizedId);
 

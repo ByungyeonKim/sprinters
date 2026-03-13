@@ -7,28 +7,35 @@ import {
   data,
   useSearchParams,
 } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import type { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Toaster } from './components/ui/sonner';
 import { createSupabaseServerClient } from './lib/supabase.server';
+import type { Route } from './+types/root';
 import './index.css';
 
-export async function loader({ request }) {
+export type RootLoaderData = {
+  user: User | null;
+  isMac: boolean;
+};
+
+export async function loader({ request }: Route.LoaderArgs) {
   const { supabase, headers } = createSupabaseServerClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
   const ua = request.headers.get('user-agent') || '';
   const isMac = /Mac|iPhone|iPad/.test(ua);
-  return data({ user, isMac }, { headers });
+  return data<RootLoaderData>({ user, isMac }, { headers });
 }
 
-export function headers({ loaderHeaders }) {
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
   return loaderHeaders;
 }
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang='ko'>
       <head>
@@ -79,6 +86,11 @@ export function shouldRevalidate({
   defaultShouldRevalidate,
   formMethod,
   nextUrl,
+}: {
+  currentUrl: URL;
+  defaultShouldRevalidate: boolean;
+  formMethod?: string;
+  nextUrl: URL;
 }) {
   if (formMethod && formMethod !== 'GET') {
     return defaultShouldRevalidate;

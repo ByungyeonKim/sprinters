@@ -28,12 +28,12 @@ const sprinterDescriptors = [
   '미션깜빡한',
 ];
 
-export function generateSprinterNickname(seed) {
+export function generateSprinterNickname(seed: number) {
   const index = seed % sprinterDescriptors.length;
   return `${sprinterDescriptors[index]} 스프린터`;
 }
 
-export function generateSprinterAvatar(seed) {
+export function generateSprinterAvatar(seed: number) {
   const index = (seed % 10) + 1;
   const paddedIndex = String(index).padStart(2, '0');
   return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/avatar/sprinter-${paddedIndex}.png`;

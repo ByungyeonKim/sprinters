@@ -1,5 +1,5 @@
 import { transformerMetaHighlight } from '@shikijs/transformers';
-import { createHighlighter } from 'shiki';
+import { type Highlighter, createHighlighter } from 'shiki';
 import {
   DEFAULT_CODE_LANGUAGE,
   SUPPORTED_CODE_LANGUAGES,
@@ -8,11 +8,11 @@ import {
 
 const SHIKI_THEME = 'aurora-x';
 const LANGUAGE_CLASS_PREFIX = 'language-';
-const CODE_LANGUAGE_LABELS = Object.fromEntries(
+const CODE_LANGUAGE_LABELS: Record<string, string> = Object.fromEntries(
   SUPPORTED_CODE_LANGUAGES.map((language) => [language.value, language.label]),
 );
 
-let highlighterPromise;
+let highlighterPromise: Promise<Highlighter> | null = null;
 
 function getHighlighter() {
   if (!highlighterPromise) {
@@ -25,8 +25,8 @@ function getHighlighter() {
   return highlighterPromise;
 }
 
-function decodeHtmlEntities(text) {
-  const decodeCodePoint = (rawCode, radix, fallback) => {
+function decodeHtmlEntities(text: string) {
+  const decodeCodePoint = (rawCode: string, radix: number, fallback: string) => {
     const parsed = Number.parseInt(rawCode, radix);
 
     if (Number.isNaN(parsed)) {
@@ -41,10 +41,10 @@ function decodeHtmlEntities(text) {
   };
 
   return text
-    .replace(/&#x([0-9a-f]+);/gi, (fullMatch, code) =>
+    .replace(/&#x([0-9a-f]+);/gi, (fullMatch: string, code: string) =>
       decodeCodePoint(code, 16, fullMatch),
     )
-    .replace(/&#([0-9]+);/g, (fullMatch, code) =>
+    .replace(/&#([0-9]+);/g, (fullMatch: string, code: string) =>
       decodeCodePoint(code, 10, fullMatch),
     )
     .replace(/&quot;/g, '"')
@@ -55,7 +55,7 @@ function decodeHtmlEntities(text) {
     .replace(/&amp;/g, '&');
 }
 
-function getCodeClassValue(codeAttributes) {
+function getCodeClassValue(codeAttributes: string) {
   const classMatch = codeAttributes.match(
     /\bclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/i,
   );
@@ -63,13 +63,13 @@ function getCodeClassValue(codeAttributes) {
   return classMatch?.[1] || classMatch?.[2] || classMatch?.[3] || '';
 }
 
-function resolveCodeLanguage(codeAttributes) {
+function resolveCodeLanguage(codeAttributes: string) {
   const classValue = getCodeClassValue(codeAttributes);
   if (!classValue) return DEFAULT_CODE_LANGUAGE;
 
   const languageClassName = classValue
     .split(/\s+/)
-    .find((className) => className.startsWith(LANGUAGE_CLASS_PREFIX));
+    .find((className: string) => className.startsWith(LANGUAGE_CLASS_PREFIX));
 
   if (!languageClassName) return DEFAULT_CODE_LANGUAGE;
 
@@ -77,7 +77,7 @@ function resolveCodeLanguage(codeAttributes) {
   return normalizeCodeLanguage(rawLanguage);
 }
 
-function resolveHighlightMeta(codeAttributes) {
+function resolveHighlightMeta(codeAttributes: string) {
   const dataLineMatch = codeAttributes.match(
     /\bdata-line\s*=\s*(?:"([^"]*)"|'([^']*)')/i,
   );
@@ -88,7 +88,7 @@ function resolveHighlightMeta(codeAttributes) {
   return `{${dataLineValue}}`;
 }
 
-function escapeHtmlAttribute(value) {
+function escapeHtmlAttribute(value: string) {
   return value
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
@@ -112,17 +112,17 @@ const CODE_COPY_BUTTON_HTML = `
 </button>
 `;
 
-function withCodeLanguageMeta(highlightedCode, language) {
+function withCodeLanguageMeta(highlightedCode: string, language: string) {
   const label = CODE_LANGUAGE_LABELS[language] || language;
 
   return highlightedCode.replace(
     /<pre\b([^>]*)>/,
-    (_, preAttributes = '') =>
+    (_: string, preAttributes = '') =>
       `<pre${preAttributes} data-code-language="${escapeHtmlAttribute(language)}" data-code-language-label="${escapeHtmlAttribute(label)}">${CODE_COPY_BUTTON_HTML}`,
   );
 }
 
-export async function highlightCodeBlocks(html) {
+export async function highlightCodeBlocks(html: string) {
   if (typeof html !== 'string' || !html.includes('<pre')) {
     return html ?? '';
   }

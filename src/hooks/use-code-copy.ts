@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
+import { type RefObject, useEffect } from 'react';
 import { copyTextToClipboard } from '../utils/clipboard';
 
-export function useCodeCopy(containerRef, deps) {
+export function useCodeCopy(containerRef: RefObject<HTMLElement | null>, deps: React.DependencyList) {
   useEffect(() => {
     const containerElement = containerRef.current;
     if (!containerElement) return;
 
-    const resetTimers = new Map();
-    const resetCopyButton = (button) => {
+    const resetTimers = new Map<HTMLButtonElement, number>();
+    const resetCopyButton = (button: HTMLButtonElement) => {
       button.dataset.copied = 'false';
       button.setAttribute('aria-label', '코드 복사');
       button.setAttribute('title', '코드 복사');
     };
 
-    const handleCopyClick = async (button) => {
+    const handleCopyClick = async (button: HTMLButtonElement) => {
       const preElement = button.closest('pre.shiki');
       const codeElement = preElement?.querySelector('code');
       const codeText = codeElement?.textContent || '';
@@ -42,7 +42,7 @@ export function useCodeCopy(containerRef, deps) {
       resetTimers.set(button, nextTimer);
     };
 
-    const handleClick = (event) => {
+    const handleClick = (event: Event) => {
       if (!(event.target instanceof Element)) return;
 
       const copyButton = event.target.closest('[data-code-copy-button]');

@@ -1,10 +1,11 @@
+// @ts-expect-error -- sanitize-html has no type declarations
 import sanitizeHtml from 'sanitize-html';
 
 function mergeRelValues(rawRel = '') {
   const relValues = new Set(
     rawRel
       .split(/\s+/)
-      .map((value) => value.trim().toLowerCase())
+      .map((value: string) => value.trim().toLowerCase())
       .filter(Boolean),
   );
 
@@ -14,7 +15,7 @@ function mergeRelValues(rawRel = '') {
   return Array.from(relValues).join(' ');
 }
 
-export function sanitizeContent(html) {
+export function sanitizeContent(html: string) {
   const defaultAnchorAttributes = sanitizeHtml.defaults.allowedAttributes.a || [];
 
   return sanitizeHtml(html, {
@@ -29,7 +30,7 @@ export function sanitizeContent(html) {
       code: [/^language-[a-z0-9-]+$/],
     },
     transformTags: {
-      a(tagName, attribs) {
+      a(tagName: string, attribs: Record<string, string>) {
         if (attribs.target === '_blank') {
           return {
             tagName,

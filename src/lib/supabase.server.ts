@@ -4,8 +4,14 @@ import {
   serializeCookieHeader,
 } from '@supabase/ssr';
 
-export function createSupabaseServerClient(request) {
+export function createSupabaseServerClient(request: Request) {
   const headers = new Headers();
+  const requestCookies = parseCookieHeader(request.headers.get('Cookie') ?? '')
+    .filter(
+      (cookie): cookie is { name: string; value: string } =>
+        typeof cookie.value === 'string',
+    )
+    .map(({ name, value }) => ({ name, value }));
 
   const supabase = createServerClient(
     import.meta.env.VITE_SUPABASE_URL,
@@ -13,7 +19,7 @@ export function createSupabaseServerClient(request) {
     {
       cookies: {
         getAll() {
-          return parseCookieHeader(request.headers.get('Cookie') ?? '');
+          return requestCookies;
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {

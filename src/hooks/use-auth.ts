@@ -1,9 +1,10 @@
-import { useMatches } from 'react-router';
+import { useRouteLoaderData } from 'react-router';
 import { supabase } from '../lib/supabase';
+import type { RootLoaderData } from '../root';
 
 export function useAuth() {
-  const matches = useMatches();
-  const user = matches[0]?.data?.user ?? null;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const user = rootData?.user ?? null;
 
   async function signInWithGitHub() {
     await supabase.auth.signInWithOAuth({
