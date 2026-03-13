@@ -1,4 +1,4 @@
-import nextJsBasicModuleImg from '../../../../assets/next-js-basic-module.png';
+import nextJsBasicModuleImg from '../../../../assets/next-js-basic-module.webp';
 import { box, h2, titleBox } from '../shared/content-helpers';
 
 export default {

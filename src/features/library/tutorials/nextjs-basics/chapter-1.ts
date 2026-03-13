@@ -1,5 +1,5 @@
-import nextJsBasicImg from '../../../../assets/next-js-basic.png';
-import ch1MyBlogPracticeImg from '../../../../assets/ch1-my-blog-practice.png';
+import nextJsBasicImg from '../../../../assets/next-js-basic.webp';
+import ch1MyBlogPracticeImg from '../../../../assets/ch1-my-blog-practice.webp';
 import { box, h2, titleBox } from '../shared/content-helpers';
 
 export default {

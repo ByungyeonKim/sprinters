@@ -1,4 +1,4 @@
-import nextJsWrapUpImg from '../../../../assets/next-js-wrap-up.png';
+import nextJsWrapUpImg from '../../../../assets/next-js-wrap-up.webp';
 import { h2, titleBox } from '../shared/content-helpers';
 
 export default {

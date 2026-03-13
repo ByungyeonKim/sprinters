@@ -1,4 +1,4 @@
-import ch3NetworkImg from '../../../../assets/ch3-network.png';
+import ch3NetworkImg from '../../../../assets/ch3-network.webp';
 import { box, h2, titleBox } from '../shared/content-helpers';
 
 export default {

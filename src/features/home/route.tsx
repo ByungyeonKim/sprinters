@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { Link, useLoaderData, Await } from 'react-router';
-import sprintHero from '../../assets/sprint-hero.jpg';
+import sprintHero from '../../assets/sprint-hero.webp';
 import { fetchMissionRankStudents } from '../mission/student-service';
 import { fetchPopularTilPosts } from '../til/til-service';
 import { LikeCount } from '../../components/LikeCount';
