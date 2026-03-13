@@ -2,10 +2,14 @@ import * as React from "react"
 
 import { cn } from "../../lib/utils"
 
+type TextareaProps = React.ComponentPropsWithoutRef<"textarea"> & {
+  className?: string
+}
+
 function Textarea({
   className,
   ...props
-}) {
+}: TextareaProps) {
   return (
     <textarea
       data-slot="textarea"

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,10 +13,17 @@ import {
 } from './ui/alert-dialog';
 import { Trash2Icon } from 'lucide-react';
 
-export function AlertDialogDestructive({ onConfirm, title, description, children }) {
+interface Props {
+  onConfirm: () => Promise<void> | void;
+  title: ReactNode;
+  description: ReactNode;
+  children: ReactNode;
+}
+
+export function AlertDialogDestructive({ onConfirm, title, description, children }: Props) {
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleConfirm = async (e) => {
+  const handleConfirm = async (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDeleting(true);
     try {
