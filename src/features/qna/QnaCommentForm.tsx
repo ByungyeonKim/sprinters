@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/use-auth';
 import { CodeAttachModal } from './CodeAttachModal';
 import { CodeAttachPreview } from './CodeAttachPreview';
 import { useCodeAttachment } from './use-code-attachment';
+import { Textarea } from '../../components/ui/textarea';
 
 type QnaCommentFormProps = {
   questionId: string;
@@ -87,13 +88,15 @@ function QnaCommentForm({ questionId, onCommentCreated }: QnaCommentFormProps) {
         />
         <span className='text-sm font-medium text-gray-800'>{authorName}</span>
       </div>
-      <textarea
-        rows={3}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder='답변을 작성해보세요.'
-        className='w-full resize-none rounded-lg border border-gray-200 px-4 py-3 focus:border-gray-500 focus:outline-none'
-      />
+      <div className='overflow-hidden rounded-md'>
+        <Textarea
+          rows={3}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder='답변을 작성해보세요.'
+          className='resize-y focus-visible:ring-0'
+        />
+      </div>
       {codeBlocks.length > 0 && (
         <div className='mt-3 space-y-2'>
           {codeBlocks.map((block, index) => (
